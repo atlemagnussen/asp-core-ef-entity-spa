@@ -5,3 +5,6 @@ Try to make a simple implementation of:
 - a standalone auth server using identityserver4, entityframework core and sql server
 - web api protected by the auth server
 - spa client that logs in
+
+
+https://localhost:6001/.well-known/openid-configuration
