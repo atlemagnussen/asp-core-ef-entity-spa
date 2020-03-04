@@ -1,0 +1,61 @@
+:root {
+    /* color defs */
+    --brown: #9c4e16;
+    --green: #99c66d;
+    
+    --blue: #4590e6;
+    --blue-trans: rgba(69, 144, 230, 0.9);
+    
+    --white-trans: rgba(255, 255, 255, 0.8);
+    --white-very-trans: rgba(255, 255, 255, 0.1);
+    --red-trans: rgba(248, 3, 3, 0.7);
+
+    --grey-light: #f0f0f0;
+    --grey-trans: rgba(240, 240, 240, 0.7);
+    --grey-dark: #333;
+
+    --purple-main: rgba(44, 38, 48, 0.9);
+    --purple-light: rgba(102, 51, 153, 0.6);
+    --purple-hover: rgba(145, 60, 140, 0.4);
+
+    --magenta: rgb(255, 0, 255);
+    --magenta-dark: rgb(139, 0, 139);
+
+    --cyan: rgb(0, 255, 255);
+    --cyan-dark: rgb(0, 139, 139);
+    --cyan-hover: rgba(0, 139, 139, 0.5);
+
+    --red-main: rgb(139, 0, 0);
+    --red-light: rgb(195, 20, 20, 0.5);
+    --red-extra-light: rgb(195, 20, 20, 0.2);
+    --red-strong: rgb(195, 20, 20);
+    --red-hover: rgb(120, 0, 0, 0.2);
+
+    --green-main: rgb(0, 255, 0);
+    --green-dark: rgb(34, 139, 34);
+    --green-extra-dark: rgb(0, 100, 0);
+
+    --cardinal: rgb(196, 30, 58);
+    --cardinal-blue: rgb(196, 30, 90);
+    --cardinal-hover: rgb(196, 30, 90, 0.3);
+
+    /* define vars to use in app */
+    --main-color: var(--cyan-dark);
+    --secondary-color: var(--magenta-dark);
+    --third-color: var(--blue-trans);
+
+    --main-text: var(--grey-dark);
+    --secondary-text: var(--white-light);
+
+    --background-color: var(--grey-light);
+    --light-color: var(--red-light);
+    --hover-color: var(--cyan-hover);
+    --selected-color: var(--cardinal-hover);
+    --toggled-color: var(--red-extra-light);
+
+    --h1-color: var(--cyan-dark);
+    --h2-color: white;
+    --h3-color: white;
+    --a-underline-color: var(--cyan-dark);
+    --a-hover-color: var(--cyan);
+}
