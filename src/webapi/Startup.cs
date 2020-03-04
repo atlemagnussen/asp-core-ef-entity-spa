@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Test.webapi.Data;
 
-namespace webapi
+namespace Test.webapi
 {
     public class Startup
     {
@@ -25,6 +27,19 @@ namespace webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "https://localhost:6001";
+                    options.RequireHttpsMetadata = true;
+                    options.ApiName = "bankApi";
+                });
+
+            services.AddDbContext<BankContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("BankDatabase"));
+            });
+
             services.AddControllers();
         }
 
