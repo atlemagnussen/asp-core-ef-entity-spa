@@ -30,6 +30,9 @@ namespace Test.auth
             return new List<ApiResource>
             {
                 new ApiResource("bankApi", "Customer Api for Bank")
+                {
+                    Scopes = { new Scope("api.read") }
+                }
             };
         }
 
@@ -47,29 +50,36 @@ namespace Test.auth
                     },
                     AllowedScopes = { "bankApi" }
                 },
-                new Client
-                {
-                    ClientId = "ro.client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    ClientSecrets = new List<Secret>
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = { "bankApi" }
-                },
+                //new Client
+                //{
+                //    ClientId = "ro.client",
+                //    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                //    ClientSecrets = new List<Secret>
+                //    {
+                //        new Secret("secret".Sha256())
+                //    },
+                //    AllowedScopes = { "bankApi" }
+                //},
                 new Client
                 {
                     ClientId = "webclient",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
                     RequirePkce = false, //should be true
+                    RequireConsent = false,
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
+
+                    RedirectUris =           { "http://localhost:8080/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:8080/index.html" },
+                    AllowedCorsOrigins =     { "http://localhost:8080" },
+
                     AllowedScopes = 
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         "bankApi"
-                    }
+                    },
+                    AllowOfflineAccess = true
                 }
             };
         }
@@ -79,6 +89,7 @@ namespace Test.auth
             return new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
+                new IdentityResources.Email(),
                 new IdentityResources.Profile()
             };
         }

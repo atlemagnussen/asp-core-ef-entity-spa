@@ -1,8 +1,8 @@
 import Oidc from "oidc-client";
-const rootPath = `${window.location.origin}/`;
+const rootPath = `${window.location.origin}`;
 const oicdConfig = {
-    authority: "http://localhost:6000",
-    client_id: "js",
+    authority: "https://localhost:6001",
+    client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
     scope:"openid profile bankApi",

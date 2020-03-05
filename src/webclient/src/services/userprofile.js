@@ -1,4 +1,5 @@
 import { userIsLoggedIn, userProfile } from "../store";
+import auth from "./authentication.js";
 import helper from "./helper.js";
 
 class UserProfile {
@@ -6,7 +7,12 @@ class UserProfile {
         this.init();
     }
     async init() {
-        // const currentUser = auth.getCurrentUser();
+        const currentUser = await auth.getUser();
+        if (currentUser) {
+            console.log(currentUser);
+        } else {
+            auth.login();
+        }
         userIsLoggedIn.subscribe(async value => {
             if (value) {
                 this.setLoggedInUserProfile();
@@ -41,8 +47,8 @@ class UserProfile {
         }
     }
     async setLoggedInUserProfile(user) {
-        // if (!user)
-        //     user = firebase.auth().currentUser;
+        if (!user)
+            user = authentication.getUser();
         
         // if (!user)
         //     return;
@@ -63,15 +69,6 @@ class UserProfile {
     }
     setLoggedOutUserProfile() {
         userProfile.set({ loggedIn: false, name: "anon", initials: "U" });
-    }
-
-    updateCurrentUser(displayName) {
-        const user = firebase.auth().currentUser;
-        if (user) {
-            return user.updateProfile({
-                displayName
-            });
-        }
     }
 }
 export default new UserProfile();

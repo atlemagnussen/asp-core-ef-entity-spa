@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using Test.auth.Data;
 
 namespace Test.auth
@@ -27,18 +28,27 @@ namespace Test.auth
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(options =>
+            {
+                options.UserInteraction.LoginUrl = "https://localhost:6001/Account/Login";
+            })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryClients(Config.GetClients())
                 .AddInMemoryApiResources(Config.GetApiResources())
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
-                {
-                    options.Clients.AddSPA("myspa", spa =>
-                    {
-                        spa.WithRedirectUri("");
-                        spa.WithLogoutRedirectUri("");
-                    });
-                });
+                .AddInMemoryIdentityResources(Config.GetIdentityResources())
+                //.AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
+                .AddAspNetIdentity<ApplicationUser>();
+
+            //{
+            //    options.Clients.AddSPA("myspa", spa =>
+            //    {
+            //        spa.
+            //        spa.WithRedirectUri("");
+            //        spa.WithLogoutRedirectUri("");
+            //    });
+            //});
+
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +59,18 @@ namespace Test.auth
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+            app.UseCors("AllowAll");
+            app.UseRouting();
+            
+            
             app.UseIdentityServer();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
