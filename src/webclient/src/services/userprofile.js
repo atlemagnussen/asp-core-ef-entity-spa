@@ -10,8 +10,9 @@ class UserProfile {
         const currentUser = await auth.getUser();
         if (currentUser) {
             console.log(currentUser);
+            userIsLoggedIn.set(true);
         } else {
-            auth.login();
+            console.log("not logged in");
         }
         userIsLoggedIn.subscribe(async value => {
             if (value) {
@@ -20,24 +21,6 @@ class UserProfile {
                 this.setLoggedOutUserProfile();
             }
         });
-        // auth.handleOAuthRedirects(async () => {
-        //     userIsLoggedIn.set(true);
-        //     this.setLoggedInUserProfile();
-        // });
-        // firebase.auth().onAuthStateChanged((user) => {
-        //     if (user) {
-        //         this.onuserIsLoggedIn(user);
-        //         if (!user.emailVerified) {
-        //             user.sendEmailVerification().then(() => {
-        //                 console.log("confirmation mail sent");
-        //             }).catch((err) => {
-        //                 console.error(err);
-        //             })
-        //         }
-        //     } else {
-        //         this.setLoggedOutUserProfile();
-        //     }
-        // });
     }
     onuserIsLoggedIn(loggedInUser) {
         console.log("onuserIsLoggedIn");
@@ -48,24 +31,23 @@ class UserProfile {
     }
     async setLoggedInUserProfile(user) {
         if (!user)
-            user = authentication.getUser();
+            user = await auth.getUser();
         
-        // if (!user)
-        //     return;
-        // var emailVerified = user.emailVerified;
-        // var photoURL = user.photoURL;
-        // var isAnonymous = user.isAnonymous;
-        // var providerData = user.providerData;
-        //const upServer = await this.get();
-        //const up = { id: upServer.id, docId: upServer._id, loggedIn: true, email: upServer.data.email, initials: this.getInitials(upServer.data.email) };
-        // const up = {
-        //     loggedIn: true,
-        //     id: user.uid,
-        //     email: user.email,
-        //     name: user.displayName,
-        //     initials: helper.getInitials(user.email)
-        // }
-        // userProfile.set(up);
+        if (!user)
+            return;
+        
+        const email = user.profile.name;
+        const up = {
+            loggedIn: true,
+            id_token: user.id_token,
+            access_token: user.access_token,
+            idp: user.profile.idp,
+            sid: user.profile.sid,
+            sub: user.profile.sub,
+            email,
+            initials: helper.getInitials(email)
+        }
+        userProfile.set(up);
     }
     setLoggedOutUserProfile() {
         userProfile.set({ loggedIn: false, name: "anon", initials: "U" });

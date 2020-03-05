@@ -4,6 +4,7 @@
     import PopDown from "./PopDown.svelte";
     import { userIsLoggedIn, userProfile } from "../store";
     import Link from "../components/Link.svelte";
+    import auth from "../services/authentication.js";
 
     onMount(() => {
         // if (auth.hasLoggedInUser()) {
@@ -12,7 +13,7 @@
     });
 
     const logOut = () => {
-        firebase.auth().signOut();
+        auth.logout();
         userIsLoggedIn.set(false);
         userProfile.set({ loggedIn: false, name: "Anon" });
     };

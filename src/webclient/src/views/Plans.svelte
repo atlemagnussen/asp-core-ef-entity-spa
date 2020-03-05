@@ -1,8 +1,7 @@
 <script>
-    import { onDestroy } from "svelte";
-    import Plan from "./Plan.svelte";
+    import { onDestroy, onMount } from "svelte";
     import Link from "../components/Link.svelte";
-    import service from "../services/planService.js";
+    import auth from "../services/authentication.js";
     import { userIsLoggedIn, plansStore } from "../store";
     export let param;
     let plans = [];
@@ -11,7 +10,14 @@
     const unsubscribe = plansStore.subscribe(value => {
         plans = value;
     });
-
+    onMount(async () => {
+        const currentUser = await auth.getUser();
+        if (currentUser) {
+            console.log(currentUser);
+        } else {
+            auth.login();
+        }
+    });
     onDestroy(unsubscribe);
     const addNew = async () => {
         await service.create(newPlanName);
@@ -21,7 +27,7 @@
 </script>
 {#if userIsLoggedIn}
     {#if param}
-            <Plan id="{param}"></Plan>
+        <p>{param}</p>
     {:else}
         <input type="text" placeholder="new task" bind:value="{newPlanName}" />
         <button on:click="{addNew}">Create</button>

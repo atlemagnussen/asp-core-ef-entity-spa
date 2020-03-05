@@ -30,7 +30,8 @@ namespace Test.auth
 
             services.AddIdentityServer(options =>
             {
-                options.UserInteraction.LoginUrl = "https://localhost:6001/Account/Login";
+                options.UserInteraction.LoginUrl = "/Account/Login";
+                options.UserInteraction.LogoutUrl = "/Account/Logout";
             })
                 .AddDeveloperSigningCredential()
                 .AddInMemoryClients(Config.GetClients())
