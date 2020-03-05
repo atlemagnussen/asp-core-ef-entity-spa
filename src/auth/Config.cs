@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using System.Collections.Generic;
 
 namespace Test.auth
@@ -55,6 +56,20 @@ namespace Test.auth
                         new Secret("secret".Sha256())
                     },
                     AllowedScopes = { "bankApi" }
+                },
+                new Client
+                {
+                    ClientId = "webclient",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    RequirePkce = false, //should be true
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                    AllowedScopes = 
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "bankApi"
+                    }
                 }
             };
         }

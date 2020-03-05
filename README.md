@@ -3,8 +3,19 @@ asp.net core, entity framework core, identityserver4, single page web app
 
 Try to make a simple implementation of: 
 - a standalone auth server using identityserver4, entityframework core and sql server
-- web api protected by the auth server
-- spa client that logs in
+- stand alone web api protected by the auth server
+- statically hosted spa client that logs in and consumes the web api resources
+- mobile app that logs in and consumes the web api resources
 
 
 https://localhost:6001/.well-known/openid-configuration
+
+# Notes
+
+## Grant types
+Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-code/) with [PKCE](https://oauth.net/2/pkce/) and [Refresh token](https://oauth.net/2/grant-types/refresh-token/)
+
+[IdentityServer4 grant types](http://docs.identityserver.io/en/latest/topics/grant_types.html)
+
+## Javascript client
+[Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)

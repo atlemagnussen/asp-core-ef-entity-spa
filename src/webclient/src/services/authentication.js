@@ -1,15 +1,44 @@
+import Oidc from "oidc-client";
+const rootPath = `${window.location.origin}/`;
+const oicdConfig = {
+    authority: "http://localhost:6000",
+    client_id: "js",
+    redirect_uri: `${rootPath}/callback.html`,
+    response_type: "code",
+    scope:"openid profile bankApi",
+    post_logout_redirect_uri : rootPath,
+};
+
 class Authentication {
+    
     constructor() {
-        this.root = `${window.location.origin}/`;
+        this.mgr = new Oidc.UserManager(oicdConfig);
     }
-    async loginAnonymous() {
-        const anonCred = new AnonymousCredential();
-        this.user = await client.auth.loginWithCredential(anonCred);
-        return this.user;
+    
+    async isLoggedIn() {
+        const user = await this.mgr.getUser();
+        if (user) {
+            log("User logged in", user.profile);
+            return true;
+        }
+        else {
+            log("User not logged in");
+            return false
+        }
     }
-    async loginGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        return firebase.auth().signInWithPopup(provider);
+    login() {
+        this.mgr.signinRedirect();
+    }
+    logout() {
+        this.mgr.signoutRedirect();
+    }
+    async getUser() {
+        const user = await this.mgr.getUser();
+        return user;
+    }
+    async getAccessToken() {
+        const user = await this.mgr.getUser();
+        return user.access_token;
     }
     async loginEmailPass(email, pass) {
         return firebase.auth().signInWithEmailAndPassword(email, pass);
