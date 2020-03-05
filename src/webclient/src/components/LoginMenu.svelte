@@ -11,7 +11,9 @@
         //     userIsLoggedIn.set(true);
         // }
     });
-
+    const logIn = () => {
+        auth.login();
+    };
     const logOut = () => {
         auth.logout();
         userIsLoggedIn.set(false);
@@ -46,7 +48,7 @@
             </div>
         </PopDown>
     {:else}
-        <Link page="{{ path: '/signin', name: 'Logg inn/Registrere' }}" />
+        <button on:click="{logIn}">Logg inn</button>
     {/if}
 
 </div>
