@@ -2,7 +2,7 @@ import Home from "./views/Home.svelte";
 import About from "./views/About.svelte";
 import SignIn from "./views/SignIn.svelte";
 import SignUp from "./views/SignUp.svelte";
-import Plans from "./views/Plans.svelte";
+import Customers from "./views/Customers.svelte";
 import Account from "./views/Account.svelte";
 
 export default [
@@ -27,9 +27,9 @@ export default [
         component: SignUp,
     },
     {
-        path: "plans",
-        name: "Plans",
-        component: Plans
+        path: "customers",
+        name: "Customers",
+        component: Customers
     },
     {
         path: "account",

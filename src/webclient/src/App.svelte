@@ -42,7 +42,7 @@
             <Link page="{{ path: '/', name: 'Home' }}">
                 <div class="logo">TRQ</div>
             </Link>
-            <Link page="{{ path: '/plans', name: 'Plans' }}" />
+            <Link page="{{ path: '/customers', name: 'Customers' }}" />
             <Link page="{{ path: '/about', name: 'About' }}" />
         </nav>
         <Login />
