@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,16 +18,21 @@ namespace Test.webapi.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly BankContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CustomersController(BankContext context)
+        public CustomersController(BankContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
+            var user = _httpContextAccessor.HttpContext.User;
+            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
             return await _context.Customers.ToListAsync();
         }
 

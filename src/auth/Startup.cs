@@ -1,3 +1,4 @@
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -5,8 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using System;
 using Test.auth.Data;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Test.auth.Models;
 
 namespace Test.auth
 {
@@ -40,14 +48,14 @@ namespace Test.auth
                 //.AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddAspNetIdentity<ApplicationUser>();
 
-            //{
-            //    options.Clients.AddSPA("myspa", spa =>
-            //    {
-            //        spa.
-            //        spa.WithRedirectUri("");
-            //        spa.WithLogoutRedirectUri("");
-            //    });
-            //});
+            services.AddAuthentication()
+                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+            {
+                options.Authority = options.Authority + "/v2.0/";
+                options.TokenValidationParameters.ValidateIssuer = true;
+                options.SignInScheme = IdentityConstants.ExternalScheme;
+            });
 
             services.AddControllersWithViews();
         }

@@ -1,4 +1,5 @@
-﻿using IdentityServer4;
+﻿using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
@@ -29,7 +30,7 @@ namespace Test.auth
         {
             return new List<ApiResource>
             {
-                new ApiResource("bankApi", "Customer Api for Bank")
+                new ApiResource("bankApi", "Customer Api for Bank", new[] { JwtClaimTypes.Email })
                 {
                     Scopes = { new Scope("api.read") }
                 }

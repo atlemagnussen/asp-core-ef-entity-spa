@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -108,6 +110,12 @@ namespace Test.auth.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
+
+                    //var claims = new List<Claim>
+                    //{
+                    //    new Claim("email", user.Email),
+                    //};
+                    //context.
 
                     if (context != null)
                     {
