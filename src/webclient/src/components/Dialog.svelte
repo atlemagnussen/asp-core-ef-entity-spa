@@ -5,7 +5,6 @@
         dialog.classList.toggle("open");
         if (dialog.open) dialog.close();
         else dialog.show();
-        //dialogEl.showModal();
     };
 </script>
 

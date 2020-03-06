@@ -51,22 +51,12 @@ namespace Test.auth
                     },
                     AllowedScopes = { "bankApi" }
                 },
-                //new Client
-                //{
-                //    ClientId = "ro.client",
-                //    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                //    ClientSecrets = new List<Secret>
-                //    {
-                //        new Secret("secret".Sha256())
-                //    },
-                //    AllowedScopes = { "bankApi" }
-                //},
                 new Client
                 {
                     ClientId = "webclient",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
-                    RequirePkce = false, //should be true
+                    RequirePkce = true,
                     RequireConsent = false,
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
 
