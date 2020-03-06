@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
@@ -15,7 +13,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Test.auth.Attributes;
-using Test.auth.Data;
 using Test.auth.Extentions;
 using Test.auth.Models;
 
@@ -48,32 +45,23 @@ namespace Test.auth.Controllers
             _events = events;
         }
 
-        /// <summary>
-        /// Entry point into the login workflow
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
-            // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
 
             if (vm.IsExternalLoginOnly)
             {
-                // we only have one option for logging in and it's an external provider
                 return RedirectToAction("Challenge", "External", new { provider = vm.ExternalLoginScheme, returnUrl });
             }
 
             return View(vm);
         }
 
-        /// <summary>
-        /// Handle postback from username/password login
-        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
-            // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
             // the user clicked the "cancel" button
@@ -98,7 +86,6 @@ namespace Test.auth.Controllers
                 }
                 else
                 {
-                    // since we don't have a valid context, then we just go back to the home page
                     return Redirect("~/");
                 }
             }
@@ -110,12 +97,6 @@ namespace Test.auth.Controllers
                 {
                     var user = await _userManager.FindByNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
-
-                    //var claims = new List<Claim>
-                    //{
-                    //    new Claim("email", user.Email),
-                    //};
-                    //context.
 
                     if (context != null)
                     {
@@ -150,25 +131,17 @@ namespace Test.auth.Controllers
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
-            // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
 
-
-        /// <summary>
-        /// Show logout page
-        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Logout(string logoutId)
         {
-            // build a model so the logout page knows what to display
             var vm = await BuildLogoutViewModelAsync(logoutId);
 
             if (vm.ShowLogoutPrompt == false)
             {
-                // if the request for logout was properly authenticated from IdentityServer, then
-                // we don't need to show the prompt and can just log the user out directly.
                 return await Logout(vm);
             }
 
