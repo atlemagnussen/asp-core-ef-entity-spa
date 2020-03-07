@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Test.auth.Models;
 using System.Reflection;
 using Test.auth.Extentions;
+using Test.auth.Services;
 
 namespace Test.auth
 {
@@ -26,6 +27,8 @@ namespace Test.auth
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ILoginService, LoginService>();
+
             services.AddIdentityServerConfig(Configuration);
 
             services.AddControllersWithViews();

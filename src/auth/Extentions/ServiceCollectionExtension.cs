@@ -8,6 +8,7 @@ using Test.auth.Data;
 using Test.auth.Models;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using System.Reflection;
+using System;
 
 namespace Test.auth.Extentions
 {
@@ -30,8 +31,17 @@ namespace Test.auth.Extentions
 
             services.AddIdentityServer(options =>
             {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
                 options.UserInteraction.LoginUrl = "/Account/Login";
                 options.UserInteraction.LogoutUrl = "/Account/Logout";
+                options.Authentication = new IdentityServer4.Configuration.AuthenticationOptions()
+                {
+                    CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
+                    CookieSlidingExpiration = true
+                };
             })
                 .AddDeveloperSigningCredential()
                 .AddOperationalStore(options =>
