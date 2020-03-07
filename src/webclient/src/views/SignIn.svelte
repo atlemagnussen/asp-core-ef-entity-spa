@@ -42,16 +42,16 @@
     <p>already logged in</p>
 {:else}
     <div>
-        <h1>Logg inn</h1>
+        <h1>Log in</h1>
         <p>
-            <button on:click="{loginGoogle}">Logg inn med Google</button>
+            <button on:click="{loginGoogle}">Log in with Google</button>
         </p>
         <form>
             <p>{msg}</p>
             <input bind:value="{email}" placeholder="Epost" />
             <input bind:value="{pass}" placeholder="Passord" />
-            <button on:click|preventDefault="{loginEmail}">Logg inn</button>
+            <button on:click|preventDefault="{loginEmail}">Log in</button>
         </form>
-        <Link page="{{ path: '/signup', name: 'Ny bruker?' }}" />
+        <Link page="{{ path: '/signup', name: 'New user?' }}" />
     </div>
 {/if}

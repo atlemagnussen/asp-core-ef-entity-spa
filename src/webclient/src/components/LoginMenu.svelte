@@ -48,7 +48,7 @@
             </div>
         </PopDown>
     {:else}
-        <button on:click="{logIn}">Logg inn</button>
+        <button on:click="{logIn}">Log in</button>
     {/if}
 
 </div>

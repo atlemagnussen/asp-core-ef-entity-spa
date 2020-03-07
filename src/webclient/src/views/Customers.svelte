@@ -27,6 +27,7 @@
 		}
 	}
 </script>
+<p>This page tries to fetch customers from the web api, you should get "Forbidden" if not logged in and a list of customers if you log in</p>
 {#await promise}
 	<p>...waiting</p>
 {:then customers}

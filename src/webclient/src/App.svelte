@@ -21,7 +21,7 @@
     .logo {
         display: inline-block;
         height: 2.5rem;
-        width: 2.5rem;
+        width: 4rem;
         line-height: 2.5rem;
         vertical-align: middle;
         text-align: center;
@@ -40,7 +40,7 @@
     <header>
         <nav>
             <Link page="{{ path: '/', name: 'Home' }}">
-                <div class="logo">TRQ</div>
+                <div class="logo">TestSPA</div>
             </Link>
             <Link page="{{ path: '/customers', name: 'Customers' }}" />
             <Link page="{{ path: '/about', name: 'About' }}" />
