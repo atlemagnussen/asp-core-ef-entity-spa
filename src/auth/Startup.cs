@@ -26,10 +26,7 @@ namespace Test.auth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("Default");
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
-            services.AddIdentityServerConfig(Configuration, migrationsAssembly);
+            services.AddIdentityServerConfig(Configuration);
 
             services.AddControllersWithViews();
         }

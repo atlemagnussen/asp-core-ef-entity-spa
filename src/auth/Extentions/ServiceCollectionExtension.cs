@@ -7,17 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Test.auth.Data;
 using Test.auth.Models;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using System.Reflection;
 
 namespace Test.auth.Extentions
 {
     public static class ServiceCollectionExtension
     {
-        public static void AddIdentityServerConfig(this IServiceCollection services, IConfiguration configuration, string migrationsAssembly)
+        public static void AddIdentityServerConfig(this IServiceCollection services, IConfiguration configuration)
         {
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = configuration.GetConnectionString("Default");
 
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(connectionString));
+               options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             //services.AddIdentity<ApplicationUser, IdentityRole>()
             //    .AddEntityFrameworkStores<ApplicationDbContext>()

@@ -22,7 +22,9 @@ Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-co
 
 ## Entity framework
 ```sh
+dotnet ef migrations add InitialApplicationDbContext -c ApplicationDbContext -o Data/Migrations/IdentityServer/ApplicationDb
 dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
 
+dotnet ef database update -c ApplicationDbContext
 dotnet ef database update -c PersistedGrantDbContext
 ```
