@@ -6,7 +6,7 @@ const oicdConfig = {
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
     scope:"openid profile bankApi",
-    post_logout_redirect_uri : rootPath,
+    post_logout_redirect_uri: `${rootPath}/index.html`
 };
 
 class Authentication {

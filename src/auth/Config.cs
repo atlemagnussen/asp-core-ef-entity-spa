@@ -54,13 +54,17 @@ namespace Test.auth
                 new Client
                 {
                     ClientId = "webclient",
+                    ClientName = "SPA web client",
+
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
                     RequirePkce = true,
                     RequireConsent = false,
-                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
 
-                    RedirectUris =           { "http://localhost:8080/callback.html" },
+                    RedirectUris =           {
+                        "http://localhost:8080/index.html",
+                        "http://localhost:8080/callback.html"
+                    },
                     PostLogoutRedirectUris = { "http://localhost:8080/index.html" },
                     AllowedCorsOrigins =     { "http://localhost:8080" },
 
