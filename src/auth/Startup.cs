@@ -27,7 +27,8 @@ namespace Test.auth
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<ILoginService, LoginService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<ILogoutService, LogoutService>();
 
             services.AddIdentityServerConfig(Configuration);
 
