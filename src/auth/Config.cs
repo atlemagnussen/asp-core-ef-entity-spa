@@ -61,11 +61,12 @@ namespace Test.auth
                     RequirePkce = true,
                     RequireConsent = false,
 
-                    RedirectUris =           {
+                    RedirectUris = {
+                        "http://localhost:8080",
                         "http://localhost:8080/index.html",
                         "http://localhost:8080/callback.html"
                     },
-                    PostLogoutRedirectUris = { "http://localhost:8080/index.html" },
+                    PostLogoutRedirectUris = { "http://localhost:8080", "http://localhost:8080/index.html" },
                     AllowedCorsOrigins =     { "http://localhost:8080" },
 
                     AllowedScopes = 

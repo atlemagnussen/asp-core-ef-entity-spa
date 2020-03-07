@@ -14,15 +14,38 @@
     "backchannel_logout_supported": true,
     "backchannel_logout_session_supported": true,
     "scopes_supported": [
+        "openid",
+        "email",
+        "profile",
         "bankApi",
+        "api.read",
         "offline_access"
     ],
-    "claims_supported": [],
+    "claims_supported": [
+        "sub",
+        "email",
+        "email_verified",
+        "name",
+        "family_name",
+        "given_name",
+        "middle_name",
+        "nickname",
+        "preferred_username",
+        "profile",
+        "picture",
+        "website",
+        "gender",
+        "birthdate",
+        "zoneinfo",
+        "locale",
+        "updated_at"
+    ],
     "grant_types_supported": [
         "authorization_code",
         "client_credentials",
         "refresh_token",
         "implicit",
+        "password",
         "urn:ietf:params:oauth:grant-type:device_code"
     ],
     "response_types_supported": [
