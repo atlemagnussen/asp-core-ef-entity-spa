@@ -9,7 +9,7 @@
         public bool AutomaticRedirectAfterSignOut { get; set; }
 
         public string LogoutId { get; set; }
-        public bool TriggerExternalSignout => ExternalAuthenticationScheme != null;
+        public bool TriggerExternalSignout => ExternalAuthenticationScheme != null && ExternalAuthenticationScheme != "AzureAD";
         public string ExternalAuthenticationScheme { get; set; }
     }
 }
