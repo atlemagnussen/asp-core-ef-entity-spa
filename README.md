@@ -28,3 +28,10 @@ dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c Persi
 dotnet ef database update -c ApplicationDbContext
 dotnet ef database update -c PersistedGrantDbContext
 ```
+
+
+## Auth server copy lib files to wwwroot
+```sh
+npm install
+npm run copy
+```

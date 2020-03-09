@@ -1,0 +1,45 @@
+{
+    "name": "test-auth",
+    "version": "1.0.0",
+    "description": "Test auth identity server",
+    "scripts": {
+        "copy": "copy-files-from-to"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/atlemagnussen/asp-core-ef-is4-spa.git"
+    },
+    "keywords": [
+        "asp.net",
+        "core",
+        "identityserver4"
+    ],
+    "author": "atlemagnussen",
+    "license": "MIT",
+    "homepage": "https://github.com/atlemagnussen/asp-core-ef-is4-spa#readme",
+    "devDependencies": {
+        "copy-files-from-to": "^2.3.0"
+    },
+    "copyFiles": [
+        {
+            "from": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css",
+            "to": "wwwroot/lib/bootstrap.min.css"
+        },
+        {
+            "from": "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js",
+            "to": "wwwroot/lib/jquery.min.js"
+        },
+        {
+            "from": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js",
+            "to": "wwwroot/lib/bootstrap.bundle.min.js"
+        },
+        {
+            "from": "https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js",
+            "to": "wwwroot/lib/jquery.validate.min.js"
+        },
+        {
+            "from": "https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js",
+            "to": "wwwroot/lib/jquery.validate.unobtrusive.min.js"
+        }
+    ]
+}
