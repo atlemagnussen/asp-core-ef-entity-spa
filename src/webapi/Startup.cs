@@ -46,6 +46,7 @@ namespace Test.webapi
                 o.Authority = "https://localhost:6001";
                 o.Audience = "bankApi";
                 o.RequireHttpsMetadata = true;
+                o.SaveToken = true;
             });
 
             services.AddDbContext<BankContext>(options =>

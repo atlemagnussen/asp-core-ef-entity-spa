@@ -60,6 +60,9 @@ namespace Test.auth
                     RequireClientSecret = false,
                     RequirePkce = true,
                     RequireConsent = false,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                    UpdateAccessTokenClaimsOnRefresh = true,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,
 
                     RedirectUris = {
                         "http://localhost:8080",
@@ -73,6 +76,7 @@ namespace Test.auth
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         "bankApi"
                     },
                     AllowOfflineAccess = true
