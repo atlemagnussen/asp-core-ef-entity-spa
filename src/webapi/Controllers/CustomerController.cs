@@ -28,12 +28,17 @@ namespace Test.webapi.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async IAsyncEnumerable<Customer> GetCustomers()
         {
             var user = _httpContextAccessor.HttpContext.User;
+            var userInfo = User.Identity;
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
-            return await _context.Customers.ToListAsync();
+            var customers = await _context.Customers.ToArrayAsync();
+            foreach(var customer in customers)
+            {
+                yield return customer;
+            }
         }
 
         // GET: api/Customers/5
