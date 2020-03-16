@@ -18,7 +18,7 @@ class Authentication {
         this.mgr.events.addAccessTokenExpired((m) => this.expired(m));
         this.mgr.events.addSilentRenewError((m) => this.renewError(m));
         this.mgr.events.addUserSignedOut((m) => this.signedOut(m));
-        this.mgr.events.addUserLoaded((m) => this.uoaded(m));
+        this.mgr.events.addUserLoaded((m) => this.loaded(m));
         this.mgr.events.addUserUnloaded((m) => this.unloaded(m));
         this.mgr.events.addUserSessionChanged((m) => this.sessionChanged(m));
     }
