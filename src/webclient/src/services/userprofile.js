@@ -21,7 +21,9 @@ class UserProfile {
                 this.setLoggedOutUserProfile();
             }
         });
+        auth.onUserLoaded((u) => this.onuserIsLoggedIn(u));
     }
+    
     onuserIsLoggedIn(loggedInUser) {
         console.log("onuserIsLoggedIn");
         if (loggedInUser) {

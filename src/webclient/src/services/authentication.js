@@ -26,9 +26,12 @@ class Authentication {
         console.log("sessionChanged");;
         console.log(msg);
     }
-    loaded(msg) {
+    onUserLoaded(fn) {
+        this.mgr.events.addUserLoaded((u) => fn(u));
+    }
+    loaded(user) {
         console.log("loaded");;
-        console.log(msg);
+        console.log(user);
     }
     unloaded(msg) {
         console.log("unloaded");;
