@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Test.auth.Data;
 
-namespace Test.auth.Data.Migrations.IdentityServer.ApplicationDb
+namespace Test.auth.Data.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200307090508_InitialApplicationDbContext")]
+    [Migration("20200321091827_InitialApplicationDbContext")]
     partial class InitialApplicationDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -174,6 +174,9 @@ namespace Test.auth.Data.Migrations.IdentityServer.ApplicationDb
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");

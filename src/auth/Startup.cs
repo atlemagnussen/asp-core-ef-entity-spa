@@ -29,6 +29,7 @@ namespace Test.auth
         {
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
+            services.AddScoped<IRegisterService, RegisterService>();
 
             services.AddIdentityServerConfig(Configuration);
 

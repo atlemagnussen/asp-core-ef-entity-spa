@@ -43,6 +43,7 @@ namespace Test.webapi.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Customer>> GetCustomer(long id)
         {
             var customer = await _context.Customers.FindAsync(id);

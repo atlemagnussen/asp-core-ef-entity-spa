@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Test.auth.Data.Migrations.IdentityServer.ApplicationDb
+namespace Test.auth.Data.Migrations.ApplicationDb
 {
     public partial class InitialApplicationDbContext : Migration
     {
@@ -40,6 +40,7 @@ namespace Test.auth.Data.Migrations.IdentityServer.ApplicationDb
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    FullName = table.Column<string>(nullable: true),
                     IsEnabled = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

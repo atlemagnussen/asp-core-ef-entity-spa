@@ -20,10 +20,10 @@ Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-co
 ## Javascript client
 [Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)
 
-## Entity framework
+## Entity framework and auth server db
 ```sh
-dotnet ef migrations add InitialApplicationDbContext -c ApplicationDbContext -o Data/Migrations/IdentityServer/ApplicationDb
-dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/IdentityServer/PersistedGrantDb
+dotnet ef migrations add InitialApplicationDbContext -c ApplicationDbContext -o Data/Migrations/ApplicationDb
+dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/PersistedGrantDb
 
 dotnet ef database update -c ApplicationDbContext
 dotnet ef database update -c PersistedGrantDbContext
