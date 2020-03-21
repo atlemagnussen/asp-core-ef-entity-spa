@@ -5,7 +5,7 @@ const oicdConfig = {
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
-    scope:"openid profile bankApi offline_access",
+    scope:"openid profile bankApi email offline_access",
     post_logout_redirect_uri: `${rootPath}`,
     automaticSilentRenew: true
 };
@@ -73,9 +73,9 @@ class Authentication {
     async getUser() {
         const user = await this.mgr.getUser();
         if (user && user.expired) {
-            const res = await this.mgr.startSilentRenew();
-            console.log(res);
+            console.log("user token is expired!");
         }
+        console.log(user);
         return user;
     }
     async getAccessToken() {

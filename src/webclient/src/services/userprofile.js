@@ -38,7 +38,8 @@ class UserProfile {
         if (!user)
             return;
         
-        const email = user.profile.name;
+        const email = user.profile.email;
+        const name = user.profile.name;
         const up = {
             loggedIn: true,
             id_token: user.id_token,
@@ -51,6 +52,7 @@ class UserProfile {
             idp: user.profile.idp,
             sid: user.profile.sid,
             sub: user.profile.sub,
+            name,
             email,
             initials: helper.getInitials(email)
         }
