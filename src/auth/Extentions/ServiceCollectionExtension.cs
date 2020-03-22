@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Test.auth.Data;
-using Test.auth.Models;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using System.Reflection;
 using System;
+using Test.model.Users;
+using Test.dataaccess.Data;
 
 namespace Test.auth.Extentions
 {
@@ -17,9 +17,9 @@ namespace Test.auth.Extentions
         public static void AddIdentityServerConfig(this IServiceCollection services, IConfiguration configuration)
         {
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            var connectionString = configuration.GetConnectionString("Default");
+            var connectionString = configuration.GetConnectionString("AuthDb");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<AuthDbContext>(options =>
                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
             //services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -28,7 +28,7 @@ namespace Test.auth.Extentions
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<AuthDbContext>();
 
             services.AddIdentityServer(options =>
             {

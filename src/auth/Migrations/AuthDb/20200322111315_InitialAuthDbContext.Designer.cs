@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Test.auth.Data;
+using Test.dataaccess.Data;
 
-namespace Test.auth.Data.Migrations.ApplicationDb
+namespace Test.auth.Migrations.AuthDb
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200321091827_InitialApplicationDbContext")]
-    partial class InitialApplicationDbContext
+    [DbContext(typeof(AuthDbContext))]
+    [Migration("20200322111315_InitialAuthDbContext")]
+    partial class InitialAuthDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,7 +156,7 @@ namespace Test.auth.Data.Migrations.ApplicationDb
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Test.auth.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Test.model.Users.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -238,7 +238,7 @@ namespace Test.auth.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Test.auth.Models.ApplicationUser", null)
+                    b.HasOne("Test.model.Users.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -247,7 +247,7 @@ namespace Test.auth.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Test.auth.Models.ApplicationUser", null)
+                    b.HasOne("Test.model.Users.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -262,7 +262,7 @@ namespace Test.auth.Data.Migrations.ApplicationDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Test.auth.Models.ApplicationUser", null)
+                    b.HasOne("Test.model.Users.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -271,7 +271,7 @@ namespace Test.auth.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Test.auth.Models.ApplicationUser", null)
+                    b.HasOne("Test.model.Users.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -1,16 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Test.auth.Data;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Test.auth.Models;
-using System.Reflection;
 using Test.auth.Extentions;
 using Test.auth.Services;
 

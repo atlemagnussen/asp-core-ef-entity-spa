@@ -17,17 +17,18 @@ Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-co
 
 [IdentityServer4 grant types](http://docs.identityserver.io/en/latest/topics/grant_types.html)
 
-## Javascript client
-[Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)
 
 ## Entity framework and auth server db
 ```sh
-dotnet ef migrations add InitialApplicationDbContext -c ApplicationDbContext -o Data/Migrations/ApplicationDb
-dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Data/Migrations/PersistedGrantDb
+dotnet ef migrations add InitialAuthDbContext -c AuthDbContext -o Migrations/AuthDb
+dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Migrations/PersistedGrantDb
 
-dotnet ef database update -c ApplicationDbContext
+dotnet ef database update -c AuthDbContext
 dotnet ef database update -c PersistedGrantDbContext
 ```
+
+## Javascript client
+[Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)
 
 
 ## Auth server copy lib files to wwwroot

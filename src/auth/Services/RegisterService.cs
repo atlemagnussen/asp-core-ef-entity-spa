@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using Test.auth.Models;
+using Test.model.Users;
 
 namespace Test.auth.Services
 {

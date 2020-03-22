@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Test.auth.Data.Migrations.ApplicationDb
+namespace Test.auth.Migrations.AuthDb
 {
-    public partial class InitialApplicationDbContext : Migration
+    public partial class InitialAuthDbContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

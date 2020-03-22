@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Test.dataaccess.Data;
+using Test.model.Users;
 using Test.webapi.Data;
 
 namespace Test.webapi
@@ -36,6 +39,12 @@ namespace Test.webapi
             //        options.RequireHttpsMetadata = true;
             //        options.ApiName = "bankApi";
             //    });
+            
+            services.AddDbContext<AuthDbContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("AuthDb")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AuthDbContext>();
 
             services.AddAuthentication(options =>
             {

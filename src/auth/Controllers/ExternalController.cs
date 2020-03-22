@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Test.auth.Attributes;
 using Test.auth.Extentions;
 using Test.auth.Models;
+using Test.model.Users;
 
 namespace Test.auth.Controllers
 {

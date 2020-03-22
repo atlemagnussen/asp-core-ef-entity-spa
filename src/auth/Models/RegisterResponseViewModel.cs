@@ -1,4 +1,4 @@
-﻿using Test.auth.Data;
+﻿using Test.model.Users;
 
 namespace Test.auth.Models
 {
