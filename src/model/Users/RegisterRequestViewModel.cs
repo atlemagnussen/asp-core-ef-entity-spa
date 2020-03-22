@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Test.auth.Models
+namespace Test.model.Users
 {
     public class RegisterRequestViewModel
     {

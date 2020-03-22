@@ -1,6 +1,6 @@
 ﻿using Test.model.Users;
 
-namespace Test.auth.Models
+namespace Test.model.Users
 {
     public class RegisterResponseViewModel
     {

@@ -43,6 +43,7 @@
                 <div class="logo">TestSPA</div>
             </Link>
             <Link page="{{ path: '/customers', name: 'Customers' }}" />
+            <Link page="{{ path: '/users', name: 'Users' }}" />
             <Link page="{{ path: '/about', name: 'About' }}" />
         </nav>
         <Login />

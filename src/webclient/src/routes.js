@@ -1,8 +1,9 @@
 import Home from "./views/Home.svelte";
 import About from "./views/About.svelte";
 import SignIn from "./views/SignIn.svelte";
-import SignUp from "./views/SignUp.svelte";
+import RegisterUser from "./views/RegisterUser.svelte";
 import Customers from "./views/Customers.svelte";
+import Users from "./views/Users.svelte";
 import Account from "./views/Account.svelte";
 
 export default [
@@ -22,14 +23,19 @@ export default [
         component: SignIn,
     },
     {
-        path: "signup",
-        name: "Reg",
-        component: SignUp,
+        path: "register-user",
+        name: "RegisterUser",
+        component: RegisterUser,
     },
     {
         path: "customers",
         name: "Customers",
         component: Customers
+    },
+    {
+        path: "users",
+        name: "Users",
+        component: Users
     },
     {
         path: "account",

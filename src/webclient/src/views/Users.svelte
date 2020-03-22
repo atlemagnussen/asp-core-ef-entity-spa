@@ -1,0 +1,24 @@
+<script>
+    import restService from "../services/restService.js";
+    import Link from "../components/Link.svelte";
+    let getAllUsers = async () => {
+        return await restService.getWithAuth("https://localhost:5001/api/user");
+    };
+    let promise = getAllUsers();
+</script>
+
+<h1>Users</h1>
+<Link page="{{ path: '/register-user', name: 'RegisterUser' }}" />
+{#await promise}
+	<p>...waiting</p>
+{:then users}
+    
+    <ul>
+	{#each users as user, i}
+        <li>{user.name} - {user.email}</li>
+    {/each}
+    </ul>
+
+{:catch error}
+	<p style="color: red">{error.message}</p>
+{/await}

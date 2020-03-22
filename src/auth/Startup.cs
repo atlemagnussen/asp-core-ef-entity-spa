@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Test.auth.Extentions;
 using Test.auth.Services;
+using Test.core.Services;
 
 namespace Test.auth
 {
