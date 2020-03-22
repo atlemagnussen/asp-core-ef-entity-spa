@@ -9,8 +9,10 @@
             console.log(res);
             reggedOk = true;
         } catch (ex) {
-            console.log(ex);
-            errorMsg = "Something boo";
+            if (ex.message) {
+                errorMsg = ex.message;
+            } else
+                errorMsg = "Something boo";
         }
     };
 </script>

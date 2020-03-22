@@ -12,13 +12,8 @@ class RestService {
         if (res.ok) {
             const json = await res.json();
 			return json;
-		} else {
-            if (res.status === 401) {
-                throw new Error("Forbidden");
-            }
-            var text = await res.text();
-			throw new Error(text);
-		}
+        }
+        await this.errorHandler(res);
     }
     async postWithAuth(url, data) {
         var up = userProfile.get();
@@ -33,13 +28,18 @@ class RestService {
         if (res.ok) {
             const json = await res.json();
 			return json;
-		} else {
-            if (res.status === 401) {
-                throw new Error("Forbidden");
-            }
-            var text = await res.text();
-			throw new Error(text);
-		}
+        }
+        return await this.errorHandler(res);
+    }
+    async errorHandler(res) {
+        if (res.status === 401) {
+            throw new Error("401 you need to authenticate");
+        }
+        if (res.status === 403) {
+            throw new Error("403 you are not authorized with the right role");
+        }
+        var text = await res.text();
+        throw new Error(text);
     }
 }
 
