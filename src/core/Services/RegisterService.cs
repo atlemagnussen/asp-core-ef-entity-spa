@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Test.model.Users;
 
@@ -12,6 +10,7 @@ namespace Test.core.Services
     public interface IRegisterService
     {
         Task<ApplicationUser> NewUser(RegisterRequestViewModel model);
+        Task<ApplicationUser> GiveAdminRole(string userId);
         Task EnsureRoles();
     }
 
@@ -36,11 +35,26 @@ namespace Test.core.Services
                 await _roleManager.CreateAsync(roleAdmin);
             }
 
-            var claims = await _roleManager.GetClaimsAsync(roleAdmin);
-            if (claims.Any(c => c.Value == "customers.read"))
-                return;
-            await _roleManager.AddClaimAsync(roleAdmin, new Claim("permission", "customers.read"));
+            //var claims = await _roleManager.GetClaimsAsync(roleAdmin);
+            //if (claims.Any(c => c.Value == "customers.read"))
+            //    return;
+            //await _roleManager.AddClaimAsync(roleAdmin, new Claim("permission", "customers.read"));
         }
+
+        public async Task<ApplicationUser> GiveAdminRole(string userId)
+        {
+            var user = await _userManager.FindByEmailAsync(userId);
+            if (user != null)
+            {
+                await EnsureRoles();
+
+                var userHasRole = await _userManager.IsInRoleAsync(user, SystemRoles.Admin);
+                if (!userHasRole)
+                    await _userManager.AddToRoleAsync(user, SystemRoles.Admin);
+            }
+            return user;
+        }
+
         public async Task<ApplicationUser> NewUser(RegisterRequestViewModel model)
         {
             var user = new ApplicationUser
@@ -59,20 +73,11 @@ namespace Test.core.Services
             {
                 if (result.Succeeded)
                 {
-                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("userName", user.UserName));
-                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("email", user.Email));
-                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("name", user.FullName));
+                    await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
+                    await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
+                    await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
                 }
-                if (userExists != null || result.Succeeded)
-                {
-                    await EnsureRoles();
-
-                    var userHasRole = await _userManager.IsInRoleAsync(user, SystemRoles.Admin);
-                    if (!userHasRole)
-                        await _userManager.AddToRoleAsync(user, SystemRoles.Admin);
-
-                    return user;
-                }
+                return user;
             }
             catch (Exception ex)
             {

@@ -21,6 +21,7 @@ using Test.webapi.Data;
 using Microsoft.IdentityModel.Tokens;
 using Test.webapi.Filter;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Test.webapi
 {
@@ -60,11 +61,11 @@ namespace Test.webapi
                 o.Audience = "bankApi";
                 o.RequireHttpsMetadata = true;
                 o.SaveToken = true;
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = "name",
-                    RoleClaimType = "role"
-                };
+                // o.TokenValidationParameters = new TokenValidationParameters
+                // {
+                //     NameClaimType = "name",
+                //     RoleClaimType = "role"
+                // };
             });
 
             services.AddDbContext<BankContext>(options =>
@@ -75,7 +76,13 @@ namespace Test.webapi
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("mypolicy", policy =>
-                    policy.Requirements.Add(new MyRequirement("admin"))
+                    policy.Requirements.Add(new MyRequirement(SystemRoles.Admin))
+                );
+                options.AddPolicy("RequiresAdmin", policy =>
+                    {
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireClaim(ClaimTypes.Role, SystemRoles.Admin);
+                    }
                 );
             });
             services.AddControllers();

@@ -21,7 +21,7 @@
     
     <ul>
 	{#each users as user, i}
-        <li>{user.name} - {user.email}</li>
+        <li>{user.name} - {user.email} {user.isAdmin ? "(admin)" : ""}</li>
     {/each}
     </ul>
 

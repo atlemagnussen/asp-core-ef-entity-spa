@@ -43,14 +43,15 @@ namespace Test.webapi.Controllers
             var users = await _authDbContext.Users.ToArrayAsync();
             foreach (var user in users)
             {
-                //var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity())
-                //var manUser = _userManager.GetUserAsync()
-                yield return new ListUserViewModel(user);
+                var manUser = await _userManager.FindByEmailAsync(user.Email);
+                var isAdmin = await _userManager.IsInRoleAsync(manUser, SystemRoles.Admin);
+                yield return new ListUserViewModel(user, isAdmin);
             }
         }
 
         [HttpPost]
         [Route("register")]
+        [Authorize("RequiresAdmin")]
         public async Task<IActionResult> Register([FromBody]RegisterRequestViewModel model)
         {
             if (!ModelState.IsValid)

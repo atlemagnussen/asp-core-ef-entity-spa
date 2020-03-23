@@ -30,7 +30,7 @@ namespace Test.auth.Services
             var isAdmin = await UserManager.IsInRoleAsync(user, SystemRoles.Admin);
 
             if (isAdmin)
-                context.IssuedClaims.Add(new Claim("role", SystemRoles.Admin));
+                context.IssuedClaims.Add(new Claim(ClaimTypes.Role, SystemRoles.Admin));
                 
 
             //.AddRange(claims);
