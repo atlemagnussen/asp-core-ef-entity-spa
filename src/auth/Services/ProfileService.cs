@@ -1,4 +1,5 @@
-﻿using IdentityServer4.AspNetIdentity;
+﻿using IdentityModel;
+using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -30,7 +31,7 @@ namespace Test.auth.Services
             var isAdmin = await UserManager.IsInRoleAsync(user, SystemRoles.Admin);
 
             if (isAdmin)
-                context.IssuedClaims.Add(new Claim(ClaimTypes.Role, SystemRoles.Admin));
+                context.IssuedClaims.Add(new Claim(JwtClaimTypes.Role, SystemRoles.Admin));
                 
 
             //.AddRange(claims);
