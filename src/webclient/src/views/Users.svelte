@@ -8,7 +8,7 @@
 </script>
 
 <h1>Users</h1>
-<Link page="{{ path: '/register-user', name: 'RegisterUser' }}" />
+<Link page="{{ path: '/register-user', name: 'Register User' }}" />
 {#await promise}
 	<p>...waiting</p>
 {:then users}

@@ -1,12 +1,12 @@
 <script>
     import restService from "../services/restService.js";
     import Link from "../components/Link.svelte";
-    let email, password, name;
+    let firstName, lastName;
     let errorMsg = "";
     let reggedOk = false;
-    let callRegisterUser = async () => {
+    let callRegisterCustomer = async () => {
         try {
-            const res = await restService.postWithAuth("https://localhost:5001/api/user/register", {name, email, password});
+            const res = await restService.postWithAuth("https://localhost:5001/api/customers", {firstName, lastName});
             console.log(res);
             reggedOk = true;
         } catch (ex) {
@@ -28,14 +28,14 @@
 
 {#if reggedOk}
 
-    <p>User {name} ({email}) registered!</p>
-    <Link page="{{ path: '/users', name: 'Users' }}" />
+    <p>Customer {firstName} {lastName} registered!</p>
+
+    <Link page="{{ path: '/customers', name: 'Customers' }}" />
 {:else}
     <form>
-        <input bind:value="{name}" placeholder="Name" />
-        <input bind:value="{email}" placeholder="Epost" />
-        <input bind:value="{password}" placeholder="Passord" />
-        <button on:click|preventDefault="{callRegisterUser}">Registrer</button>
+        <input bind:value="{firstName}" placeholder="First name" />
+        <input bind:value="{lastName}" placeholder="Last name" />
+        <button on:click|preventDefault="{callRegisterCustomer}">Register</button>
     </form>
 {/if}
 

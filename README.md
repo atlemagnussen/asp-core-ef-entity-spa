@@ -27,6 +27,13 @@ dotnet ef database update -c AuthDbContext
 dotnet ef database update -c PersistedGrantDbContext
 ```
 
+## EF webapi
+```sh
+dotnet ef migrations add InitialBankContext -c BankContext -o Migrations/BankDb
+
+dotnet ef database update -c BankContext
+```
+
 ## Javascript client
 [Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)
 
