@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Test.model.Users;
@@ -28,12 +29,17 @@ namespace Test.core.Services
 
         public async Task EnsureRoles()
         {
-            var roleAdminExists = await _roleManager.FindByNameAsync(SystemRoles.Admin);
-            if (roleAdminExists == null)
+            var roleAdmin = await _roleManager.FindByNameAsync(SystemRoles.Admin);
+            if (roleAdmin == null)
             {
-                var adminRole = new IdentityRole(SystemRoles.Admin);
-                await _roleManager.CreateAsync(adminRole);
+                roleAdmin = new IdentityRole(SystemRoles.Admin);
+                await _roleManager.CreateAsync(roleAdmin);
             }
+
+            var claims = await _roleManager.GetClaimsAsync(roleAdmin);
+            if (claims.Any(c => c.Value == "customers.read"))
+                return;
+            await _roleManager.AddClaimAsync(roleAdmin, new Claim("permission", "customers.read"));
         }
         public async Task<ApplicationUser> NewUser(RegisterRequestViewModel model)
         {

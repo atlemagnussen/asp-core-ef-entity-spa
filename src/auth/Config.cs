@@ -2,6 +2,7 @@
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Test.auth
 {
@@ -32,7 +33,7 @@ namespace Test.auth
             {
                 new ApiResource("bankApi", "Customer Api for Bank", new[] { JwtClaimTypes.Email })
                 {
-                    Scopes = { new Scope("api.read") }
+                    Scopes = { new Scope("api.read"), new Scope("api.write") }
                 }
             };
         }
@@ -78,7 +79,9 @@ namespace Test.auth
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "bankApi"
+                        "roles",
+                        "api.read",
+                        "api.write"
                     },
                     AllowOfflineAccess = true
                 }
@@ -91,7 +94,17 @@ namespace Test.auth
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Email(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource
+                {
+                    Name = "roles",
+                    DisplayName = "Roles",
+                    Description = "Allow the service access to your user roles.",
+                    UserClaims = new[] { JwtClaimTypes.Role, ClaimTypes.Role },
+                    ShowInDiscoveryDocument = true,
+                    Required = true,
+                    Emphasize = true
+                }
             };
         }
     }

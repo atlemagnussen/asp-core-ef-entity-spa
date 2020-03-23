@@ -1,12 +1,17 @@
 import { userProfile } from "../store";
 
 class RestService {
+    constructor() {
+        this.upData = {};
+        userProfile.subscribe(val => {
+            this.upData = val;
+        });
+    }
     async getWithAuth(url) {
-        var up = userProfile.get();
         const res = await fetch(url, {
             method: "GET",
             headers: {
-                'Authorization': 'Bearer ' + up.access_token
+                'Authorization': 'Bearer ' + this.upData.access_token
             }
         });
         if (res.ok) {
@@ -16,12 +21,11 @@ class RestService {
         await this.errorHandler(res);
     }
     async postWithAuth(url, data) {
-        var up = userProfile.get();
         const res = await fetch(url, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + up.access_token
+                'Authorization': 'Bearer ' + this.upData.access_token
             },
             body: JSON.stringify(data)
         });

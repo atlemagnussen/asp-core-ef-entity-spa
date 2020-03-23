@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Test.model.Users;
 using Test.webapi.Data;
 
 namespace Test.webapi.Controllers
@@ -31,6 +32,7 @@ namespace Test.webapi.Controllers
         public async IAsyncEnumerable<Customer> GetCustomers()
         {
             var user = _httpContextAccessor.HttpContext.User;
+            var isAdmin = user.IsInRole(SystemRoles.Admin);
             var userInfo = User.Identity;
             var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
@@ -43,7 +45,7 @@ namespace Test.webapi.Controllers
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "mypolicy")]
         public async Task<ActionResult<Customer>> GetCustomer(long id)
         {
             var customer = await _context.Customers.FindAsync(id);

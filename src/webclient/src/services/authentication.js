@@ -5,7 +5,7 @@ const oicdConfig = {
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
-    scope:"openid profile bankApi email offline_access",
+    scope:"openid profile roles api.read api.write email offline_access",
     post_logout_redirect_uri: `${rootPath}`,
     automaticSilentRenew: true
 };

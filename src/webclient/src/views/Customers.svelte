@@ -8,7 +8,7 @@
 
 	let getCustomers = async () => {
         return await restService.getWithAuth("https://localhost:5001/api/customers");
-    }
+    };
     let promise = getCustomers();
 
     let detail = null;
@@ -21,7 +21,7 @@
             } else
                 detail = {"reason": "probably no rights"}
         }
-    }
+    };
 </script>
 <p>This page tries to fetch customers from the web api, you should get "Forbidden" if not logged in and a list of customers if you log in</p>
 

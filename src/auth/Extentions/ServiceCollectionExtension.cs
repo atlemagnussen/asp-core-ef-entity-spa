@@ -9,6 +9,8 @@ using System.Reflection;
 using System;
 using Test.model.Users;
 using Test.dataaccess.Data;
+using IdentityServer4.Services;
+using Test.auth.Services;
 
 namespace Test.auth.Extentions
 {
@@ -30,7 +32,7 @@ namespace Test.auth.Extentions
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>();
 
-            services.AddIdentityServer(options =>
+            var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
@@ -43,17 +45,19 @@ namespace Test.auth.Extentions
                     CookieLifetime = TimeSpan.FromHours(10), // ID server cookie timeout set to 10 hours
                     CookieSlidingExpiration = true
                 };
-            })
-                .AddDeveloperSigningCredential()
-                .AddOperationalStore(options =>
+            });
+            builder.AddDeveloperSigningCredential();
+
+            builder.AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     options.EnableTokenCleanup = true;
-                })
-                .AddInMemoryClients(Config.GetClients())
-                .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddAspNetIdentity<ApplicationUser>();
+                });
+            builder.AddInMemoryClients(Config.GetClients());
+            builder.AddInMemoryApiResources(Config.GetApiResources());
+            builder.AddInMemoryIdentityResources(Config.GetIdentityResources());
+            builder.AddAspNetIdentity<ApplicationUser>();
+            builder.AddProfileService<TestProfileService>();
 
             services.AddAuthentication()
                 .AddAzureAD(options => configuration.Bind("AzureAd", options));
@@ -63,6 +67,8 @@ namespace Test.auth.Extentions
                 options.TokenValidationParameters.ValidateIssuer = true;
                 options.SignInScheme = IdentityConstants.ExternalScheme;
             });
+
+            //services.AddScoped<IProfileService, TestProfileService>();
         }
     }
 }

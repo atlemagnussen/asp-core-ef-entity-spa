@@ -18,6 +18,9 @@ using Test.core.Services;
 using Test.dataaccess.Data;
 using Test.model.Users;
 using Test.webapi.Data;
+using Microsoft.IdentityModel.Tokens;
+using Test.webapi.Filter;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Test.webapi
 {
@@ -57,6 +60,11 @@ namespace Test.webapi
                 o.Audience = "bankApi";
                 o.RequireHttpsMetadata = true;
                 o.SaveToken = true;
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "name",
+                    RoleClaimType = "role"
+                };
             });
 
             services.AddDbContext<BankContext>(options =>
@@ -64,8 +72,15 @@ namespace Test.webapi
                 options.UseSqlServer(Configuration.GetConnectionString("BankDatabase"));
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("mypolicy", policy =>
+                    policy.Requirements.Add(new MyRequirement("admin"))
+                );
+            });
             services.AddControllers();
 
+            services.AddSingleton<IAuthorizationHandler, MyHandler>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRegisterService, RegisterService>();
         }

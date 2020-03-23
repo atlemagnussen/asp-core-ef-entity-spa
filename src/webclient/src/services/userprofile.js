@@ -40,6 +40,7 @@ class UserProfile {
         
         const email = user.profile.email;
         const name = user.profile.name;
+        const role = user.profile.role;
         const up = {
             loggedIn: true,
             id_token: user.id_token,
@@ -54,6 +55,7 @@ class UserProfile {
             sub: user.profile.sub,
             name,
             email,
+            role,
             initials: helper.getInitials(email)
         }
         userProfile.set(up);

@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.core.Services;
 using Test.dataaccess.Data;
@@ -19,17 +22,18 @@ namespace Test.webapi.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IRegisterService _registerService;
-        //private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly AuthDbContext _authDbContext;
 
         public UserController(ILogger<UserController> logger,
             IRegisterService registerService,
+            UserManager<ApplicationUser> userManager,
             AuthDbContext authDbContext)
         {
             _logger = logger;
             _registerService = registerService;
             _authDbContext = authDbContext;
-            //_userManager = userManager;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -39,6 +43,8 @@ namespace Test.webapi.Controllers
             var users = await _authDbContext.Users.ToArrayAsync();
             foreach (var user in users)
             {
+                //var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity())
+                //var manUser = _userManager.GetUserAsync()
                 yield return new ListUserViewModel(user);
             }
         }
@@ -65,6 +71,23 @@ namespace Test.webapi.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+
+        [HttpGet]
+        [Route("ensureroles")]
+        public async Task<IActionResult> EnsureRoles()
+        {
+            await _registerService.EnsureRoles();
+            return Ok("ok");
+        }
+
+        [HttpGet]
+        [Route("currentuserclaims")]
+        public IActionResult CurrentUserClaims()
+        {
+            var claims = User.Claims.Select(claim => new { claim.Type, claim.Value }).ToArray();
+            return Ok(claims);
         }
     }
 }
