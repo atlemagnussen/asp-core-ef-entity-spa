@@ -2,6 +2,7 @@
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.model.Users;
@@ -24,12 +25,11 @@ namespace Test.auth.Services
 
             //var claims = new List<Claim>
             //{
-            //    new Claim("email", user.Email),
+            //    new Claim(JwtRegisteredClaimNames.Email, user.Email),
             //    new Claim("name", user.FullName)
             //};
 
             var isAdmin = await UserManager.IsInRoleAsync(user, SystemRoles.Admin);
-
             if (isAdmin)
                 context.IssuedClaims.Add(new Claim(JwtClaimTypes.Role, SystemRoles.Admin));
                 

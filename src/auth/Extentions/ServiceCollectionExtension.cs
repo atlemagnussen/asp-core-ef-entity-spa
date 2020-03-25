@@ -9,7 +9,6 @@ using System.Reflection;
 using System;
 using Test.model.Users;
 using Test.dataaccess.Data;
-using IdentityServer4.Services;
 using Test.auth.Services;
 
 namespace Test.auth.Extentions

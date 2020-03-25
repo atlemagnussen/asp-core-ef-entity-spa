@@ -82,8 +82,5 @@ class Authentication {
         const user = await this.mgr.getUser();
         return user.access_token;
     }
-    hasLoggedInUser() {
-        return client.auth.isLoggedIn;
-    }
 }
 export default new Authentication();
