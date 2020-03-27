@@ -1,27 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Test.core.Services;
 using Test.dataaccess.Data;
 using Test.model.Users;
 using Test.webapi.Data;
-using Microsoft.IdentityModel.Tokens;
 using Test.webapi.Filter;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Test.webapi
 {
@@ -37,6 +30,9 @@ namespace Test.webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // so our claims will not be translated
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
             //services.AddAuthentication("Bearer")
             //    .AddIdentityServerAuthentication(options =>
             //    {
@@ -44,7 +40,7 @@ namespace Test.webapi
             //        options.RequireHttpsMetadata = true;
             //        options.ApiName = "bankApi";
             //    });
-            
+
             services.AddDbContext<AuthDbContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("AuthDb")));
 
@@ -61,11 +57,6 @@ namespace Test.webapi
                 o.Audience = "bankApi";
                 o.RequireHttpsMetadata = true;
                 o.SaveToken = true;
-                // o.TokenValidationParameters = new TokenValidationParameters
-                // {
-                //     NameClaimType = "name",
-                //     RoleClaimType = "role"
-                // };
             });
 
             services.AddDbContext<BankContext>(options =>

@@ -38,9 +38,6 @@ class UserProfile {
         if (!user)
             return;
         
-        const email = user.profile.email;
-        const name = user.profile.name;
-        const role = user.profile.role;
         const up = {
             loggedIn: true,
             id_token: user.id_token,
@@ -50,14 +47,13 @@ class UserProfile {
             token_type: user.token_type,
             expires_at: user.expires_at,
             scope: user.scope,
-            idp: user.profile.idp,
-            sid: user.profile.sid,
-            sub: user.profile.sub,
-            name,
-            email,
-            role,
-            initials: helper.getInitials(email)
+            initials: "AA"
         }
+        const profileKeys = Object.keys(user.profile);
+        profileKeys.forEach((key, index) => {
+            up[key] = user.profile[key];
+        });
+        
         userProfile.set(up);
     }
     setLoggedOutUserProfile() {
