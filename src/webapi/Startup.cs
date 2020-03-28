@@ -15,6 +15,7 @@ using Test.webapi.Filter;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Logging;
 
 namespace Test.webapi
 {
@@ -32,6 +33,7 @@ namespace Test.webapi
         {
             // so our claims will not be translated
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            IdentityModelEventSource.ShowPII = true;
 
             //services.AddAuthentication("Bearer")
             //    .AddIdentityServerAuthentication(options =>
@@ -55,7 +57,7 @@ namespace Test.webapi
             {
                 o.Authority = "https://localhost:6001";
                 o.Audience = "bankApi";
-                o.RequireHttpsMetadata = true;
+                o.RequireHttpsMetadata = false;
                 o.SaveToken = true;
             });
 
