@@ -19,7 +19,7 @@ namespace Test.auth.Controllers
 {
     [SecurityHeaders]
     [AllowAnonymous]
-    public class AccountController : Controller
+    public class LoginController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -27,16 +27,14 @@ namespace Test.auth.Controllers
         private readonly IClientStore _clientStore;
         private readonly IEventService _events;
         private readonly ILoginService _loginService;
-        private readonly ILogoutService _logoutService;
 
-        public AccountController(
+        public LoginController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
-            ILoginService loginService,
-            ILogoutService logoutService)
+            ILoginService loginService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,11 +42,10 @@ namespace Test.auth.Controllers
             _clientStore = clientStore;
             _events = events;
             _loginService = loginService;
-            _logoutService = logoutService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl)
+        public async Task<IActionResult> Index(string returnUrl)
         {
             var vm = await _loginService.BuildLoginViewModelAsync(returnUrl);
 
@@ -62,7 +59,7 @@ namespace Test.auth.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginInputModel model, string button)
+        public async Task<IActionResult> Index(LoginInputModel model, string button)
         {
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
@@ -135,53 +132,6 @@ namespace Test.auth.Controllers
 
             var vm = await _loginService.BuildLoginViewModelAsync(model);
             return View(vm);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Logout(string logoutId)
-        {
-            var vm = await _logoutService.BuildLogoutViewModelAsync(logoutId, User);
-
-            if (vm.ShowLogoutPrompt == false)
-            {
-                return await Logout(vm);
-            }
-
-            return View(vm);
-        }
-
-        /// <summary>
-        /// Handle logout page postback
-        /// </summary>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(LogoutInputModel model)
-        {
-            // build a model so the logged out page knows what to display
-            var vm = await _logoutService.BuildLoggedOutViewModelAsync(model.LogoutId, User, HttpContext);
-
-            if (User?.Identity.IsAuthenticated == true)
-            {
-                // delete local authentication cookie
-                await _signInManager.SignOutAsync();
-
-                // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
-            }
-
-            // check if we need to trigger sign-out at an upstream identity provider
-            if (vm.TriggerExternalSignout)
-            {
-                // build a return URL so the upstream provider will redirect back
-                // to us after the user has logged out. this allows us to then
-                // complete our single sign-out processing.
-                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
-
-                // this triggers a redirect to the external provider for sign-out
-                return SignOut(new AuthenticationProperties { RedirectUri = url }, vm.ExternalAuthenticationScheme);
-            }
-
-            return View("LoggedOut", vm);
         }
 
         [HttpGet]
