@@ -20,9 +20,14 @@ Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-co
 
 ## Entity framework and auth server db
 ```sh
+# install cli tool
+dotnet tool install --global dotnet-ef
+
+# create initial migration
 dotnet ef migrations add InitialAuthDbContext -c AuthDbContext -o Migrations/AuthDb
 dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Migrations/PersistedGrantDb
 
+# update
 dotnet ef database update -c AuthDbContext
 dotnet ef database update -c PersistedGrantDbContext
 ```
