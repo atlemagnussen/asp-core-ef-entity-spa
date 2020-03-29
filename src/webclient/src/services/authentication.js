@@ -1,7 +1,8 @@
 import Oidc from "oidc-client";
 const rootPath = `${window.location.origin}`;
+// config
 const oicdConfig = {
-    authority: "https://asp-core-auth-server.azurewebsites.net",
+    authority: "https://localhost:6001",
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
@@ -9,7 +10,8 @@ const oicdConfig = {
     post_logout_redirect_uri: `${rootPath}`,
     automaticSilentRenew: true
 };
-
+if (!rootPath.includes("localhost"))
+    oicdConfig.authority = "https://asp-core-auth-server.azurewebsites.net";
 class Authentication {
     
     constructor() {

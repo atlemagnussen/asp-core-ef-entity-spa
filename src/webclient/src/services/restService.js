@@ -1,4 +1,7 @@
 import { userProfile } from "../store";
+const baseUrl = "https://localhost:5001/api/"
+if (!window.location.origin.includes("localhost"))
+    baseUrl = "https://asp-core-webapi.azurewebsites.net/api/"
 
 class RestService {
     constructor() {
@@ -8,7 +11,8 @@ class RestService {
         });
     }
     async getWithAuth(url) {
-        const res = await fetch(url, {
+        const fullUrl = this.getFullUrl(url);
+        const res = await fetch(fullUrl, {
             method: "GET",
             headers: {
                 'Authorization': 'Bearer ' + this.upData.access_token
@@ -21,7 +25,8 @@ class RestService {
         await this.errorHandler(res);
     }
     async postWithAuth(url, data) {
-        const res = await fetch(url, {
+        const fullUrl = this.getFullUrl(url);
+        const res = await fetch(fullUrl, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -44,6 +49,9 @@ class RestService {
         }
         var text = await res.text();
         throw new Error(text);
+    }
+    getFullUrl(url) {
+        return `${baseUrl}${url}`;
     }
 }
 

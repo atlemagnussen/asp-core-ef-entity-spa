@@ -2,12 +2,12 @@
     import restService from "../services/restService.js";
     import Link from "../components/Link.svelte";
     let getAllUsers = async () => {
-        return await restService.getWithAuth("https://localhost:5001/api/user");
+        return await restService.getWithAuth("user");
     };
     let promise = getAllUsers();
 
     let ensureRoles = async () => {
-        const res = await restService.getWithAuth("https://localhost:5001/api/user/ensureroles");
+        const res = await restService.getWithAuth("user/ensureroles");
         console.log(res);
     }
 </script>

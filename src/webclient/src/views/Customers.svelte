@@ -7,14 +7,14 @@
     let newPlanName;
 
 	let getCustomers = async () => {
-        return await restService.getWithAuth("https://localhost:5001/api/customers");
+        return await restService.getWithAuth("customers");
     };
     let promise = getCustomers();
 
     let detail = null;
     let getCustomerDetail = async (id) => {
         try {
-            detail = await restService.getWithAuth(`https://localhost:5001/api/customers/${id}`);
+            detail = await restService.getWithAuth(`customers/${id}`);
         } catch (ex) {
             if (ex.message) {
                 detail = { exception: ex.message};

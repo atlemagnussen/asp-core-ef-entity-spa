@@ -6,7 +6,7 @@
     let claims = [];
 
     let getCurrentClaims = async () => {
-        claims = await restService.getWithAuth("https://localhost:5001/api/user/currentuserclaims");
+        claims = await restService.getWithAuth("user/currentuserclaims");
     };
 
 </script>

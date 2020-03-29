@@ -32,7 +32,7 @@ namespace Test.consoleapp
 
         private static async Task ListAll(HttpClient client)
         {
-            var customersResponse = await client.GetAsync("https://localhost:5001/api/customers");
+            var customersResponse = await client.GetAsync("customers");
 
             if (!customersResponse.IsSuccessStatusCode)
             {

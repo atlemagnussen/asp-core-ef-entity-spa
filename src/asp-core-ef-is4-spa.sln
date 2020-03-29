@@ -3,19 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{73BD32BA-A675-471B-8D9A-E10A8D6EC1FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auth", "auth\auth.csproj", "{8971B646-95F4-4AD8-AFBB-5E5B59503A4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auth", "src\auth\auth.csproj", "{8971B646-95F4-4AD8-AFBB-5E5B59503A4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "consoleapp", "consoleapp\consoleapp.csproj", "{175B6868-81EA-4060-BDB3-F5EBD091DBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "consoleapp", "src\consoleapp\consoleapp.csproj", "{175B6868-81EA-4060-BDB3-F5EBD091DBCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{CCE4B232-9BD3-4FEC-AA67-5215C8501E6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "src\core\core.csproj", "{CCE4B232-9BD3-4FEC-AA67-5215C8501E6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataaccess", "dataaccess\dataaccess.csproj", "{99ACCE78-8D5E-44F9-B137-4615A2981133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataaccess", "src\dataaccess\dataaccess.csproj", "{99ACCE78-8D5E-44F9-B137-4615A2981133}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "model", "model\model.csproj", "{F7CC7A41-2E74-413A-B393-BC8501FE4610}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "model", "src\model\model.csproj", "{F7CC7A41-2E74-413A-B393-BC8501FE4610}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapi", "src\webapi\webapi.csproj", "{BA5D17F0-4223-46C4-AC7C-82659527E285}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapi", "webapi\webapi.csproj", "{BA5D17F0-4223-46C4-AC7C-82659527E285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

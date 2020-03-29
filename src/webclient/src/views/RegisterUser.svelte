@@ -6,7 +6,7 @@
     let reggedOk = false;
     let callRegisterUser = async () => {
         try {
-            const res = await restService.postWithAuth("https://localhost:5001/api/user/register", {name, email, password});
+            const res = await restService.postWithAuth("user/register", {name, email, password});
             console.log(res);
             reggedOk = true;
         } catch (ex) {
