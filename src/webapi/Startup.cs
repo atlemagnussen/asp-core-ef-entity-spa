@@ -55,9 +55,9 @@ namespace Test.webapi
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(o =>
             {
-                o.Authority = "https://localhost:6001";
+                o.Authority = Configuration.GetValue<string>("AuthServerUrl");
                 o.Audience = "bankApi";
-                o.RequireHttpsMetadata = false;
+                o.RequireHttpsMetadata = true;
                 o.SaveToken = true;
             });
 

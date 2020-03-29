@@ -52,7 +52,7 @@ namespace Test.auth.Extentions
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     options.EnableTokenCleanup = true;
                 });
-            builder.AddInMemoryClients(Config.GetClients());
+            builder.AddInMemoryClients(Config.GetClients(configuration.GetValue<string>("AllowedClientUrl")));
             builder.AddInMemoryApiResources(Config.GetApiResources());
             builder.AddInMemoryIdentityResources(Config.GetIdentityResources());
             builder.AddAspNetIdentity<ApplicationUser>();

@@ -38,7 +38,7 @@ namespace Test.auth
             };
         }
 
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> GetClients(string allowedClientUrl)
         {
             return new List<Client>
             {
@@ -67,11 +67,12 @@ namespace Test.auth
 
                     RedirectUris = {
                         "http://localhost:8080",
-                        "http://localhost:8080/index.html",
-                        "http://localhost:8080/callback.html"
+                        "http://localhost:8080/callback.html",
+                        allowedClientUrl,
+                        $"{allowedClientUrl}/callback.html"
                     },
-                    PostLogoutRedirectUris = { "http://localhost:8080", "http://localhost:8080/index.html" },
-                    AllowedCorsOrigins =     { "http://localhost:8080" },
+                    PostLogoutRedirectUris = { "http://localhost:8080", allowedClientUrl },
+                    AllowedCorsOrigins =     { "http://localhost:8080", allowedClientUrl },
 
                     AllowedScopes = 
                     {
