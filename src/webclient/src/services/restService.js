@@ -1,5 +1,5 @@
 import { userProfile } from "../store";
-const baseUrl = "https://localhost:5001/api/"
+let baseUrl = "https://localhost:5001/api/"
 if (!window.location.origin.includes("localhost"))
     baseUrl = "https://asp-core-webapi.azurewebsites.net/api/"
 

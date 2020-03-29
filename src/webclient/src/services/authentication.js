@@ -1,7 +1,7 @@
 import Oidc from "oidc-client";
 const rootPath = `${window.location.origin}`;
 // config
-const oicdConfig = {
+let oicdConfig = {
     authority: "https://localhost:6001",
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
