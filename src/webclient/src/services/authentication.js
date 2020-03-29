@@ -1,7 +1,7 @@
 import Oidc from "oidc-client";
 const rootPath = `${window.location.origin}`;
 const oicdConfig = {
-    authority: "https://localhost:6001",
+    authority: "https://asp-core-auth-server.azurewebsites.net",
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
