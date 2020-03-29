@@ -1,13 +1,13 @@
 #!/bin/env bash
 dotnet publish -c release -o publish
 cd publish
-zip -r auth.zip *
+zip -r webapi.zip *
 
 # requires az login
 az webapp deployment source config-zip \
---src auth.zip \
+--src webapi.zip \
 --resource-group dotnet-core \
---name asp-core-auth-server
+--name asp-core-webapi
 
 # cleanup
 cd ..
