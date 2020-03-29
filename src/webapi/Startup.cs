@@ -13,9 +13,9 @@ using Test.model.Users;
 using Test.webapi.Data;
 using Test.webapi.Filter;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Logging;
+using IdentityModel;
 
 namespace Test.webapi
 {
@@ -74,7 +74,7 @@ namespace Test.webapi
                 options.AddPolicy("RequiresAdmin", policy =>
                     {
                         policy.RequireAuthenticatedUser();
-                        policy.RequireClaim(ClaimTypes.Role, SystemRoles.Admin);
+                        policy.RequireClaim(JwtClaimTypes.Role, SystemRoles.Admin);
                     }
                 );
             });

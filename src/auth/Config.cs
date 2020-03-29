@@ -101,7 +101,7 @@ namespace Test.auth
                     Name = "roles",
                     DisplayName = "Roles",
                     Description = "Allow the service access to your user roles.",
-                    UserClaims = new[] { JwtClaimTypes.Role, ClaimTypes.Role },
+                    UserClaims = new[] { JwtClaimTypes.Role },
                     ShowInDiscoveryDocument = true,
                     Required = true,
                     Emphasize = true

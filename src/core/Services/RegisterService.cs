@@ -34,11 +34,6 @@ namespace Test.core.Services
                 roleAdmin = new IdentityRole(SystemRoles.Admin);
                 await _roleManager.CreateAsync(roleAdmin);
             }
-
-            //var claims = await _roleManager.GetClaimsAsync(roleAdmin);
-            //if (claims.Any(c => c.Value == "customers.read"))
-            //    return;
-            //await _roleManager.AddClaimAsync(roleAdmin, new Claim("permission", "customers.read"));
         }
 
         public async Task<ApplicationUser> GiveAdminRole(string userId)
@@ -83,8 +78,6 @@ namespace Test.core.Services
             {
                 throw new ApplicationException(ex.Message);
             }
-            var resultStrings = result.Errors.Select(e => $"{e.Code.ToString()} - {e.Description}");
-            throw new ApplicationException(string.Join(',', resultStrings));
         }
     }
 }
