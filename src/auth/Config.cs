@@ -2,6 +2,7 @@
 using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Test.auth
@@ -40,6 +41,14 @@ namespace Test.auth
 
         public static IEnumerable<Client> GetClients(string allowedClientUrl)
         {
+            var allowedUrls = allowedClientUrl.Split(';').ToList();
+            allowedUrls.Add("http://localhost:8080");
+            var redirects = new List<string>();
+            foreach (var url in allowedUrls) {
+                redirects.Add(url);
+                redirects.Add($"{url}/callback.html");
+            }
+
             return new List<Client>
             {
                 new Client
@@ -65,14 +74,9 @@ namespace Test.auth
                     UpdateAccessTokenClaimsOnRefresh = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
 
-                    RedirectUris = {
-                        "http://localhost:8080",
-                        "http://localhost:8080/callback.html",
-                        allowedClientUrl,
-                        $"{allowedClientUrl}/callback.html"
-                    },
-                    PostLogoutRedirectUris = { "http://localhost:8080", allowedClientUrl },
-                    AllowedCorsOrigins =     { "http://localhost:8080", allowedClientUrl },
+                    RedirectUris = redirects,
+                    PostLogoutRedirectUris = allowedUrls,
+                    AllowedCorsOrigins = allowedUrls,
 
                     AllowedScopes = 
                     {
