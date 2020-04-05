@@ -6,11 +6,11 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    preserveAspectRatio="xMidYMid meet"
-   viewBox="0 0 5820 5820"
-   height="5820pt"
-   width="5820pt"
+   viewBox="0 0 582 582"
+   height="582pt"
+   width="582pt"
    version="1.0">
-    <g id="logo">
+    <g transform="matrix(0.1,0,0,0.1,-0.3728998,0.6454871)" id="logo">
         <path
             id="top-left"
             fill="var(--logo-top-left-color)"

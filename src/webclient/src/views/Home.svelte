@@ -27,6 +27,11 @@
 <button on:click="{stop}">stop</button>
 <figure class="digilean-logo-login">
     <svg id="digilean-logo-login" viewBox="0 0 5820 5820">
+        <defs>
+            <filter id="shadow">
+                <feDropShadow dx="0.2" dy="0.4" stdDeviation="0.2"/>
+            </filter>
+        </defs>
         <g id="logo">
             <path
                 id="top-left"
