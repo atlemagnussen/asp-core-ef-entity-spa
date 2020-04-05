@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
     import Link from "../components/Link.svelte";
     import { userProfile } from "../store";
     import restService from "../services/restService.js";
@@ -8,11 +9,22 @@
     let getCurrentClaims = async () => {
         claims = await restService.getWithAuth("user/currentuserclaims");
     };
-
+    let logoEl;
+    let start = () => {
+        logoEl.unpauseAnimations();
+    }
+    let stop = () => {
+        logoEl.pauseAnimations();
+    }
+    onMount(() => {
+        logoEl = document.querySelector("#digilean-logo-login");
+        stop();
+    });
 </script>
 
 <h1>Welcome to Test</h1>
-
+<button on:click="{start}">start</button>
+<button on:click="{stop}">stop</button>
 <figure class="digilean-logo-login">
     <svg id="digilean-logo-login" viewBox="0 0 5820 5820">
         <g id="logo">
@@ -41,8 +53,9 @@
             from="0 2910 2910"
             to="360 2910 2910"
             dur="3s"
-            begin="click"
-            />
+            begin="0s"
+            repeatCount="indefinite"
+        />
     </svg>
     <figcaption></figcaption>
 </figure>

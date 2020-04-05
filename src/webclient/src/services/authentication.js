@@ -25,45 +25,45 @@ class Authentication {
         this.mgr.events.addUserSessionChanged((m) => this.sessionChanged(m));
     }
     sessionChanged(msg) {
-        console.log("sessionChanged");;
+        console.log("sessionChanged");
         console.log(msg);
     }
     onUserLoaded(fn) {
         this.mgr.events.addUserLoaded((u) => fn(u));
     }
     loaded(user) {
-        console.log("loaded");;
+        console.log("loaded");
         console.log(user);
     }
     unloaded(msg) {
-        console.log("unloaded");;
+        console.log("unloaded");
         console.log(msg);
     }
     signedOut(msg) {
-        console.log("signedOut");;
+        console.log("signedOut");
         console.log(msg);
     }
     renewError(msg) {
-        console.log("renewError");;
+        console.log("renewError");
         console.log(msg);
     }
     expiring(msg) {
-        console.log("expiring");;
+        console.log("expiring");
         console.log(msg);
     }
     expired(msg) {
-        console.log("expired");;
+        console.log("expired");
         console.log(msg);
     }
     async isLoggedIn() {
         const user = await this.mgr.getUser();
         if (user) {
-            log("User logged in", user.profile);
+            console.log(`User logged in, ${user.profile}`);
             return true;
         }
         else {
-            log("User not logged in");
-            return false
+            console.log("User not logged in");
+            return false;
         }
     }
     login() {
@@ -77,7 +77,8 @@ class Authentication {
         if (user && user.expired) {
             console.log("user token is expired!");
         }
-        console.log(user);
+        if (user)
+            console.log(user);
         return user;
     }
     async getAccessToken() {
