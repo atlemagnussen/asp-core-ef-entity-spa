@@ -9,16 +9,23 @@
     let getCurrentClaims = async () => {
         claims = await restService.getWithAuth("user/currentuserclaims");
     };
-    let logoFig;
-    let logoSvg;
-    let animateEl;
+    let logoFig, logoSvg, animateEl;
+    let toggleAnim = false;
+    let toggle = () => {
+        if (toggleAnim)
+            stop();
+        else
+            start();
+    }
     let start = () => {
         logoSvg.unpauseAnimations();
+        toggleAnim = true;
         // logoFig.classList.add("enabled");
     }
     let stop = () => {
+        toggleAnim = false;
         logoSvg.pauseAnimations();
-        animateEl.beginElement();
+        //animateEl.beginElement();
         // logoFig.classList.remove("enabled");
     }
     onMount(() => {
@@ -47,9 +54,7 @@
     }
 </style>
 <h1>Welcome to Test</h1>
-<button on:click="{start}">start</button>
-<button on:click="{stop}">stop</button>
-<figure class="digilean-logo-login enabled">
+<figure class="digilean-logo-login enabled" on:click="{toggle}">
     <svg id="digilean-logo-login" viewBox="0 0 5820 5820">
         <g id="logo" class="spinning-logo">
             <path

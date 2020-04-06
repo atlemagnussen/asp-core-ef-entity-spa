@@ -4,10 +4,10 @@ figure.digilean-logo-login, digilean-logo-login svg {
 }
 
 #digilean-logo-login {
-    --logo-top-left-color: var(--digilean-blue-sky-light);
-    --logo-top-right-color: var(--digilean-blue);
-    --logo-bottom-left-color: var(--digilean-blue);
-    --logo-bottom-right-color: var(--digilean-blue);
+    --logo-top-left-color: var(--digilean-dark-light);
+    --logo-top-right-color: var(--digilean-dark);
+    --logo-bottom-left-color: var(--digilean-dark);
+    --logo-bottom-right-color: var(--digilean-dark);
 }
 figure.digilean-logo-login.round1 #digilean-logo-login {
     --logo-top-left-color: var(--digilean-blue);
