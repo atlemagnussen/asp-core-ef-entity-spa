@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Test.auth.Extentions;
 using Test.auth.Services;
 using Test.core.Services;
+using Test.dataaccess;
 
 namespace Test.auth
 {
@@ -24,6 +25,7 @@ namespace Test.auth
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
 
+            services.AddCommonDataProtection(Configuration);
             services.AddIdentityServerConfig(Configuration);
 
             services.AddControllersWithViews();

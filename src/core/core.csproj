@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dataaccess\dataaccess.csproj" />
-    <ProjectReference Include="..\model\model.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Test.model.Users;
 
-namespace Test.dataaccess.Data
+namespace Test.dataaccess
 {
     public class AuthDbContext : IdentityDbContext<ApplicationUser>
     {

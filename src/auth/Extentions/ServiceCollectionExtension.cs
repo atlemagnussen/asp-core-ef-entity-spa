@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using System.Reflection;
 using System;
 using Test.model.Users;
-using Test.dataaccess.Data;
 using Test.auth.Services;
+using Test.dataaccess;
 
 namespace Test.auth.Extentions
 {

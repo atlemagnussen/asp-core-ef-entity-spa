@@ -10,7 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.core.Services;
-using Test.dataaccess.Data;
+using Test.dataaccess;
 using Test.model.Users;
 
 namespace Test.webapi.Controllers

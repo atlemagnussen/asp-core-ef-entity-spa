@@ -54,7 +54,7 @@
     }
 </style>
 <h1>Welcome to Test</h1>
-<figure class="digilean-logo-login enabled" on:click="{toggle}">
+<figure class="digilean-logo-login" on:click="{toggle}">
     <svg id="digilean-logo-login" viewBox="0 0 5820 5820">
         <g id="logo" class="spinning-logo">
             <path
