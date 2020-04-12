@@ -1,27 +1,32 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
 using System.Security.Claims;
+using System.Security.Policy;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Test.model.Users;
-
 namespace Test.core.Services
 {
     public interface IRegisterService
     {
-        Task<ApplicationUser> NewUser(RegisterRequestViewModel model);
+        Task<IdentityResult> NewUser(RegisterRequestViewModel model, string scheme);
         Task<ApplicationUser> GiveAdminRole(string userId);
         Task EnsureRoles();
     }
 
     public class RegisterService : IRegisterService
     {
+        private readonly ILogger<RegisterService> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RegisterService(UserManager<ApplicationUser> userManager,
+        public RegisterService(ILogger<RegisterService> logger,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
+            _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -50,7 +55,7 @@ namespace Test.core.Services
             return user;
         }
 
-        public async Task<ApplicationUser> NewUser(RegisterRequestViewModel model)
+        public async Task<IdentityResult> NewUser(RegisterRequestViewModel model, string scheme)
         {
             var user = new ApplicationUser
             {
@@ -71,12 +76,40 @@ namespace Test.core.Services
                     await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
                     await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
                     await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
+                    await CreateConfirmationEmail(user, scheme)
                 }
-                return user;
+                return result;
             }
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
+            }
+        }
+
+        public async Task CreateConfirmationEmail(ApplicationUser user, string scheme)
+        {
+            _logger.LogInformation("User created a new account with password.");
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code = code },
+                protocol: scheme);
+
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            if (_userManager.Options.SignIn.RequireConfirmedAccount)
+            {
+                return RedirectToPage("RegisterConfirmation",
+                                      new { email = Input.Email });
+            }
+            else
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return LocalRedirect(returnUrl);
             }
         }
     }

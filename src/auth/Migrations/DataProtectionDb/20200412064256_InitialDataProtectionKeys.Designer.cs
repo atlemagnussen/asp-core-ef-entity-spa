@@ -9,7 +9,7 @@ using Test.dataaccess;
 namespace Test.auth.Migrations.DataProtectionDb
 {
     [DbContext(typeof(DataProtectionDbContext))]
-    [Migration("20200411060254_InitialDataProtectionKeys")]
+    [Migration("20200412064256_InitialDataProtectionKeys")]
     partial class InitialDataProtectionKeys
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

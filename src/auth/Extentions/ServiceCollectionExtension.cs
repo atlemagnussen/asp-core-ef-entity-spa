@@ -20,6 +20,9 @@ namespace Test.auth.Extentions
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = configuration.GetConnectionString("AuthDb");
 
+            services.AddDbContext<DataProtectionDbContext>(options =>
+                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
+                
             services.AddDbContext<AuthDbContext>(options =>
                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
@@ -30,6 +33,7 @@ namespace Test.auth.Extentions
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>();
+
 
             var builder = services.AddIdentityServer(options =>
             {

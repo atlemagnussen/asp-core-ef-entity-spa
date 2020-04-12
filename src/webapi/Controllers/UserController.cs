@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.core.Services;
 using Test.dataaccess;
@@ -61,8 +60,15 @@ namespace Test.webapi.Controllers
 
             try
             {
-                var user = await _registerService.NewUser(model);
-                return Ok(new RegisterResponseViewModel(user));
+                var result = await _registerService.NewUser(model, Request.Scheme);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
             }
             catch (ApplicationException ae)
             {

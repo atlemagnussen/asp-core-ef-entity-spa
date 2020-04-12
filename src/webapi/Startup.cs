@@ -43,8 +43,12 @@ namespace Test.webapi
             //        options.ApiName = "bankApi";
             //    });
 
+            var authConStr = Configuration.GetConnectionString("AuthDb");
+            services.AddDbContext<DataProtectionDbContext>(options =>
+                options.UseSqlServer(authConStr));
+
             services.AddDbContext<AuthDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("AuthDb")));
+               options.UseSqlServer(authConStr));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>();
@@ -61,7 +65,9 @@ namespace Test.webapi
                 o.SaveToken = true;
             });
 
-            services.AddCommonDataProtection(Configuration);
+            services.AddCommonIdentitySettings();
+            services.AddCommonDataProtection();
+
             services.AddDbContext<BankContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("BankDatabase"));

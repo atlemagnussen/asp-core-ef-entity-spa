@@ -24,32 +24,35 @@ Should use [Authorization Code](https://oauth.net/2/grant-types/authorization-co
 [IdentityServer4 grant types](http://docs.identityserver.io/en/latest/topics/grant_types.html)
 
 
-## Database/EntityFramework authserver
+## Database/EntityFramework
+### Install cli tool
 ```sh
 # install cli tool
 dotnet tool install --global dotnet-ef
+```
 
-# create initial migration (this is already done and code is checked in, just need to document how to redo it)
+### Create Initials
+These are already done, just keeping the commands if they need to be redone
+```sh
+#auth
 dotnet ef migrations add InitialAuthDbContext -c AuthDbContext -o Migrations/AuthDb
 dotnet ef migrations add InitialIdentityServerPersistedGrantDbMigration -c PersistedGrantDbContext -o Migrations/PersistedGrantDb
+#dataprotection
+dotnet ef migrations add InitialDataProtectionKeys -c DataProtectionDbContext -o Migrations/DataProtectionDb
+#webapi
+dotnet ef migrations add InitialBankContext -c BankContext -o Migrations/BankDb
+```
 
-# update
+### Create dbs
+```sh
+# auth
 dotnet ef database update -c AuthDbContext
 dotnet ef database update -c PersistedGrantDbContext
-```
-
-## Database/EntityFramework webapi
-```sh
-dotnet ef migrations add InitialBankContext -c BankContext -o Migrations/BankDb
-
+#dataprotection
+dotnet ef database update -c DataProtectionDbContext
+#webapi
 dotnet ef database update -c BankContext
 ```
-
-## Data Protection EF
-```sh
-dotnet ef migrations add InitialDataProtectionKeys -c DataProtectionDbContext -o Migrations/DataProtectionDb
-
-dotnet ef database update -c DataProtectionDbContext
 ```
 
 ## Javascript client

@@ -25,8 +25,9 @@ namespace Test.auth
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
 
-            services.AddCommonDataProtection(Configuration);
             services.AddIdentityServerConfig(Configuration);
+            services.AddCommonIdentitySettings();
+            services.AddCommonDataProtection();
 
             services.AddControllersWithViews();
         }
