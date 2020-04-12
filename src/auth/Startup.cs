@@ -27,6 +27,7 @@ namespace Test.auth
 
             services.AddIdentityServerConfig(Configuration);
             services.AddCommonIdentitySettings();
+            //services.AddWebEncoders();
             services.AddCommonDataProtection();
 
             services.AddControllersWithViews();
