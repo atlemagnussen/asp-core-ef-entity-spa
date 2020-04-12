@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Test.core.Services;
 using Test.dataaccess;
@@ -38,6 +40,7 @@ namespace Test.webapi.Controllers
         [HttpGet]
         public async IAsyncEnumerable<ListUserViewModel> Get()
         {
+            var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("hello"));
             _logger.LogInformation("hello");
             var users = await _authDbContext.Users.ToArrayAsync();
             foreach (var user in users)
