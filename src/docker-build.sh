@@ -1,5 +1,6 @@
 # build
 #docker build -t test.authserver .
+#docker build -t test.webapi -f Dockerfile.webapi .
 # run
 #docker run -it --rm -p 5000:80 test.authserver
 

@@ -35,14 +35,6 @@ namespace Test.webapi
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             IdentityModelEventSource.ShowPII = true;
 
-            //services.AddAuthentication("Bearer")
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = "https://localhost:6001";
-            //        options.RequireHttpsMetadata = true;
-            //        options.ApiName = "bankApi";
-            //    });
-
             var authConStr = Configuration.GetConnectionString("AuthDb");
             services.AddDbContext<DataProtectionDbContext>(options =>
                 options.UseSqlServer(authConStr));

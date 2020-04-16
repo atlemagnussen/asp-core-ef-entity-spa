@@ -40,6 +40,8 @@ namespace Test.auth
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
             app.UseCors("AllowAll");
             app.UseRouting();
