@@ -2,6 +2,15 @@ figure.digilean-logo-login, digilean-logo-login svg {
     width: 15rem;
     height: 15rem;
 }
+figure {
+    display: inline-block;
+}
+#digilean-logo {
+    --logo-top-left-color: var(--digilean-blue-sky-light);
+    --logo-top-right-color: var(--digilean-blue);
+    --logo-bottom-left-color: var(--digilean-blue);
+    --logo-bottom-right-color: var(--digilean-blue);
+}
 
 #digilean-logo-login {
     --logo-top-left-color: var(--digilean-dark-light);
