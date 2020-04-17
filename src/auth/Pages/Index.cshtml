@@ -1,7 +1,8 @@
-﻿@{
+﻿@page
+@model IndexModel
+@{
     var version = typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.GetName().Version.ToString();
 }
-@model HomeViewModel
 
 <h1 class="mt-5">Welcome to AuthServer!</h1>
 <p class="lead">Powered by IdentityServer4 <small>(version @version)</small></p>
