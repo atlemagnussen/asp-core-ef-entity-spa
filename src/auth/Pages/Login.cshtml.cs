@@ -38,6 +38,8 @@ namespace Test.auth.Pages
             _events = events;
             _loginService = loginService;
         }
+
+        [BindProperty]
         public LoginViewModel Vm { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string returnUrl)
@@ -52,9 +54,9 @@ namespace Test.auth.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(LoginInputModel model, string button)
+        public async Task<IActionResult> OnPostAsync(string button)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var context = await _interaction.GetAuthorizationContextAsync(Vm.ReturnUrl);
 
             if (button != "login")
             {
@@ -64,10 +66,10 @@ namespace Test.auth.Pages
 
                     if (await _clientStore.IsPkceClientAsync(context.ClientId))
                     {
-                        return this.LoadingPage("Redirect", model.ReturnUrl);
+                        return this.LoadingPage("Redirect", Vm.ReturnUrl);
                     }
 
-                    return Redirect(model.ReturnUrl);
+                    return Redirect(Vm.ReturnUrl);
                 }
                 else
                 {
@@ -77,27 +79,27 @@ namespace Test.auth.Pages
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Vm.Username, Vm.Password, Vm.RememberLogin, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(model.Username);
+                    var user = await _userManager.FindByNameAsync(Vm.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
 
                     if (context != null)
                     {
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
-                            return this.LoadingPage("Redirect", model.ReturnUrl);
+                            return this.LoadingPage("Redirect", Vm.ReturnUrl);
                         }
 
-                        return Redirect(model.ReturnUrl);
+                        return Redirect(Vm.ReturnUrl);
                     }
 
-                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    if (Url.IsLocalUrl(Vm.ReturnUrl))
                     {
-                        return Redirect(model.ReturnUrl);
+                        return Redirect(Vm.ReturnUrl);
                     }
-                    else if (string.IsNullOrEmpty(model.ReturnUrl))
+                    else if (string.IsNullOrEmpty(Vm.ReturnUrl))
                     {
                         return Redirect("~/");
                     }
@@ -108,11 +110,11 @@ namespace Test.auth.Pages
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(Vm.Username, "invalid credentials", clientId: context?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
-            Vm = await _loginService.BuildLoginViewModelAsync(model);
+            Vm = await _loginService.BuildLoginViewModelAsync(Vm);
             return Page();
         }
     }

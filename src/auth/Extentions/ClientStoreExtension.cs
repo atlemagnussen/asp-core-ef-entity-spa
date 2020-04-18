@@ -31,7 +31,7 @@ namespace Test.auth.Extentions
             pageModel.HttpContext.Response.Headers["Location"] = "";
 
             // return pageModel.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
-            return pageModel.RedirectToPage(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
+            return pageModel.RedirectToPage(viewName, new { redirectUri } );
         }
     }
 }
