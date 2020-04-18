@@ -22,12 +22,14 @@ namespace Test.auth.Pages
         public string ConnectionString { get; set; }
         public string AllowedClientUrl { get; set; }
         public string AzureAdClientId { get; set; }
+        public string ClientUrl { get; set; }
 
         public void OnGet()
         {
             ConnectionString = GetConStr("AuthDb");
             AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
             AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
+            ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
         }
 
         private string GetConStr(string name) {
