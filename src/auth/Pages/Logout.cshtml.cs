@@ -40,7 +40,7 @@ namespace Test.auth.Pages
 
             //if (ViewModel.ShowLogoutPrompt == false)
             //{
-                // return await Index(vm);
+            // return await Index(vm);
             //}
         }
 

@@ -1,20 +1,20 @@
 ﻿@page
-@using Test.auth.Models
+@using Test.auth.Pages
 @model LoginModel
 
 <div class="row">
 
-    @if (Model.EnableLocalLogin)
+    @if (Model.Vm.EnableLocalLogin)
     {
         <div class="col-md-4">
 
             <h1 class="mt-5 mb-3">Login</h1>
 
             <form asp-route="Login">
-                <input type="hidden" asp-for="ReturnUrl" />
+                <input type="hidden" asp-for="Vm.ReturnUrl" />
                 <div class="form-group">
-                    <label asp-for="Username"></label>
-                    <input class="form-control" placeholder="Username" asp-for="Username" autofocus>
+                    <label asp-for="Vm.Username"></label>
+                    <input class="form-control" placeholder="Username" asp-for="Vm.Username" autofocus>
                 </div>
 
                 <div class="form-group">
@@ -22,11 +22,11 @@
                     <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
                 </div>
 
-                @if (Model.AllowRememberLogin)
+                @if (Model.Vm.AllowRememberLogin)
                 {
                     <div class="form-check">
-                        <input type="checkbox" asp-for="RememberLogin" class="form-check-input">
-                        <label asp-for="RememberLogin" class="form-check-label">Remember My Login</label>
+                        <input type="checkbox" asp-for="Vm.RememberLogin" class="form-check-input">
+                        <label asp-for="Vm.RememberLogin" class="form-check-label">Remember My Login</label>
                     </div>
                 }
 
@@ -40,20 +40,20 @@
         </div>
     }
 
-    @if (Model.VisibleExternalProviders.Any())
+    @if (Model.Vm.VisibleExternalProviders.Any())
     {
         <div class="col-md-4 ml-5">
 
             <h1 class="mt-5 mb-3">External Login</h1>
 
             <div class="list-group">
-                @foreach (var provider in Model.VisibleExternalProviders)
+                @foreach (ExternalProvider provider in Model.Vm.VisibleExternalProviders)
                 {
                     <a class="list-group-item list-group-item-action"
                        asp-controller="External"
                        asp-action="Challenge"
                        asp-route-provider="@provider.AuthenticationScheme"
-                       asp-route-returnUrl="@Model.ReturnUrl">
+                       asp-route-returnUrl="@Model.Vm.ReturnUrl">
                         @provider.DisplayName
                     </a>
                 }
@@ -61,7 +61,7 @@
         </div>
     }
 
-    @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
+    @if (!Model.Vm.EnableLocalLogin && !Model.Vm.VisibleExternalProviders.Any())
     {
         <div class="alert alert-warning">
             <strong>Invalid login request</strong>
