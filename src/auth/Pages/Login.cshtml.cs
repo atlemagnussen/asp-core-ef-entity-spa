@@ -66,7 +66,7 @@ namespace Test.auth.Pages
 
                     if (await _clientStore.IsPkceClientAsync(context.ClientId))
                     {
-                        return this.LoadingPage("Redirect", Vm.ReturnUrl);
+                        return this.GoToRedirectPage(Vm.ReturnUrl);
                     }
 
                     return Redirect(Vm.ReturnUrl);
@@ -89,7 +89,7 @@ namespace Test.auth.Pages
                     {
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
-                            return this.LoadingPage("Redirect", Vm.ReturnUrl);
+                            return this.GoToRedirectPage(Vm.ReturnUrl);
                         }
 
                         return Redirect(Vm.ReturnUrl);

@@ -25,11 +25,11 @@ namespace Test.auth.Extentions
             return false;
         }
 
-        public static IActionResult RedirectPage(this PageModel pageModel, string redirectUrl)
+        public static IActionResult GoToRedirectPage(this PageModel pageModel, string redirectUrl)
         {
             pageModel.HttpContext.Response.StatusCode = 200;
             pageModel.HttpContext.Response.Headers["Location"] = "";
-
+            // hard coded to root
             return pageModel.RedirectToPage("/Redirect", new { redirectUrl });
         }
 
