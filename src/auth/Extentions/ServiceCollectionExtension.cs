@@ -10,6 +10,7 @@ using System;
 using Test.model.Users;
 using Test.auth.Services;
 using Test.dataaccess;
+using IdentityServer4;
 
 namespace Test.auth.Extentions
 {
@@ -63,12 +64,24 @@ namespace Test.auth.Extentions
             builder.AddProfileService<TestProfileService>();
 
             services.AddAuthentication()
-                .AddAzureAD(options => configuration.Bind("AzureAd", options));
+                .AddAzureAD(options =>
+                {
+                    options.Instance = configuration.GetValue<string>("AzureAd:Instance");
+                    options.ClientId = configuration.GetValue<string>("AzureAd:ClientId");
+                    options.TenantId = configuration.GetValue<string>("AzureAd:TenantId");
+                })
+                .AddGoogle(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = configuration.GetValue<string>("Google:ClientId");
+                    options.ClientSecret = configuration.GetValue<string>("Google:ClientSecret");
+                });
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
             {
                 options.Authority += "/v2.0/";
                 options.TokenValidationParameters.ValidateIssuer = true;
-                options.SignInScheme = IdentityConstants.ExternalScheme;
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
             });
 
             //services.AddScoped<IProfileService, TestProfileService>();

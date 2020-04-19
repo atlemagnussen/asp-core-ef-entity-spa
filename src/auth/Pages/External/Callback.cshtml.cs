@@ -15,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.auth.Extentions;
+using Test.auth.Services;
 using Test.model.Users;
 
 namespace Test.auth.Pages
@@ -27,13 +28,15 @@ namespace Test.auth.Pages
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IEventService _events;
         private readonly IClientStore _clientStore;
+        private readonly IExternalService _externalService;
 
         public CallbackModel(ILogger<CallbackModel> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IIdentityServerInteractionService interaction,
             IEventService events,
-            IClientStore clientStore)
+            IClientStore clientStore,
+            IExternalService externalService)
         {
             _logger = logger;
             _userManager = userManager;
@@ -41,11 +44,13 @@ namespace Test.auth.Pages
             _interaction = interaction;
             _events = events;
             _clientStore = clientStore;
+            _externalService = externalService;
         }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            //var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
@@ -53,14 +58,15 @@ namespace Test.auth.Pages
 
             if (_logger.IsEnabled(LogLevel.Debug))
             {
-                var externalClaims = result.Principal.Claims.Select(c => $"{c.Type}: {c.Value}");
-                _logger.LogDebug("External claims: {@claims}", externalClaims);
+                var externalClaims = result.Principal.Claims.Select(c => $"{c.Type}: {c.Value}").ToArray();
+                var claimsStringDebug = string.Join(',', externalClaims);
+                _logger.LogDebug($"External claims: {claimsStringDebug}");
             }
 
             var (user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result);
             if (user == null)
             {
-                user = await AutoProvisionUserAsync(provider, providerUserId, claims);
+                user = await _externalService.AutoProvisionUserAsync(provider, providerUserId, claims);
             }
 
             var additionalLocalClaims = new List<Claim>();
@@ -115,62 +121,6 @@ namespace Test.auth.Pages
             var user = await _userManager.FindByLoginAsync(provider, providerUserId);
 
             return (user, provider, providerUserId, claims);
-        }
-        private async Task<ApplicationUser> AutoProvisionUserAsync(string provider, string providerUserId, IEnumerable<Claim> claims)
-        {
-            var filtered = new List<Claim>();
-
-            var name = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Name)?.Value ??
-                claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-            if (name != null)
-            {
-                filtered.Add(new Claim(JwtClaimTypes.Name, name));
-            }
-            else
-            {
-                var first = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.GivenName)?.Value ??
-                    claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
-                var last = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.FamilyName)?.Value ??
-                    claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value;
-                if (first != null && last != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, first + " " + last));
-                }
-                else if (first != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, first));
-                }
-                else if (last != null)
-                {
-                    filtered.Add(new Claim(JwtClaimTypes.Name, last));
-                }
-            }
-
-            // email
-            var email = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Email)?.Value ??
-               claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            if (email != null)
-            {
-                filtered.Add(new Claim(JwtClaimTypes.Email, email));
-            }
-
-            var user = new ApplicationUser
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            var identityResult = await _userManager.CreateAsync(user);
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-
-            if (filtered.Any())
-            {
-                identityResult = await _userManager.AddClaimsAsync(user, filtered);
-                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-            }
-
-            identityResult = await _userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
-
-            return user;
         }
 
 

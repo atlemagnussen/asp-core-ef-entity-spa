@@ -24,6 +24,8 @@ namespace Test.auth
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<IClaimsHelper, ClaimsHelper>();
+            services.AddScoped<IExternalService, ExternalService>();
 
             services.AddIdentityServerConfig(Configuration);
             services.AddCommonIdentitySettings();

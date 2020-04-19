@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Test.core.Services;
 using Test.dataaccess;
 using Test.model.Users;
+using Test.model;
 
 namespace Test.webapi.Controllers
 {
@@ -40,19 +41,22 @@ namespace Test.webapi.Controllers
         [HttpGet]
         public async IAsyncEnumerable<ListUserViewModel> Get()
         {
-            var code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes("hello"));
             _logger.LogInformation("hello");
             var users = await _authDbContext.Users.ToArrayAsync();
             foreach (var user in users)
             {
-                var manUser = await _userManager.FindByEmailAsync(user.Email);
-                var isAdmin = await _userManager.IsInRoleAsync(manUser, SystemRoles.Admin);
+                var isAdmin = false;
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    var manUser = await _userManager.FindByIdAsync(user.Id);
+                    if (manUser != null)
+                        isAdmin = await _userManager.IsInRoleAsync(manUser, SystemRoles.Admin);
+                }
                 yield return new ListUserViewModel(user, isAdmin);
             }
         }
 
         [HttpPost]
-        [Route("register")]
         [Authorize("RequiresAdmin")]
         public async Task<IActionResult> Register([FromBody]RegisterRequestViewModel model)
         {
@@ -83,6 +87,43 @@ namespace Test.webapi.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize("RequiresAdmin")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Missing id");
+
+            var currUserId = User.Identity.GetUserIdFromClaim();
+            if (currUserId == id)
+                return BadRequest("Can't delete self");
+
+            try
+            {
+                var result = await _registerService.RemoveUser(id);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+            }
+            catch (ApplicationException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
 
         [HttpGet]
         [Route("ensureroles")]

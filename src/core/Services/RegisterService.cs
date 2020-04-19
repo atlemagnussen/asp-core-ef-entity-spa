@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Security.Claims;
-using System.Security.Policy;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -17,6 +15,7 @@ namespace Test.core.Services
         Task<IdentityResult> NewUser(RegisterRequestViewModel model, string scheme);
         Task<ApplicationUser> GiveAdminRole(string userId);
         Task EnsureRoles();
+        Task<IdentityResult> RemoveUser(string id);
     }
 
     public class RegisterService : IRegisterService
@@ -25,16 +24,19 @@ namespace Test.core.Services
         private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IdentityErrorDescriber _errorDescriber;
 
         public RegisterService(ILogger<RegisterService> logger,
             IConfiguration configuration,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IdentityErrorDescriber errorDescriber)
         {
             _logger = logger;
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _errorDescriber = errorDescriber;
         }
 
         public async Task EnsureRoles()
@@ -47,6 +49,15 @@ namespace Test.core.Services
             }
         }
 
+        public async Task<IdentityResult> RemoveUser(string id)
+        {
+            var userExists = await _userManager.FindByIdAsync(id);
+            if (userExists != null)
+                return await _userManager.DeleteAsync(userExists);
+
+            var error = _errorDescriber.InvalidUserName(id);
+            return IdentityResult.Failed(error);
+        }
         public async Task<ApplicationUser> GiveAdminRole(string userId)
         {
             var user = await _userManager.FindByEmailAsync(userId);
