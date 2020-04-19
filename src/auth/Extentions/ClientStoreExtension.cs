@@ -25,13 +25,20 @@ namespace Test.auth.Extentions
             return false;
         }
 
-        public static IActionResult LoadingPage(this PageModel pageModel, string viewName, string redirectUri)
+        public static IActionResult RedirectPage(this PageModel pageModel, string redirectUrl)
         {
             pageModel.HttpContext.Response.StatusCode = 200;
             pageModel.HttpContext.Response.Headers["Location"] = "";
 
-            // return pageModel.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
-            return pageModel.RedirectToPage(viewName, new { redirectUri } );
+            return pageModel.RedirectToPage("/Redirect", new { redirectUrl });
+        }
+
+        public static IActionResult LoadingPage(this PageModel pageModel, string pageName, string redirectUrl)
+        {
+            pageModel.HttpContext.Response.StatusCode = 200;
+            pageModel.HttpContext.Response.Headers["Location"] = "";
+
+            return pageModel.RedirectToPage(pageName, new { redirectUrl } );
         }
     }
 }

@@ -91,7 +91,7 @@ namespace Test.auth.Pages
             {
                 if (await _clientStore.IsPkceClientAsync(context.ClientId))
                 {
-                    return this.LoadingPage("Redirect", returnUrl);
+                    return this.RedirectPage(returnUrl);
                 }
             }
 
