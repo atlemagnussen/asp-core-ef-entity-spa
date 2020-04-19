@@ -50,12 +50,12 @@
     }
 </style>
 <h1>Welcome to Test</h1>
-<figure class="digilean-logo loading">
+<!-- <figure class="digilean-logo loading">
     <svg xmlns="http://www.w3.org/2000/svg">
         <use xlink:href="#digilean-logo-def" id="digilean-logo" />
     </svg>
     <figcaption></figcaption>
-</figure>
+</figure> -->
 
 {#if $userProfile.loggedIn}
     <h3>Logged in as {$userProfile.email}</h3>

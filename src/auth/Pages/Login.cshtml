@@ -50,7 +50,9 @@
                 @foreach (var provider in Model.Vm.VisibleExternalProviders)
                 {
                     <a class="list-group-item list-group-item-action" 
-                       href="/External/Challenge?provider=@provider.AuthenticationScheme&returnUrl=@Model.Vm.ReturnUrl" >
+                       asp-page="/External/Challenge"
+                       asp-route-provider="@provider.AuthenticationScheme"
+                       asp-route-returnUrl="@Model.Vm.ReturnUrl">
                         @provider.DisplayName
                     </a>
                 }

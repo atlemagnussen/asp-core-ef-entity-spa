@@ -53,7 +53,10 @@ dotnet ef database update -c DataProtectionDbContext
 #webapi
 dotnet ef database update -c BankContext
 ```
-```
+
+### Azure Ad/Google
+Redirect url:
+`https://localhost:6001/signin-oidc`
 
 ## Javascript client
 [Examples from identityserver](http://docs.identityserver.io/en/latest/quickstarts/4_javascript_client.html)
