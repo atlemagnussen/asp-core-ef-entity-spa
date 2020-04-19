@@ -35,10 +35,10 @@ namespace Test.auth.Pages
             }
             else
             {
-                // start challenge and roundtrip the return URL and scheme 
+                var redirectUri = Url.Page("/External/Callback");
                 var props = new AuthenticationProperties
                 {
-                    RedirectUri = Url.Action("Callback"),
+                    RedirectUri = redirectUri,
                     Items =
                     {
                         { "returnUrl", returnUrl },
