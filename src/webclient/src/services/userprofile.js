@@ -1,6 +1,5 @@
 import { userIsLoggedIn, userProfile } from "../store";
 import auth from "./authentication.js";
-import helper from "./helper.js";
 
 class UserProfile {
     constructor() {
@@ -9,7 +8,7 @@ class UserProfile {
     async init() {
         const currentUser = await auth.getUser();
         if (currentUser) {
-            console.log(currentUser);
+            //console.log(currentUser);
             userIsLoggedIn.set(true);
         } else {
             console.log("not logged in");

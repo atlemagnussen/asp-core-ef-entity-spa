@@ -49,7 +49,7 @@ namespace Test.auth
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             
             app.UseStaticFiles();
             app.UseCors("AllowAll");
