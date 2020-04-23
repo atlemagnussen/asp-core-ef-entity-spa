@@ -20,7 +20,8 @@ namespace Test.auth.Pages
             _logger = logger;
             _configuration = configuration;
         }
-        public string ConnectionString { get; set; }
+        public string ConnectionString1 { get; set; }
+        public string ConnectionString2 { get; set; }
         public string AllowedClientUrl { get; set; }
         public string AzureAdClientId { get; set; }
         public string ClientUrl { get; set; }
@@ -32,7 +33,8 @@ namespace Test.auth.Pages
 
         public void OnGet()
         {
-            ConnectionString = _configuration.GetConnectionString("Test"); //GetConStrStripPw("AuthDb");
+            ConnectionString1 = _configuration.GetConnectionString("Test"); //GetConStrStripPw("AuthDb");
+            ConnectionString2 = _configuration["ConnectionStrings:Test"];
             AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
             AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
             ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");

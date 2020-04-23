@@ -14,8 +14,12 @@
 <p></p>
 <h4>Azure Key Vault values</h4>
 <p>
-    <span style="font-weight: bold">ConnectionString:Test</span>
-    <span>@Model.ConnectionString</span>
+    <span style="font-weight: bold">Configuration.GetConnectionString("Test")</span>
+    <span>@Model.ConnectionString1</span>
+</p>
+<p>
+    <span style="font-weight: bold">Configuration["ConnectionStrings:Test"]</span>
+    <span>@Model.ConnectionString1</span>
 </p>
 <p>
     <span style="font-weight: bold">Configuration["SecretName"]</span><br />
