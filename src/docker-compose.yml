@@ -1,5 +1,4 @@
 version: '3.4'
-
 services:
   auth-server:
     image: test.authserver:latest
@@ -13,9 +12,11 @@ services:
 
   web-server:
     image: test.webapi:latest
+    stdin_open: true
+    tty: true
     ports:
-      - 5000:80
-      - 5001:443
+      - 7000:80
+      - 7001:443
     env_file:
       - docker-compose.env
     volumes:

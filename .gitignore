@@ -1,3 +1,7 @@
+localhost.crt
+localhost.key
+localhost.pfx
+
 docker-compose.env
 appsettings.*.json
 
