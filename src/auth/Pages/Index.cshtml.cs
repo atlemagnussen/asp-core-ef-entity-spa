@@ -28,19 +28,21 @@ namespace Test.auth.Pages
         public string Secret1 { get; set; }
         public string Secret2 { get; set; }
         public string Secret3 { get; set; }
+        public string Secret4 { get; set; }
 
         public void OnGet()
         {
-            ConnectionString = GetConStr("AuthDb");
+            ConnectionString = _configuration.GetConnectionString("Test"); //GetConStrStripPw("AuthDb");
             AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
             AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
             ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
             Secret1 = _configuration["SecretName"];
             Secret2 = _configuration["Section:SecretName"];
             Secret3 = _configuration.GetSection("Section")["SecretName"];
+            Secret4 = _configuration.GetValue<string>("SecretName");
     }
 
-        private string GetConStr(string name) {
+        private string GetConStrStripPw(string name) {
             var connectionString = _configuration.GetConnectionString(name);
             string[] settings = connectionString.Split(';');
             string conString = string.Empty;
