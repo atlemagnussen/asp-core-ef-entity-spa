@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 dotnet publish -c release -o publish
 cd publish
 zip -r webapi.zip *
