@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Test.core.Services;
-using Test.dataaccess.Data;
+using Test.dataaccess;
 using Test.model.Users;
 
 namespace Test.consoleapp
@@ -26,8 +27,9 @@ namespace Test.consoleapp
                 .AddJsonFile("appsettings.Development.json", optional: true) //override locally, gitignored
                 .AddEnvironmentVariables();
 
+            
             var configuration = builder.Build();
-
+            WebEncoders.Base64UrlDecode("hello");
             // set up our DI same as in web
             var services = new ServiceCollection();
             services.AddOptions();

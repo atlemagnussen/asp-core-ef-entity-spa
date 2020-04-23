@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Test.core.Services;
-using Test.dataaccess.Data;
 using Test.model.Users;
 using Test.webapi.Data;
 using Test.webapi.Filter;
@@ -16,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Logging;
 using IdentityModel;
+using Test.dataaccess;
 
 namespace Test.webapi
 {
@@ -35,16 +35,12 @@ namespace Test.webapi
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             IdentityModelEventSource.ShowPII = true;
 
-            //services.AddAuthentication("Bearer")
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.Authority = "https://localhost:6001";
-            //        options.RequireHttpsMetadata = true;
-            //        options.ApiName = "bankApi";
-            //    });
+            var authConStr = Configuration.GetConnectionString("AuthDb");
+            services.AddDbContext<DataProtectionDbContext>(options =>
+                options.UseSqlServer(authConStr));
 
             services.AddDbContext<AuthDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("AuthDb")));
+               options.UseSqlServer(authConStr));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>();
@@ -60,6 +56,9 @@ namespace Test.webapi
                 o.RequireHttpsMetadata = true;
                 o.SaveToken = true;
             });
+
+            services.AddCommonIdentitySettings();
+            services.AddCommonDataProtection();
 
             services.AddDbContext<BankContext>(options =>
             {

@@ -1,5 +1,5 @@
 import { userProfile } from "../store";
-let baseUrl = "https://localhost:5001/api/"
+let baseUrl = "https://localhost:7001/api/"
 if (!window.location.origin.includes("localhost"))
     baseUrl = "https://asp-core-webapi.azurewebsites.net/api/"
 
@@ -28,6 +28,22 @@ class RestService {
         const fullUrl = this.getFullUrl(url);
         const res = await fetch(fullUrl, {
             method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.upData.access_token
+            },
+            body: JSON.stringify(data)
+        });
+        if (res.ok) {
+            const json = await res.json();
+			return json;
+        }
+        return await this.errorHandler(res);
+    }
+    async deleteWithAuth(url, data) {
+        const fullUrl = this.getFullUrl(url);
+        const res = await fetch(fullUrl, {
+            method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.upData.access_token

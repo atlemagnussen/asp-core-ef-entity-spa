@@ -1,0 +1,17 @@
+﻿@page
+@using Test.auth.Pages
+@model IndexModel
+@{
+    var version = typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.GetName().Version.ToString();
+}
+
+<h1 class="mt-5">Welcome to AuthServer!</h1>
+<p class="lead">Powered by IdentityServer4 <small>(version @version)</small></p>
+
+<h3>config</h3>
+<p>ConnectionString: @Model.ConnectionString</p>
+<p>AllowedClient: @Model.AllowedClientUrl</p>
+<p>ClientId: @Model.AzureAdClientId<p>
+
+<p><a href="Login">Go to login</a></p>
+<p><a href="@Model.ClientUrl">Go to client</a></p>

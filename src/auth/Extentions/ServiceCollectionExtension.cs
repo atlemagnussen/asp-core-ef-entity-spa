@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using System.Reflection;
 using System;
 using Test.model.Users;
-using Test.dataaccess.Data;
 using Test.auth.Services;
+using Test.dataaccess;
+using IdentityServer4;
 
 namespace Test.auth.Extentions
 {
@@ -20,6 +21,9 @@ namespace Test.auth.Extentions
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = configuration.GetConnectionString("AuthDb");
 
+            services.AddDbContext<DataProtectionDbContext>(options =>
+                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
+                
             services.AddDbContext<AuthDbContext>(options =>
                options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly)));
 
@@ -30,6 +34,7 @@ namespace Test.auth.Extentions
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AuthDbContext>();
+
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -59,12 +64,24 @@ namespace Test.auth.Extentions
             builder.AddProfileService<TestProfileService>();
 
             services.AddAuthentication()
-                .AddAzureAD(options => configuration.Bind("AzureAd", options));
+                .AddAzureAD(options =>
+                {
+                    options.Instance = configuration.GetValue<string>("AzureAd:Instance");
+                    options.ClientId = configuration.GetValue<string>("AzureAd:ClientId");
+                    options.TenantId = configuration.GetValue<string>("AzureAd:TenantId");
+                })
+                .AddGoogle(options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = configuration.GetValue<string>("Google:ClientId");
+                    options.ClientSecret = configuration.GetValue<string>("Google:ClientSecret");
+                });
             services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
             {
-                options.Authority = options.Authority + "/v2.0/";
+                options.Authority += "/v2.0/";
                 options.TokenValidationParameters.ValidateIssuer = true;
-                options.SignInScheme = IdentityConstants.ExternalScheme;
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
             });
 
             //services.AddScoped<IProfileService, TestProfileService>();

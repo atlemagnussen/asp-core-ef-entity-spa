@@ -1,4 +1,5 @@
 <script>
+    import { userProfile } from "../store";
     import restService from "../services/restService.js";
     import Link from "../components/Link.svelte";
     let getAllUsers = async () => {
@@ -10,6 +11,11 @@
         const res = await restService.getWithAuth("user/ensureroles");
         console.log(res);
     }
+    let deleteUser = async (id) => {
+        console.log(id);
+        const res = await restService.deleteWithAuth(`user/${id}`);
+        console.log(res);
+    };
 </script>
 
 <h1>Users</h1>
@@ -21,7 +27,17 @@
     
     <ul>
 	{#each users as user, i}
-        <li>{user.name} - {user.email} {user.isAdmin ? "(admin)" : ""}</li>
+        <li>
+            {#if $userProfile.sub === user.id}
+                <span>*ME*</span>
+            {/if}    
+            {user.name} - {user.email}
+            {#if user.isAdmin}
+                <span>(admin)</span>
+            {:else}
+                <span on:click="{() => deleteUser(user.id)}">Delete</span>
+            {/if}
+        </li>
     {/each}
     </ul>
 

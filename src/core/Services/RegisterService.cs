@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
-using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Test.model.Users;
 
@@ -9,21 +12,31 @@ namespace Test.core.Services
 {
     public interface IRegisterService
     {
-        Task<ApplicationUser> NewUser(RegisterRequestViewModel model);
+        Task<IdentityResult> NewUser(RegisterRequestViewModel model, string scheme);
         Task<ApplicationUser> GiveAdminRole(string userId);
         Task EnsureRoles();
+        Task<IdentityResult> RemoveUser(string id);
     }
 
     public class RegisterService : IRegisterService
     {
+        private readonly ILogger<RegisterService> _logger;
+        private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IdentityErrorDescriber _errorDescriber;
 
-        public RegisterService(UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+        public RegisterService(ILogger<RegisterService> logger,
+            IConfiguration configuration,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IdentityErrorDescriber errorDescriber)
         {
+            _logger = logger;
+            _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _errorDescriber = errorDescriber;
         }
 
         public async Task EnsureRoles()
@@ -36,6 +49,15 @@ namespace Test.core.Services
             }
         }
 
+        public async Task<IdentityResult> RemoveUser(string id)
+        {
+            var userExists = await _userManager.FindByIdAsync(id);
+            if (userExists != null)
+                return await _userManager.DeleteAsync(userExists);
+
+            var error = _errorDescriber.InvalidUserName(id);
+            return IdentityResult.Failed(error);
+        }
         public async Task<ApplicationUser> GiveAdminRole(string userId)
         {
             var user = await _userManager.FindByEmailAsync(userId);
@@ -50,7 +72,7 @@ namespace Test.core.Services
             return user;
         }
 
-        public async Task<ApplicationUser> NewUser(RegisterRequestViewModel model)
+        public async Task<IdentityResult> NewUser(RegisterRequestViewModel model, string scheme)
         {
             var user = new ApplicationUser
             {
@@ -68,16 +90,58 @@ namespace Test.core.Services
             {
                 if (result.Succeeded)
                 {
-                    await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
-                    await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
-                    await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
+                    //await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
+                    //await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
+                    //await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
+                    // await CreateConfirmationEmail(user, scheme);
                 }
-                return user;
+                return result;
             }
             catch (Exception ex)
             {
                 throw new ApplicationException(ex.Message);
             }
+        }
+
+        public async Task<string> CreateConfirmationEmail(ApplicationUser user, string scheme)
+        {
+            _logger.LogInformation("User created a new account with password.");
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var callbackUrl = genUrl(user.Id, code);
+            return HtmlEncoder.Default.Encode(callbackUrl);
+            //await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
+            //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+            //{
+            //    return RedirectToPage("RegisterConfirmation",
+            //                          new { email = Input.Email });
+            //}
+            //else
+            //{
+            //    await _signInManager.SignInAsync(user, isPersistent: false);
+            //    return LocalRedirect(returnUrl);
+            //}
+        }
+
+        public async Task ConfirmEmail(string userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new ApplicationException($"No user by id {userId}");
+
+            await _userManager.ConfirmEmailAsync(user, code);
+        }
+
+        public string genUrl(string userId, string code)
+        {
+            var baseUrl = _configuration.GetValue<string>("AuthServerUrl");
+            var url = $"{baseUrl}/ConfirmEmail?userId={userId}&code={code}";
+            return url;
         }
     }
 }

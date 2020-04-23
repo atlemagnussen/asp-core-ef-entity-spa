@@ -1,4 +1,5 @@
-﻿using Test.model.Users;
+﻿using Microsoft.AspNetCore.Identity;
+using Test.model.Users;
 
 namespace Test.model.Users
 {
@@ -11,6 +12,12 @@ namespace Test.model.Users
         {
             Id = user.Id;
             Email = user.Email;
+        }
+
+        public RegisterResponseViewModel(IdentityResult result)
+        {
+            Id = result.ToString();
+            Email = result.Succeeded.ToString();
         }
     }
 }

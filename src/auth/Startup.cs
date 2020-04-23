@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Test.auth.Extentions;
 using Test.auth.Services;
 using Test.core.Services;
+using Test.dataaccess;
 
 namespace Test.auth
 {
@@ -23,10 +24,15 @@ namespace Test.auth
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<IClaimsHelper, ClaimsHelper>();
+            services.AddScoped<IExternalService, ExternalService>();
 
             services.AddIdentityServerConfig(Configuration);
+            services.AddCommonIdentitySettings();
+            //services.AddWebEncoders();
+            services.AddCommonDataProtection();
 
-            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -34,8 +40,17 @@ namespace Test.auth
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                // app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
+            //app.UseHttpsRedirection();
+            
             app.UseStaticFiles();
             app.UseCors("AllowAll");
             app.UseRouting();
@@ -44,9 +59,7 @@ namespace Test.auth
             app.UseIdentityServer();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

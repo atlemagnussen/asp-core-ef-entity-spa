@@ -30,3 +30,7 @@ section {
         padding: 0.5rem;
     }
 }
+
+svg.svg-defs {
+    display: none;
+}

@@ -28,5 +28,9 @@
 </style>
 
 <section class="main-container">
-    <svelte:component this={component} param={param} />
+    {#if param}
+        <svelte:component this={component} param={param} />
+    {:else}
+        <svelte:component this={component} />
+    {/if}
 </section>

@@ -1,5 +1,6 @@
 ﻿using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 using Test.auth.Models;
 
@@ -24,12 +25,20 @@ namespace Test.auth.Extentions
             return false;
         }
 
-        public static IActionResult LoadingPage(this Controller controller, string viewName, string redirectUri)
+        public static IActionResult GoToRedirectPage(this PageModel pageModel, string redirectUrl)
         {
-            controller.HttpContext.Response.StatusCode = 200;
-            controller.HttpContext.Response.Headers["Location"] = "";
+            pageModel.HttpContext.Response.StatusCode = 200;
+            pageModel.HttpContext.Response.Headers["Location"] = "";
+            // hard coded to root
+            return pageModel.RedirectToPage("/Redirect", new { redirectUrl });
+        }
 
-            return controller.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
+        public static IActionResult LoadingPage(this PageModel pageModel, string pageName, string redirectUrl)
+        {
+            pageModel.HttpContext.Response.StatusCode = 200;
+            pageModel.HttpContext.Response.Headers["Location"] = "";
+
+            return pageModel.RedirectToPage(pageName, new { redirectUrl } );
         }
     }
 }

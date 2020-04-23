@@ -1,4 +1,5 @@
 <script>
+    export let name = "";
     curSearchParam.set(window.location.search);
     import { curRoute, curSearchParam } from "./store";
     import up from "./services/userprofile.js";
@@ -40,7 +41,7 @@
     <header>
         <nav>
             <Link page="{{ path: '/', name: 'Home' }}">
-                <div class="logo">TestSPA</div>
+                <div class="logo">{name}</div>
             </Link>
             <Link page="{{ path: '/customers', name: 'Customers' }}" />
             <Link page="{{ path: '/users', name: 'Users' }}" />

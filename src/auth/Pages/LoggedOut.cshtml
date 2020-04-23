@@ -1,0 +1,36 @@
+﻿@page
+@using Test.auth.Pages
+@model LoggedOutModel
+
+@{
+    // set this so the layout rendering sees an anonymous user
+    ViewData["signed-out"] = true;
+}
+
+<div class="page-header logged-out">
+    <h1>
+        Logout
+        <small>You are now logged out</small>
+    </h1>
+
+    @if (Model.Vm.PostLogoutRedirectUri != null)
+    {
+        <div>
+            Click <a class="PostLogoutRedirectUri" href="@Model.Vm.PostLogoutRedirectUri">here</a> to return to the
+            <span>@Model.Vm.ClientName</span> application.
+        </div>
+    }
+
+    @if (Model.Vm.SignOutIframeUrl != null)
+    {
+        <iframe width="0" height="0" class="signout" src="@Model.Vm.SignOutIframeUrl"></iframe>
+    }
+</div>
+
+@section scripts
+{
+    @if (Model.Vm.AutomaticRedirectAfterSignOut)
+    {
+        <script src="~/js/signout-redirect.js"></script>
+    }
+}
