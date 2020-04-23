@@ -12,6 +12,25 @@
 <p>ConnectionString: @Model.ConnectionString</p>
 <p>AllowedClient: @Model.AllowedClientUrl</p>
 <p>ClientId: @Model.AzureAdClientId<p>
-
+<p></p>
+<p>
+    <span style="font-weight: bold">Configuration["SecretName"]</span><br />
+    <span>@Model.Secret1</span>
+</p>
+<p>
+    <span style="font-weight: bold">
+        Section:SecretName (Name in Key Vault: 'Section--SecretName')<br />
+        Obtained from Configuration with Configuration[""Section:SecretName""]
+    </span><br />
+    <span>@Model.Secret2</span>
+</p>
+<p>
+    <span style="font-weight: bold">
+        Section:SecretName (Name in Key Vault: 'Section--SecretName')<br />
+        Obtained from Configuration with Configuration.GetSection(""Section"")[""SecretName""]
+    </span><br />
+    <span>@Model.Secret3</span>
+</p>
+<p></p>
 <p><a href="Login">Go to login</a></p>
 <p><a href="@Model.ClientUrl">Go to client</a></p>
