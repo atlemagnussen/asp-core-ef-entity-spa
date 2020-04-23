@@ -58,9 +58,9 @@ namespace Test.core.Services
             var error = _errorDescriber.InvalidUserName(id);
             return IdentityResult.Failed(error);
         }
-        public async Task<ApplicationUser> GiveAdminRole(string userId)
+        public async Task<ApplicationUser> GiveAdminRole(string email)
         {
-            var user = await _userManager.FindByEmailAsync(userId);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
                 await EnsureRoles();
@@ -90,10 +90,11 @@ namespace Test.core.Services
             {
                 if (result.Succeeded)
                 {
-                    //await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
-                    //await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
-                    //await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
+                    // await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
+                    // await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
+                    // await _userManager.AddClaimAsync(user, new Claim("name", user.FullName));
                     // await CreateConfirmationEmail(user, scheme);
+                    // await GiveAdminRole(user.Email);
                 }
                 return result;
             }

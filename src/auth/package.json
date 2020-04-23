@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Test auth identity server",
     "scripts": {
-        "copy": "copy-files-from-to"
+        "build": "copy-files-from-to"
     },
     "repository": {
         "type": "git",
