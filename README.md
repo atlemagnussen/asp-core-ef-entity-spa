@@ -67,3 +67,12 @@ Redirect url:
 npm install
 npm run copy
 ```
+
+## Azure Key vault stuff
+[Good Microsoft article to get going](https://docs.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-3.1#sample-app)
+
+### app permissions
+Remember to turn on managed identity on your app and give it proper permissions, like this:
+```sh
+$ az keyvault set-policy --name {KEY VAULT NAME} --object-id {APP OBJECT ID} --secret-permissions get list
+```

@@ -42,7 +42,7 @@ namespace Test.auth.Services
             var model = new RsaSigningKeyModel();
             try
             {
-                string raw = _configuration.GetValue<string>(RsaKeyName);
+                string raw = _configuration[RsaKeyName];
                 model.Raw = raw;
 
                 _logger.LogInformation($"raw config key; {raw}");
