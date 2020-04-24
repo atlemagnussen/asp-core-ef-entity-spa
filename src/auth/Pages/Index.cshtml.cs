@@ -51,8 +51,8 @@ namespace Test.auth.Pages
             Secret2 = _configuration["Section:SecretName"];
             Secret3 = _configuration.GetSection("Section")["SecretName"];
             Secret4 = _configuration.GetValue<string>("SecretName");
-            RsaKey = _azureKeyService.GetRsaSigningKeyClient();
-            EcKey = _azureKeyService.GetEcSigningKeyClient();
+            RsaKey = await _azureKeyService.GetRsaSigningKeyClient();
+            EcKey = await _azureKeyService.GetEcSigningKeyClient();
             return Page();
         }
 

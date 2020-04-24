@@ -15,8 +15,8 @@ namespace Test.auth.Services
     public interface IAzureKeyService
     {
         Task<RsaSigningKeyModel> GetRsaSigningKeyVaultClient();
-        RsaSigningKeyModel GetRsaSigningKeyClient();
-        EcSigningKeyModel GetEcSigningKeyClient();
+        Task<RsaSigningKeyModel> GetRsaSigningKeyClient();
+        Task<EcSigningKeyModel> GetEcSigningKeyClient();
     }
     public class AzureKeyService : IAzureKeyService
     {
@@ -74,13 +74,13 @@ namespace Test.auth.Services
             return model;
         }
 
-        public RsaSigningKeyModel GetRsaSigningKeyClient()
+        public async Task<RsaSigningKeyModel> GetRsaSigningKeyClient()
         {
             _logger.LogInformation("Start GetEcSigningKey");
             var model = new RsaSigningKeyModel();
             try
             {
-                var keyFrom = _keyClient.GetKey(RsaKeyName);
+                var keyFrom = await _keyClient.GetKeyAsync(RsaKeyName);
                 if (keyFrom != null)
                 {
                     _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
@@ -105,13 +105,13 @@ namespace Test.auth.Services
             return model;
         }
 
-        public EcSigningKeyModel GetEcSigningKeyClient()
+        public async Task<EcSigningKeyModel> GetEcSigningKeyClient()
         {
             _logger.LogInformation("Start GetEcSigningKey");
             var model = new EcSigningKeyModel();
             try
             {
-                var keyFrom = _keyClient.GetKey(EcKeyName);
+                var keyFrom = await _keyClient.GetKeyAsync(EcKeyName);
                 if (keyFrom != null)
                 {
                     _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
