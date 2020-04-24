@@ -38,28 +38,36 @@
     <span>@Model.Secret4</span>
 </p>
 <h4>Azure Key Vault keys</h4>
-<p>
-    <h5>Rsa</h5>
-    <span style="font-weight: bold">Algorithm</span><br />
-    <span>@Model.RsaKey.Algorithm</span><br />
-    <span style="font-weight: bold">KeyType</span><br />
-    <span>@Model.RsaKey.KeyType</span><br />
-    <span style="font-weight: bold">CurveName</span><br />
-    <span>@Model.RsaKey.CurveName</span><br />
-    <span style="font-weight: bold">SignatureAlgorithm</span><br />
-    <span>@Model.RsaKey.SignatureAlgorithm</span><br />
-</p>
-<p>
-    <h5>Ec</h5>
-    <span style="font-weight: bold">Algorithm</span><br />
-    <span>@Model.EcKey.Algorithm</span><br />
-    <span style="font-weight: bold">KeyType</span><br />
-    <span>@Model.EcKey.KeyType</span><br />
-    <span style="font-weight: bold">CurveName</span><br />
-    <span>@Model.EcKey.CurveName</span><br />
-    <span style="font-weight: bold">SignatureAlgorithm</span><br />
-    <span>@Model.EcKey.SignatureAlgorithm</span><br />
-</p>
+@if (Model.IsDevelopment)
+{
+    <p>Not available in development</p>
+}
+else
+{
+    <p>
+        <h5>Rsa</h5>
+        <span style="font-weight: bold">Algorithm</span><br />
+        <span>@Model.RsaKey.Algorithm</span><br />
+        <span style="font-weight: bold">KeyType</span><br />
+        <span>@Model.RsaKey.KeyType</span><br />
+        <span style="font-weight: bold">CurveName</span><br />
+        <span>@Model.RsaKey.CurveName</span><br />
+        <span style="font-weight: bold">SignatureAlgorithm</span><br />
+        <span>@Model.RsaKey.SignatureAlgorithm</span><br />
+    </p>
+    <p>
+        <h5>Ec</h5>
+        <span style="font-weight: bold">Algorithm</span><br />
+        <span>@Model.EcKey.Algorithm</span><br />
+        <span style="font-weight: bold">KeyType</span><br />
+        <span>@Model.EcKey.KeyType</span><br />
+        <span style="font-weight: bold">CurveName</span><br />
+        <span>@Model.EcKey.CurveName</span><br />
+        <span style="font-weight: bold">SignatureAlgorithm</span><br />
+        <span>@Model.EcKey.SignatureAlgorithm</span><br />
+    </p>
+}
+
 <p><a href=".well-known/openid-configuration">Discovery document</a></p>
 <p><a href="Login">Go to login</a></p>
 <p><a href="@Model.ClientUrl">Go to client</a></p>

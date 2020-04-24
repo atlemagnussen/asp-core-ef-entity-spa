@@ -60,7 +60,9 @@ namespace Test.auth.Extentions
                 builder.AddDeveloperSigningCredential();
             else
             {
-                AddSigningKey(configuration, builder);
+                IAzureKeyService service = new AzureKeyService(configuration);
+                var key = service.GetEcSigningKeyClient();
+                builder.AddSigningCredential(key.Key, key.Algorithm);
             }
             builder.AddOperationalStore(options =>
                 {
@@ -95,13 +97,6 @@ namespace Test.auth.Extentions
             });
 
             //services.AddScoped<IProfileService, TestProfileService>();
-        }
-
-        private static void AddSigningKey(IConfiguration configuration, IIdentityServerBuilder builder)
-        {
-            IAzureKeyService service = new AzureKeyService(configuration);
-            var key = service.GetEcSigningKeyClient();
-            builder.AddSigningCredential(key.Key, key.Algorithm);
         }
     }
 }

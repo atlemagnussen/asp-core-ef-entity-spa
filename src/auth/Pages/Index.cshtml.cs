@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -37,6 +38,8 @@ namespace Test.auth.Pages
         public string Secret2 { get; set; }
         public string Secret3 { get; set; }
         public string Secret4 { get; set; }
+
+        public bool IsDevelopment { get; set; }
         public RsaSigningKeyModel RsaKey { get; set; }
         public EcSigningKeyModel EcKey { get; set; }
 
@@ -51,8 +54,13 @@ namespace Test.auth.Pages
             Secret2 = _configuration["Section:SecretName"];
             Secret3 = _configuration.GetSection("Section")["SecretName"];
             Secret4 = _configuration.GetValue<string>("SecretName");
-            RsaKey = await _azureKeyService.GetRsaSigningKeyClientAsync();
-            EcKey = await _azureKeyService.GetEcSigningKeyClientAsync();
+            IsDevelopment = _environment.IsDevelopment();
+            if (!IsDevelopment)
+            {
+                RsaKey = await _azureKeyService.GetRsaSigningKeyClientAsync();
+                EcKey = await _azureKeyService.GetEcSigningKeyClientAsync();
+            }
+            
             return Page();
         }
 
