@@ -1,3 +1,4 @@
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,11 @@ namespace Test.auth
             services.AddScoped<IExternalService, ExternalService>();
             services.AddScoped<IAzureKeyService, AzureKeyService>();
 
+            if (!Environment.IsDevelopment())
+            {
+                services.AddScoped<ISigningCredentialStore, AzureSigningCredentialsStore>();
+                services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
+            }
             services.AddIdentityServerConfig(Configuration, Environment);
             services.AddCommonIdentitySettings();
             //services.AddWebEncoders();

@@ -54,11 +54,8 @@ namespace Test.auth.Extentions
                     CookieSlidingExpiration = true
                 };
             });
-            //if (environment.IsDevelopment())
-            builder.AddDeveloperSigningCredential();
-            //{
-                // builder.AddSigningCredential()
-            //}
+            if (environment.IsDevelopment())
+                builder.AddDeveloperSigningCredential();
 
             builder.AddOperationalStore(options =>
                 {
