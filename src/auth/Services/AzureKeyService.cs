@@ -48,7 +48,7 @@ namespace Test.auth.Services
 
         public RsaSigningKeyModel GetRsaSigningKeyClient()
         {
-            _logger.LogInformation("Start GetEcSigningKey Sync");
+            //_logger.LogInformation("Start GetEcSigningKey Sync");
 
             try
             {
@@ -60,12 +60,12 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
+                    //_logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error GetEcSigningKey", ex);
+                //_logger.LogError("Error GetEcSigningKey", ex);
             }
             return new RsaSigningKeyModel { KeyId = "Failed" };
         }
@@ -109,7 +109,7 @@ namespace Test.auth.Services
 
         public EcSigningKeyModel GetEcSigningKeyClient()
         {
-            _logger.LogInformation("Start GetEcSigningKey Sync");
+            //_logger.LogInformation("Start GetEcSigningKey Sync");
 
             try
             {
@@ -121,12 +121,12 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
+                    //_logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error GetEcSigningKey", ex);
+                //_logger.LogError("Error GetEcSigningKey", ex);
             }
             return new EcSigningKeyModel { KeyId = "Failed" };
         }
@@ -164,16 +164,16 @@ namespace Test.auth.Services
             model.Key = new ECDsaSecurityKey(ec) { KeyId = model.KeyId };
             if (keyVaultKey.Key.CurveName != null)
             {
-                _logger.LogInformation($"CurveName: {keyVaultKey.Key.CurveName}");
+                //_logger.LogInformation($"CurveName: {keyVaultKey.Key.CurveName}");
                 model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
             }
 
-            _logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
+            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
             model.KeyType = keyVaultKey.KeyType.ToString();
             
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
 
-            _logger.LogInformation($"SignatureAlgorithm: {ec.SignatureAlgorithm}");
+            //_logger.LogInformation($"SignatureAlgorithm: {ec.SignatureAlgorithm}");
             model.SignatureAlgorithm = ec.SignatureAlgorithm;
             return model;
         }

@@ -56,15 +56,15 @@ namespace Test.auth.Extentions
                     CookieSlidingExpiration = true
                 };
             });
-            //if (environment.IsDevelopment())
+            if (environment.IsDevelopment())
                 builder.AddDeveloperSigningCredential();
-            //else
-            //{
-                //IAzureKeyService service = new AzureKeyService(configuration);
-                //var key = service.GetEcSigningKeyClient();
-                //if (key != null && key.Key != null)
-                //    builder.AddSigningCredential(key.Key, key.Algorithm);
-            //}
+            else
+            {
+                IAzureKeyService service = new AzureKeyService(configuration, null);
+                var key = service.GetEcSigningKeyClient();
+                if (key != null && key.Key != null)
+                    builder.AddSigningCredential(key.Key, key.Algorithm);
+            }
             builder.AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
