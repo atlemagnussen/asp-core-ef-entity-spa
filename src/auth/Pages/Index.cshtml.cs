@@ -43,25 +43,33 @@ namespace Test.auth.Pages
         public RsaSigningKeyModel RsaKey { get; set; }
         public EcSigningKeyModel EcKey { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public void OnGet()
         {
-            ConnectionString1 = GetConStrStripPw("AuthDb"); //_configuration.GetConnectionString("Test");
-            ConnectionString2 = GetConStrStripPw("BankDatabase"); //_configuration["ConnectionStrings:Test"];
-            AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
-            AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
-            ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
-            Secret1 = _configuration["SecretName"];
-            Secret2 = _configuration["Section:SecretName"];
-            Secret3 = _configuration.GetSection("Section")["SecretName"];
-            Secret4 = _configuration.GetValue<string>("SecretName");
-            IsDevelopment = _environment.IsDevelopment();
-            if (!IsDevelopment)
+            _logger.LogInformation("Index start");
+            try
             {
-                RsaKey = _azureKeyService.GetRsaSigningKeyClient();
-                EcKey = _azureKeyService.GetEcSigningKeyClient();
+                ConnectionString1 = GetConStrStripPw("AuthDb"); //_configuration.GetConnectionString("Test");
+                ConnectionString2 = GetConStrStripPw("BankDatabase"); //_configuration["ConnectionStrings:Test"];
+                AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
+                AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
+                ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
+                Secret1 = _configuration["SecretName"];
+                Secret2 = _configuration["Section:SecretName"];
+                Secret3 = _configuration.GetSection("Section")["SecretName"];
+                Secret4 = _configuration.GetValue<string>("SecretName");
+                IsDevelopment = _environment.IsDevelopment();
+                if (!IsDevelopment)
+                {
+                    RsaKey = _azureKeyService.GetRsaSigningKeyClient();
+                    EcKey = _azureKeyService.GetEcSigningKeyClient();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Terrible ERROR IN INDEX", ex);
             }
             
-            return Page();
+            //return Page();
         }
 
         private string GetConStrStripPw(string name) {
