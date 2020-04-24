@@ -80,16 +80,18 @@ namespace Test.auth.Services
             var model = new RsaSigningKeyModel();
             try
             {
-                var keyFrom = _keyClient.GetKey(EcKeyName);
+                var keyFrom = _keyClient.GetKey(RsaKeyName);
                 if (keyFrom != null)
                 {
-                    model.Raw = keyFrom.Value.Key.ToString();
                     _logger.LogInformation($"{keyFrom.Value.KeyType}");
                     var rsa = keyFrom.Value.Key.ToRSA();
-                    _logger.LogInformation($"Ec: {rsa.ToString()}");
+                    model.Raw = rsa.ToXmlString(true);
+
                     model.Key = new RsaSecurityKey(rsa);
                     model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
-                    model.AlgorithmString = $"{keyFrom.Value.KeyType.ToString()} - {keyFrom.Value.Key.CurveName.ToString()}";
+                    model.KeyType = keyFrom.Value.KeyType.ToString();
+                    model.CurveName = keyFrom.Value.Key.CurveName.ToString();
+                    model.SignatureAlgorithm = rsa.SignatureAlgorithm;
                 }
                 else
                 {
@@ -112,13 +114,14 @@ namespace Test.auth.Services
                 var keyFrom = _keyClient.GetKey(EcKeyName);
                 if (keyFrom != null)
                 {
-                    model.Raw = keyFrom.Value.Key.ToString();
                     _logger.LogInformation($"{keyFrom.Value.KeyType}");
                     var ec = keyFrom.Value.Key.ToECDsa();
-                    _logger.LogInformation($"Ec: {ec.ToString()}");
+                    model.Raw = ec.ToXmlString(true);
                     model.Key = new ECDsaSecurityKey(ec);
                     model.Algorithm = IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
-                    model.AlgorithmString = $"{keyFrom.Value.KeyType.ToString()} - {keyFrom.Value.Key.CurveName.ToString()}";
+                    model.KeyType = keyFrom.Value.KeyType.ToString();
+                    model.CurveName = keyFrom.Value.Key.CurveName.ToString();
+                    model.SignatureAlgorithm = ec.SignatureAlgorithm;
                 }
                 else
                 {

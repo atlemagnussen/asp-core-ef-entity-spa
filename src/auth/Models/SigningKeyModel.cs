@@ -14,7 +14,9 @@ namespace Test.auth.Models
         public string Raw { get; set; }
         public RsaSecurityKey Key { get; set; }
         public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
-        public string AlgorithmString { get; set; }
+        public string KeyType { get; set; }
+        public string CurveName { get; set; }
+        public string SignatureAlgorithm { get; set; }
     }
 
     public class EcSigningKeyModel
@@ -22,6 +24,8 @@ namespace Test.auth.Models
         public string Raw { get; set; }
         public ECDsaSecurityKey Key { get; set; }
         public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get; set; }
-        public string AlgorithmString { get; set; }
+        public string KeyType { get; set; }
+        public string CurveName { get; set; }
+        public string SignatureAlgorithm { get; set; }
     }
 }
