@@ -45,7 +45,7 @@ namespace Test.auth.Services
                 string raw = _configuration[RsaKeyName];
                 model.Raw = raw;
 
-                _logger.LogInformation($"raw config key; {raw}");
+                _logger.LogInformation($"GetRsaSigningKey raw config key; {raw}");
                 var keyFrom = _keyClient.GetKey(RsaKeyName);
                 if (keyFrom != null)
                 {
@@ -57,12 +57,12 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    _logger.LogInformation("keyFrom was null");
+                    _logger.LogError("GetRsaSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error GetRsaSigningKey", ex);
+                _logger.LogError("GetRsaSigningKey Error GetRsaSigningKey", ex.Message);
             }
             return model;
         }
@@ -76,7 +76,7 @@ namespace Test.auth.Services
                 string raw = _configuration.GetValue<string>(EcKeyName);
                 model.Raw = raw;
 
-                _logger.LogInformation($"raw config key; {raw}");
+                _logger.LogInformation($"GetEcSigningKey raw config key; {raw}");
                 var keyFrom = _keyClient.GetKey(RsaKeyName);
                 if (keyFrom != null)
                 {
@@ -88,7 +88,7 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    _logger.LogInformation("keyFrom was null");
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
