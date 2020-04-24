@@ -36,9 +36,9 @@ namespace Test.auth.Services
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
-            //var tokenCredential = new DefaultAzureCredential();
-            var tokenCredential = new ManagedIdentityCredential();
-            _keyClient = new KeyClient(vaultUri, tokenCredential);
+            var tokenCredential = new DefaultAzureCredential();
+            //var tokenCredential = new ManagedIdentityCredential();
+            _keyClient = new KeyClient(vaultUri, tokenCredential, new KeyClientOptions);
 
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
             _keyVaultClient = new KeyVaultClient(
@@ -53,7 +53,7 @@ namespace Test.auth.Services
             try
             {
                 var keyBundle = await _keyVaultClient.GetKeyAsync(_vaultUrl, RsaKeyName);
-                model.Raw = keyBundle.Key.ToRSA().ToString();
+                model.Raw = keyBundle.Key.ToRSA().ToXmlString(true);
 
                 if (keyBundle != null)
                 {
