@@ -38,50 +38,62 @@ namespace Test.auth.Services
 
         public RsaSigningKeyModel GetRsaSigningKey()
         {
-            string raw = _configuration.GetValue<string>(RsaKeyName);
-            var model = new RsaSigningKeyModel
+            _logger.LogInformation("Start GetRsaSigningKey");
+            var model = new RsaSigningKeyModel();
+            try
             {
-                Raw = raw
-            };
+                string raw = _configuration.GetValue<string>(RsaKeyName);
+                model.Raw = raw;
 
-            _logger.LogInformation($"raw config key; {raw}");
-            var keyFrom = _keyClient.GetKey(RsaKeyName);
-            if (keyFrom != null)
+                _logger.LogInformation($"raw config key; {raw}");
+                var keyFrom = _keyClient.GetKey(RsaKeyName);
+                if (keyFrom != null)
+                {
+                    _logger.LogInformation($"{keyFrom.Value.KeyType}");
+                    var rsa = keyFrom.Value.Key.ToRSA();
+                    _logger.LogInformation($"Rsa: {rsa.ToString()}");
+                    model.Key = new RsaSecurityKey(rsa);
+                    model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
+                }
+                else
+                {
+                    _logger.LogInformation("keyFrom was null");
+                }
+            }
+            catch (Exception ex)
             {
-                _logger.LogInformation($"{keyFrom.Value.KeyType}");
-                var rsa = keyFrom.Value.Key.ToRSA();
-                _logger.LogInformation($"Rsa: {rsa.ToString()}");
-                model.Key = new RsaSecurityKey(rsa);
-                model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
-            } 
-            else
-            {
-                _logger.LogInformation("keyFrom was null");
+                _logger.LogError("Error GetRsaSigningKey", ex);
             }
             return model;
         }
 
         public EcSigningKeyModel GetEcSigningKey()
         {
-            string raw = _configuration.GetValue<string>(EcKeyName);
-            var model = new EcSigningKeyModel
+            _logger.LogInformation("Start GetEcSigningKey");
+            var model = new EcSigningKeyModel();
+            try
             {
-                Raw = raw
-            };
+                string raw = _configuration.GetValue<string>(EcKeyName);
+                model.Raw = raw;
 
-            _logger.LogInformation($"raw config key; {raw}");
-            var keyFrom = _keyClient.GetKey(RsaKeyName);
-            if (keyFrom != null)
-            {
-                _logger.LogInformation($"{keyFrom.Value.KeyType}");
-                var ec = keyFrom.Value.Key.ToECDsa();
-                _logger.LogInformation($"Ec: {ec.ToString()}");
-                model.Key = new ECDsaSecurityKey(ec);
-                model.Algorithm = IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
+                _logger.LogInformation($"raw config key; {raw}");
+                var keyFrom = _keyClient.GetKey(RsaKeyName);
+                if (keyFrom != null)
+                {
+                    _logger.LogInformation($"{keyFrom.Value.KeyType}");
+                    var ec = keyFrom.Value.Key.ToECDsa();
+                    _logger.LogInformation($"Ec: {ec.ToString()}");
+                    model.Key = new ECDsaSecurityKey(ec);
+                    model.Algorithm = IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
+                }
+                else
+                {
+                    _logger.LogInformation("keyFrom was null");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogInformation("keyFrom was null");
+                _logger.LogError("Error GetEcSigningKey", ex);
             }
             return model;
         }
