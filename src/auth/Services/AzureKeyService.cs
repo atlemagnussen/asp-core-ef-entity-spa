@@ -72,7 +72,7 @@ namespace Test.auth.Services
 
         public async Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync()
         {
-            //_logger.LogInformation("Start GetEcSigningKey Async");
+            _logger.LogInformation("Start GetEcSigningKey Async");
             try
             {
                 var response = await _keyClient.GetKeyAsync(RsaKeyName);
@@ -83,15 +83,14 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    //_logger.LogError("GetEcSigningKey keyFrom was null");
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                //_logger.LogError("Error GetEcSigningKey", ex);
-                throw;
+                _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return null;
+            return new RsaSigningKeyModel { KeyId = "Failed" };
         }
 
         private RsaSigningKeyModel GetFromResponse(KeyVaultKey keyVaultKey)
@@ -118,6 +117,7 @@ namespace Test.auth.Services
                 if (response != null && response.Value != null)
                 {
                     var model = GetFromKeyVaultKey(response.Value);
+                    return model;
                 }
                 else
                 {
@@ -133,26 +133,25 @@ namespace Test.auth.Services
 
         public async Task<EcSigningKeyModel> GetEcSigningKeyClientAsync()
         {
-            //_logger.LogInformation("Start GetEcSigningKey Async");
-            
+            _logger.LogInformation("Start GetEcSigningKey Async");
             try
             {
                 var response = await _keyClient.GetKeyAsync(EcKeyName);
                 if (response != null && response.Value != null)
                 {
                     var model = GetFromKeyVaultKey(response.Value);
+                    return model;
                 }
                 else
                 {
-                    throw new ApplicationException("GetEcSigningKey keyFrom was null");
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                throw;
-                //_logger.LogError("Error GetEcSigningKey", ex);
+                _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return null;
+            return new EcSigningKeyModel { KeyId = "Failed" };
         }
 
         private EcSigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
