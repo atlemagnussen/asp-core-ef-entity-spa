@@ -11,12 +11,16 @@ using Test.model.Users;
 using Test.auth.Services;
 using Test.dataaccess;
 using IdentityServer4;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Test.auth.Extentions
 {
     public static class ServiceCollectionExtension
     {
-        public static void AddIdentityServerConfig(this IServiceCollection services, IConfiguration configuration)
+        public static void AddIdentityServerConfig(this IServiceCollection services, 
+            IConfiguration configuration, 
+            IWebHostEnvironment environment)
         {
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = configuration.GetConnectionString("AuthDb");
@@ -50,7 +54,11 @@ namespace Test.auth.Extentions
                     CookieSlidingExpiration = true
                 };
             });
-            builder.AddDeveloperSigningCredential();
+            if (environment.IsDevelopment())
+                builder.AddDeveloperSigningCredential();
+            {
+                // builder.AddSigningCredential()
+            }
 
             builder.AddOperationalStore(options =>
                 {

@@ -37,6 +37,24 @@
     <span style="font-weight: bold">Configuration.GetValue&lt;string&gt;("SecretName")</span><br />
     <span>@Model.Secret4</span>
 </p>
-<p></p>
+<h4>Azure Key Vault keys</h4>
+<p>
+    <h5>Rsa</h5>
+    <span style="font-weight: bold">Raw</span><br />
+    <span>@Model.RsaKey.Raw</span>
+    <span style="font-weight: bold">Algorithm</span><br />
+    <span>@Model.RsaKey.Algorithm</span>
+    <span style="font-weight: bold">Key</span><br />
+    <span>@Model.RsaKey.Key.ToString()</span>
+</p>
+<p>
+    <h5>Ec</h5>
+    <span style="font-weight: bold">Raw</span><br />
+    <span>@Model.EcKey.Raw</span>
+    <span style="font-weight: bold">Algorithm</span><br />
+    <span>@Model.EcKey.Algorithm</span>
+    <span style="font-weight: bold">Key</span><br />
+    <span>@Model.EcKey.Key.ToString()</span>
+</p>
 <p><a href="Login">Go to login</a></p>
 <p><a href="@Model.ClientUrl">Go to client</a></p>

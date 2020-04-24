@@ -13,10 +13,13 @@ namespace Test.auth
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; set; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration,
+            IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -26,8 +29,9 @@ namespace Test.auth
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<IClaimsHelper, ClaimsHelper>();
             services.AddScoped<IExternalService, ExternalService>();
+            services.AddScoped<IAzureKeyService, AzureKeyService>();
 
-            services.AddIdentityServerConfig(Configuration);
+            services.AddIdentityServerConfig(Configuration, Environment);
             services.AddCommonIdentitySettings();
             //services.AddWebEncoders();
             services.AddCommonDataProtection();

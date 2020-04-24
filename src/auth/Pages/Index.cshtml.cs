@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using Test.auth.Models;
+using Test.auth.Services;
 
 namespace Test.auth.Pages
 {
@@ -11,14 +13,17 @@ namespace Test.auth.Pages
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IAzureKeyService _azureKeyService;
 
         public IndexModel(IWebHostEnvironment environment,
             ILogger<IndexModel> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IAzureKeyService azureKeyService)
         {
             _environment = environment;
             _logger = logger;
             _configuration = configuration;
+            _azureKeyService = azureKeyService;
         }
         public string ConnectionString1 { get; set; }
         public string ConnectionString2 { get; set; }
@@ -30,6 +35,8 @@ namespace Test.auth.Pages
         public string Secret2 { get; set; }
         public string Secret3 { get; set; }
         public string Secret4 { get; set; }
+        public RsaSigningKeyModel RsaKey { get; set; }
+        public EcSigningKeyModel EcKey { get; set; }
 
         public void OnGet()
         {
@@ -42,6 +49,8 @@ namespace Test.auth.Pages
             Secret2 = _configuration["Section:SecretName"];
             Secret3 = _configuration.GetSection("Section")["SecretName"];
             Secret4 = _configuration.GetValue<string>("SecretName");
+            RsaKey = _azureKeyService.GetRsaSigningKey();
+            EcKey = _azureKeyService.GetEcSigningKey();
     }
 
         private string GetConStrStripPw(string name) {
