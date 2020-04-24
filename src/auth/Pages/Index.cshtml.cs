@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 using Test.auth.Models;
 using Test.auth.Services;
 
@@ -38,7 +40,7 @@ namespace Test.auth.Pages
         public RsaSigningKeyModel RsaKey { get; set; }
         public EcSigningKeyModel EcKey { get; set; }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             ConnectionString1 = GetConStrStripPw("AuthDb"); //_configuration.GetConnectionString("Test");
             ConnectionString2 = GetConStrStripPw("BankDatabase"); //_configuration["ConnectionStrings:Test"];
@@ -49,9 +51,10 @@ namespace Test.auth.Pages
             Secret2 = _configuration["Section:SecretName"];
             Secret3 = _configuration.GetSection("Section")["SecretName"];
             Secret4 = _configuration.GetValue<string>("SecretName");
-            RsaKey = _azureKeyService.GetRsaSigningKey();
+            RsaKey = await _azureKeyService.GetRsaSigningKey();
             EcKey = _azureKeyService.GetEcSigningKey();
-    }
+            return Page();
+        }
 
         private string GetConStrStripPw(string name) {
             var connectionString = _configuration.GetConnectionString(name);
