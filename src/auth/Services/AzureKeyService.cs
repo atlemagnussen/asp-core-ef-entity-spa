@@ -21,7 +21,7 @@ namespace Test.auth.Services
     }
     public class AzureKeyService : IAzureKeyService
     {
-        //private readonly ILogger<AzureKeyService> _logger;
+        private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
         //private readonly KeyVaultClient _keyVaultClient;
@@ -29,9 +29,10 @@ namespace Test.auth.Services
         private static string RsaKeyName = "rsa-2048-core-auth";
         private static string EcKeyName = "ec-2048-core-auth";
 
-        public AzureKeyService(IConfiguration configuration)
+        public AzureKeyService(IConfiguration configuration,
+            ILogger<AzureKeyService> logger)
         {
-            //_logger = logger;
+            _logger = logger;
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
@@ -47,7 +48,7 @@ namespace Test.auth.Services
 
         public RsaSigningKeyModel GetRsaSigningKeyClient()
         {
-            //_logger.LogInformation("Start GetEcSigningKey Sync");
+            _logger.LogInformation("Start GetEcSigningKey Sync");
 
             try
             {
@@ -59,14 +60,14 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    //_logger.LogError("GetEcSigningKey keyFrom was null");
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                //_logger.LogError("Error GetEcSigningKey", ex);
+                _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return null;
+            return new RsaSigningKeyModel { KeyId = "Failed" };
         }
 
         public async Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync()
@@ -109,7 +110,7 @@ namespace Test.auth.Services
 
         public EcSigningKeyModel GetEcSigningKeyClient()
         {
-            //_logger.LogInformation("Start GetEcSigningKey Sync");
+            _logger.LogInformation("Start GetEcSigningKey Sync");
 
             try
             {
@@ -120,15 +121,14 @@ namespace Test.auth.Services
                 }
                 else
                 {
-                    throw new ApplicationException("GetEcSigningKey keyFrom was null");
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
                 }
             }
             catch (Exception ex)
             {
-                throw;
-                //_logger.LogError("Error GetEcSigningKey", ex);
+                _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return null;
+            return new EcSigningKeyModel { KeyId = "Failed" };
         }
 
         public async Task<EcSigningKeyModel> GetEcSigningKeyClientAsync()
