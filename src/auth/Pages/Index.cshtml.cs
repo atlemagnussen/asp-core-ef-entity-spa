@@ -40,8 +40,8 @@ namespace Test.auth.Pages
 
         public void OnGet()
         {
-            ConnectionString1 = _configuration.GetConnectionString("Test"); //GetConStrStripPw("AuthDb");
-            ConnectionString2 = _configuration["ConnectionStrings:Test"];
+            ConnectionString1 = GetConStrStripPw("AuthDb"); //_configuration.GetConnectionString("Test");
+            ConnectionString2 = GetConStrStripPw("BankDatabase"); //_configuration["ConnectionStrings:Test"];
             AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");
             AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
             ClientUrl = _configuration.GetValue<string>("AllowedClientUrl");

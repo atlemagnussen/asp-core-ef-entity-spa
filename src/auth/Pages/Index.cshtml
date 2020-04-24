@@ -14,12 +14,12 @@
 <p></p>
 <h4>Azure Key Vault values</h4>
 <p>
-    <span style="font-weight: bold">Configuration.GetConnectionString("Test")</span>
+    <span style="font-weight: bold">Configuration.GetConnectionString("AuthDb")</span>
     <span>@Model.ConnectionString1</span>
 </p>
 <p>
-    <span style="font-weight: bold">Configuration["ConnectionStrings:Test"]</span>
-    <span>@Model.ConnectionString1</span>
+    <span style="font-weight: bold">Configuration.GetConnectionString("BankDatabase")</span>
+    <span>@Model.ConnectionString2</span>
 </p>
 <p>
     <span style="font-weight: bold">Configuration["SecretName"]</span><br />
