@@ -168,16 +168,23 @@ namespace Test.auth.Services
                 _logger.LogInformation($"CurveName: {keyVaultKey.Key.CurveName}");
                 model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
             }
-            
+
+            _logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
             model.KeyType = keyVaultKey.KeyType.ToString();
+            
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
+
+            _logger.LogInformation($"SignatureAlgorithm: {ec.SignatureAlgorithm}");
             model.SignatureAlgorithm = ec.SignatureAlgorithm;
             return model;
         }
         private IdentityServerConstants.ECDsaSigningAlgorithm GetEcAlgorithm(KeyCurveName? keyCurveName)
         {
             if (!keyCurveName.HasValue)
+            {
+                _logger.LogError("Curve no value");
                 throw new NotSupportedException();
+            }
 
             if (keyCurveName.Value == KeyCurveName.P256)
                     return IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
@@ -187,7 +194,8 @@ namespace Test.auth.Services
 
             if (keyCurveName.Value == KeyCurveName.P521)
                 return IdentityServerConstants.ECDsaSigningAlgorithm.ES512;
-         
+
+            _logger.LogError("Curve not supported");
             throw new NotSupportedException();
         }
 
