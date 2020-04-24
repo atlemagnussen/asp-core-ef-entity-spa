@@ -62,7 +62,8 @@ namespace Test.auth.Extentions
             {
                 IAzureKeyService service = new AzureKeyService(configuration);
                 var key = service.GetEcSigningKeyClient();
-                builder.AddSigningCredential(key.Key, key.Algorithm);
+                if (key != null && key.Key != null)
+                    builder.AddSigningCredential(key.Key, key.Algorithm);
             }
             builder.AddOperationalStore(options =>
                 {
