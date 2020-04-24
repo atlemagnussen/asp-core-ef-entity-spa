@@ -57,8 +57,8 @@ namespace Test.auth.Pages
             IsDevelopment = _environment.IsDevelopment();
             if (!IsDevelopment)
             {
-                RsaKey = await _azureKeyService.GetRsaSigningKeyClientAsync();
-                EcKey = await _azureKeyService.GetEcSigningKeyClientAsync();
+                RsaKey = _azureKeyService.GetRsaSigningKeyClient();
+                EcKey = _azureKeyService.GetEcSigningKeyClient();
             }
             
             return Page();

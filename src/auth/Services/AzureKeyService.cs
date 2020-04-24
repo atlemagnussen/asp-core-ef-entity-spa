@@ -96,11 +96,10 @@ namespace Test.auth.Services
         private RsaSigningKeyModel GetFromResponse(KeyVaultKey keyVaultKey)
         {
             var model = new RsaSigningKeyModel();
-            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
             var rsa = keyVaultKey.Key.ToRSA();
             model.Raw = rsa.ToString();
-
-            model.Key = new RsaSecurityKey(rsa);
+            model.KeyId = keyVaultKey.Properties.Version;
+            model.Key = new RsaSecurityKey(rsa) { KeyId = model.KeyId };
             model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
@@ -159,11 +158,11 @@ namespace Test.auth.Services
         private EcSigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
             var model = new EcSigningKeyModel();
-            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
             var ec = keyVaultKey.Key.ToECDsa();
             model.Raw = ec.ToString();
 
-            model.Key = new ECDsaSecurityKey(ec);
+            model.KeyId = keyVaultKey.Properties.Version;
+            model.Key = new ECDsaSecurityKey(ec) { KeyId = model.KeyId };
             model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();

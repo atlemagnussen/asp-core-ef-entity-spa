@@ -3,29 +3,23 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Test.auth.Models
 {
-    public class SigningKeyModel
+    public class SigningKeyModel<T>
+        where T : SecurityKey
     {
+        public string KeyId { get; set; }
         public string Raw { get; set; }
-        public SecurityKey Key { get; set; }
-        public string Algorithm { get; set; }
-    }
-    public class RsaSigningKeyModel
-    {
-        public string Raw { get; set; }
-        public RsaSecurityKey Key { get; set; }
-        public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
+        public T Key { get; set; }
         public string KeyType { get; set; }
         public string CurveName { get; set; }
         public string SignatureAlgorithm { get; set; }
+    }
+    public class RsaSigningKeyModel : SigningKeyModel<RsaSecurityKey>
+    {
+        public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
     }
 
-    public class EcSigningKeyModel
+    public class EcSigningKeyModel : SigningKeyModel<ECDsaSecurityKey>
     {
-        public string Raw { get; set; }
-        public ECDsaSecurityKey Key { get; set; }
         public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get; set; }
-        public string KeyType { get; set; }
-        public string CurveName { get; set; }
-        public string SignatureAlgorithm { get; set; }
     }
 }
