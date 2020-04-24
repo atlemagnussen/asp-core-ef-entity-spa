@@ -26,8 +26,8 @@ namespace Test.auth.Services
         private readonly KeyClient _keyClient;
         //private readonly KeyVaultClient _keyVaultClient;
 
-        private static string RsaKeyName = "rsa-2048-core-auth";
-        private static string EcKeyName = "ec-2048-core-auth";
+        public static string RsaKeyName = "rsa-2048-core-auth";
+        public static string EcKeyName = "ec-2048-core-auth";
 
         public AzureKeyService(IConfiguration configuration,
             ILogger<AzureKeyService> logger)
