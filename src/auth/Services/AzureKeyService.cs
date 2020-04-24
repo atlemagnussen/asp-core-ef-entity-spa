@@ -83,9 +83,9 @@ namespace Test.auth.Services
                 var keyFrom = _keyClient.GetKey(RsaKeyName);
                 if (keyFrom != null)
                 {
-                    _logger.LogInformation($"{keyFrom.Value.KeyType}");
+                    _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
                     var rsa = keyFrom.Value.Key.ToRSA();
-                    model.Raw = rsa.ToXmlString(true);
+                    model.Raw = rsa.ToString();
 
                     model.Key = new RsaSecurityKey(rsa);
                     model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
@@ -114,9 +114,10 @@ namespace Test.auth.Services
                 var keyFrom = _keyClient.GetKey(EcKeyName);
                 if (keyFrom != null)
                 {
-                    _logger.LogInformation($"{keyFrom.Value.KeyType}");
+                    _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
                     var ec = keyFrom.Value.Key.ToECDsa();
-                    model.Raw = ec.ToXmlString(true);
+                    model.Raw = ec.ToString();
+
                     model.Key = new ECDsaSecurityKey(ec);
                     model.Algorithm = IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
                     model.KeyType = keyFrom.Value.KeyType.ToString();
