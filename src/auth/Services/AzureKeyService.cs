@@ -163,7 +163,12 @@ namespace Test.auth.Services
 
             model.KeyId = keyVaultKey.Properties.Version;
             model.Key = new ECDsaSecurityKey(ec) { KeyId = model.KeyId };
-            model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
+            if (keyVaultKey.Key.CurveName != null)
+            {
+                _logger.LogInformation($"CurveName: {keyVaultKey.Key.CurveName}");
+                model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
+            }
+            
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
             model.SignatureAlgorithm = ec.SignatureAlgorithm;
