@@ -13,6 +13,8 @@ using Test.dataaccess;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Azure.Identity;
+using Azure.Security.KeyVault.Keys;
 
 namespace Test.auth.Extentions
 {
@@ -56,7 +58,10 @@ namespace Test.auth.Extentions
             });
             if (environment.IsDevelopment())
                 builder.AddDeveloperSigningCredential();
-
+            else
+            {
+                AddSigningKey(configuration, builder);
+            }
             builder.AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
@@ -90,6 +95,13 @@ namespace Test.auth.Extentions
             });
 
             //services.AddScoped<IProfileService, TestProfileService>();
+        }
+
+        private static void AddSigningKey(IConfiguration configuration, IIdentityServerBuilder builder)
+        {
+            IAzureKeyService service = new AzureKeyService(configuration);
+            var key = service.GetEcSigningKeyClient();
+            builder.AddSigningCredential(key.Key, key.Algorithm);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using Azure;
+using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using IdentityServer4;
 using Microsoft.Extensions.Configuration;
@@ -13,13 +14,14 @@ namespace Test.auth.Services
     public interface IAzureKeyService
     {
         //Task<RsaSigningKeyModel> GetRsaSigningKeyVaultClient();
-        Task<RsaSigningKeyModel> GetRsaSigningKeyClient();
-        Task<EcSigningKeyModel> GetEcSigningKeyClient();
+        RsaSigningKeyModel GetRsaSigningKeyClient();
+        Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync();
+        EcSigningKeyModel GetEcSigningKeyClient();
+        Task<EcSigningKeyModel> GetEcSigningKeyClientAsync();
     }
     public class AzureKeyService : IAzureKeyService
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AzureKeyService> _logger;
+        //private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
         //private readonly KeyVaultClient _keyVaultClient;
@@ -27,11 +29,9 @@ namespace Test.auth.Services
         private static string RsaKeyName = "rsa-2048-core-auth";
         private static string EcKeyName = "ec-2048-core-auth";
 
-        public AzureKeyService(IConfiguration configuration,
-            ILogger<AzureKeyService> logger)
+        public AzureKeyService(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _logger = logger;
+            //_logger = logger;
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
@@ -43,6 +43,148 @@ namespace Test.auth.Services
             //_keyVaultClient = new KeyVaultClient(
             //    new KeyVaultClient.AuthenticationCallback(
             //        azureServiceTokenProvider.KeyVaultTokenCallback));
+        }
+
+        public RsaSigningKeyModel GetRsaSigningKeyClient()
+        {
+            //_logger.LogInformation("Start GetEcSigningKey Sync");
+
+            try
+            {
+                var response = _keyClient.GetKey(RsaKeyName);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetFromResponse(response.Value);
+                    return model;
+                }
+                else
+                {
+                    //_logger.LogError("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error GetEcSigningKey", ex);
+            }
+            return null;
+        }
+
+        public async Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync()
+        {
+            //_logger.LogInformation("Start GetEcSigningKey Async");
+            try
+            {
+                var response = await _keyClient.GetKeyAsync(RsaKeyName);
+                if (response != null)
+                {
+                    var model = GetFromResponse(response.Value);
+                    return model;
+                }
+                else
+                {
+                    //_logger.LogError("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError("Error GetEcSigningKey", ex);
+                throw;
+            }
+            return null;
+        }
+
+        private RsaSigningKeyModel GetFromResponse(KeyVaultKey keyVaultKey)
+        {
+            var model = new RsaSigningKeyModel();
+            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
+            var rsa = keyVaultKey.Key.ToRSA();
+            model.Raw = rsa.ToString();
+
+            model.Key = new RsaSecurityKey(rsa);
+            model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
+            model.KeyType = keyVaultKey.KeyType.ToString();
+            model.CurveName = keyVaultKey.Key.CurveName.ToString();
+            model.SignatureAlgorithm = rsa.SignatureAlgorithm;
+            return model;
+        }
+
+        public EcSigningKeyModel GetEcSigningKeyClient()
+        {
+            //_logger.LogInformation("Start GetEcSigningKey Sync");
+
+            try
+            {
+                var response = _keyClient.GetKey(EcKeyName);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetFromKeyVaultKey(response.Value);
+                }
+                else
+                {
+                    throw new ApplicationException("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+                //_logger.LogError("Error GetEcSigningKey", ex);
+            }
+            return null;
+        }
+
+        public async Task<EcSigningKeyModel> GetEcSigningKeyClientAsync()
+        {
+            //_logger.LogInformation("Start GetEcSigningKey Async");
+            
+            try
+            {
+                var response = await _keyClient.GetKeyAsync(EcKeyName);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetFromKeyVaultKey(response.Value);
+                }
+                else
+                {
+                    throw new ApplicationException("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+                //_logger.LogError("Error GetEcSigningKey", ex);
+            }
+            return null;
+        }
+
+        private EcSigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
+        {
+            var model = new EcSigningKeyModel();
+            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
+            var ec = keyVaultKey.Key.ToECDsa();
+            model.Raw = ec.ToString();
+
+            model.Key = new ECDsaSecurityKey(ec);
+            model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
+            model.KeyType = keyVaultKey.KeyType.ToString();
+            model.CurveName = keyVaultKey.Key.CurveName.ToString();
+            model.SignatureAlgorithm = ec.SignatureAlgorithm;
+            return model;
+        }
+        private IdentityServerConstants.ECDsaSigningAlgorithm GetEcAlgorithm(KeyCurveName? keyCurveName)
+        {
+            if (!keyCurveName.HasValue)
+                throw new NotSupportedException();
+
+            if (keyCurveName.Value == KeyCurveName.P256)
+                    return IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
+            
+            if (keyCurveName.Value == KeyCurveName.P384)
+                return IdentityServerConstants.ECDsaSigningAlgorithm.ES384;
+
+            if (keyCurveName.Value == KeyCurveName.P521)
+                return IdentityServerConstants.ECDsaSigningAlgorithm.ES512;
+         
+            throw new NotSupportedException();
         }
 
         //public async Task<RsaSigningKeyModel> GetRsaSigningKeyVaultClient()
@@ -71,84 +213,5 @@ namespace Test.auth.Services
         //    }
         //    return model;
         //}
-
-        public async Task<RsaSigningKeyModel> GetRsaSigningKeyClient()
-        {
-            _logger.LogInformation("Start GetEcSigningKey");
-            var model = new RsaSigningKeyModel();
-            try
-            {
-                var keyFrom = await _keyClient.GetKeyAsync(RsaKeyName);
-                if (keyFrom != null)
-                {
-                    _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
-                    var rsa = keyFrom.Value.Key.ToRSA();
-                    model.Raw = rsa.ToString();
-
-                    model.Key = new RsaSecurityKey(rsa);
-                    model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
-                    model.KeyType = keyFrom.Value.KeyType.ToString();
-                    model.CurveName = keyFrom.Value.Key.CurveName.ToString();
-                    model.SignatureAlgorithm = rsa.SignatureAlgorithm;
-                }
-                else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return model;
-        }
-
-        public async Task<EcSigningKeyModel> GetEcSigningKeyClient()
-        {
-            _logger.LogInformation("Start GetEcSigningKey");
-            var model = new EcSigningKeyModel();
-            try
-            {
-                var keyFrom = await _keyClient.GetKeyAsync(EcKeyName);
-                if (keyFrom != null)
-                {
-                    _logger.LogInformation($"KeyType: {keyFrom.Value.KeyType}");
-                    var ec = keyFrom.Value.Key.ToECDsa();
-                    model.Raw = ec.ToString();
-
-                    model.Key = new ECDsaSecurityKey(ec);
-                    model.Algorithm = GetEcAlgorithm(keyFrom.Value.Key.CurveName);
-                    model.KeyType = keyFrom.Value.KeyType.ToString();
-                    model.CurveName = keyFrom.Value.Key.CurveName.ToString();
-                    model.SignatureAlgorithm = ec.SignatureAlgorithm;
-                }
-                else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return model;
-        }
-
-        public IdentityServerConstants.ECDsaSigningAlgorithm GetEcAlgorithm(KeyCurveName? keyCurveName)
-        {
-            if (!keyCurveName.HasValue)
-                throw new NotSupportedException();
-
-            if (keyCurveName.Value == KeyCurveName.P256)
-                    return IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
-            
-            if (keyCurveName.Value == KeyCurveName.P384)
-                return IdentityServerConstants.ECDsaSigningAlgorithm.ES384;
-
-            if (keyCurveName.Value == KeyCurveName.P521)
-                return IdentityServerConstants.ECDsaSigningAlgorithm.ES512;
-         
-            throw new NotSupportedException();
-        }
     }
 }
