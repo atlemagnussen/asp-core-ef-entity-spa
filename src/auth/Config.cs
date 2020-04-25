@@ -9,25 +9,6 @@ namespace Test.auth
 {
     public class Config
     {
-        //public static List<TestUser> GetUsers()
-        //{
-        //    return new List<TestUser>
-        //    {
-        //        new TestUser
-        //        {
-        //            SubjectId = "1",
-        //            Username = "atle",
-        //            Password = "password"
-        //        },
-        //        new TestUser
-        //        {
-        //            SubjectId = "2",
-        //            Username = "bob",
-        //            Password = "hello"
-        //        }
-        //    };
-        //}
-
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
@@ -73,7 +54,7 @@ namespace Test.auth
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
                     UpdateAccessTokenClaimsOnRefresh = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
-                    AccessTokenLifetime = 180,
+                    //AccessTokenLifetime = 180,
 
                     RedirectUris = redirects,
                     PostLogoutRedirectUris = allowedUrls,
