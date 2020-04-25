@@ -16,15 +16,16 @@ namespace Test.auth.Services
     {
         private string _vaultUrl;
         private string _keyUrl;
-        private ILogger<DefaultTokenCreationService> _logger;
+        private ILogger<AzureKeyVaultTokenCreationService> _logger;
         public AzureKeyVaultTokenCreationService(IConfiguration configuration,
             ISystemClock clock, 
             IKeyMaterialService keys, 
             IdentityServerOptions options, 
-            ILogger<DefaultTokenCreationService> logger)
+            ILogger<DefaultTokenCreationService> logger,
+            ILogger<AzureKeyVaultTokenCreationService> loggerHere)
             : base(clock, keys, options, logger)
         {
-            _logger = logger;
+            _logger = loggerHere;
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             _keyUrl = $"{_vaultUrl}keys/{AzureKeyService.EcKeyName}";
         }
