@@ -3,11 +3,16 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.KeyVault;
+using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Test.auth.Models;
 
@@ -32,7 +37,7 @@ namespace Test.auth.Services
         private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
-        //private readonly KeyVaultClient _keyVaultClient;
+        private readonly KeyVaultClient _keyVaultClient;
 
         public static string RsaKeyName = "rsa-2048-core-auth";
         public static string EcKeyName = "ec-2048-core-auth";
@@ -49,40 +54,106 @@ namespace Test.auth.Services
 
             if (_environment.IsDevelopment())
             {
-                var clientCredential = new ClientSecretCredential(
-                tenantId: "38dd4d5d-cf60-48ff-9ebb-b16e94fa1c06",
-                clientId: "3b147a3a-5818-440d-a22b-0a46a56f7b76",
-                clientSecret: "73ceac53-8caa-49b1-9aae-de179be64715");
+                var clientId = configuration.GetValue<string>("AzureKeyVault:clientId");
+                var tenantId = configuration.GetValue<string>("AzureKeyVault:tenantId");
+                var clientSecret = configuration.GetValue<string>("AzureKeyVault:clientSecret");
+                var clientCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
                 _keyClient = new KeyClient(vaultUri, clientCredential);
+
+                var connectionString = $"RunAs=App;AppId={clientId};TenantId={tenantId};AppKey={clientSecret}";
+                var azureServiceTokenProvider = new AzureServiceTokenProvider(connectionString);
+                _keyVaultClient = new KeyVaultClient(
+                    new KeyVaultClient.AuthenticationCallback(
+                        azureServiceTokenProvider.KeyVaultTokenCallback));
+
             }
             else
             {
                 var tokenCredential = new DefaultAzureCredential();
                 //var tokenCredential = new ManagedIdentityCredential();
                 _keyClient = new KeyClient(vaultUri, tokenCredential);
+                var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                _keyVaultClient = new KeyVaultClient(
+                    new KeyVaultClient.AuthenticationCallback(
+                        azureServiceTokenProvider.KeyVaultTokenCallback));
             }
 
-            //var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            //_keyVaultClient = new KeyVaultClient(
-            //    new KeyVaultClient.AuthenticationCallback(
-            //        azureServiceTokenProvider.KeyVaultTokenCallback));
         }
 
         public RsaSigningKeys GetRsaSigningKeys()
         {
-            return null;
+            var model = new RsaSigningKeys();
+            model.Current = GetRsaSigningKey(RsaKeyName);
+
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(RsaKeyName).AsPages();
+            foreach (var page in propertiesPages)
+            {
+                foreach (var keyProperties in page.Values)
+                {
+                    if (model.Current.Version == keyProperties.Version)
+                        continue;
+                    else
+                        model.Previous = GetRsaSigningKey(RsaKeyName, keyProperties.Version);
+                }
+            }
+            return model;
         }
         public async Task<RsaSigningKeys> GetRsaSigningKeysAsync()
         {
-            return null;
+            var model = new RsaSigningKeys();
+            model.Current = await GetRsaSigningKeyAsync(RsaKeyName);
+
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(RsaKeyName).AsPages();
+            await foreach (var page in propertiesPages)
+            {
+                foreach(var keyProperties in page.Values)
+                {
+                    if (model.Current.Version == keyProperties.Version)
+                        continue;
+                    else
+                        model.Previous = await GetRsaSigningKeyAsync(RsaKeyName, keyProperties.Version);
+                }
+            }
+            return model;
         }
+
         public EcSigningKeys GetEcSigningKeys()
         {
-            return null;
+            var model = new EcSigningKeys();
+            model.Current = GetEcSigningKey(EcKeyName);
+
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(EcKeyName).AsPages();
+            foreach (var page in propertiesPages)
+            {
+                foreach (var keyProperties in page.Values)
+                {
+                    if (model.Current.Version == keyProperties.Version)
+                        continue;
+                    else
+                        model.Previous = GetEcSigningKey(EcKeyName, keyProperties.Version);
+                }
+            }
+            return model;
         }
         public async Task<EcSigningKeys> GetEcSigningKeysAsync()
         {
-            return null;
+            var model = new EcSigningKeys();
+            model.Current = await GetEcSigningKeyAsync(EcKeyName);
+
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(EcKeyName).AsPages();
+            await foreach (var page in propertiesPages)
+            {
+                foreach (var keyProperties in page.Values)
+                {
+                    if (keyProperties.Enabled.HasValue && !keyProperties.Enabled.Value)
+                        continue;
+                    if (model.Current.Version == keyProperties.Version)
+                        continue;
+                    else
+                        model.Previous = await GetEcSigningKeyAsync(EcKeyName, keyProperties.Version);
+                }
+            }
+            return model;
         }
         public RsaSigningKeyModel GetRsaSigningKey(string name, string version = null)
         {
@@ -98,7 +169,7 @@ namespace Test.auth.Services
             catch (Exception)
             {
             }
-            return new RsaSigningKeyModel { KeyId = "Failed" };
+            return new RsaSigningKeyModel { Version = "Failed" };
         }
 
         public async Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null)
@@ -121,7 +192,7 @@ namespace Test.auth.Services
             {
                 _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return new RsaSigningKeyModel { KeyId = "Failed" };
+            return new RsaSigningKeyModel { Version = "Failed" };
         }
 
         public EcSigningKeyModel GetEcSigningKey(string name, string version = null)
@@ -138,7 +209,7 @@ namespace Test.auth.Services
             catch (Exception)
             {
             }
-            return new EcSigningKeyModel { KeyId = "Failed" };
+            return new EcSigningKeyModel { Version = "Failed" };
         }
 
         public async Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null)
@@ -161,7 +232,7 @@ namespace Test.auth.Services
             {
                 _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return new EcSigningKeyModel { KeyId = "Failed" };
+            return new EcSigningKeyModel { Version = "Failed" };
         }
 
         /*
@@ -172,8 +243,8 @@ namespace Test.auth.Services
             var model = new RsaSigningKeyModel();
             var rsa = keyVaultKey.Key.ToRSA();
             model.Raw = rsa.ToXmlString(false);
-            model.KeyId = keyVaultKey.Properties.Version;
-            model.Key = new RsaSecurityKey(rsa) { KeyId = model.KeyId };
+            model.Version = keyVaultKey.Properties.Version;
+            model.Key = new RsaSecurityKey(rsa) { KeyId = model.Version };
             model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
@@ -188,8 +259,8 @@ namespace Test.auth.Services
 
             model.Raw = keyVaultKey.Key.ToString();
 
-            model.KeyId = keyVaultKey.Properties.Version;
-            model.Key = new ECDsaSecurityKey(ec) { KeyId = model.KeyId };
+            model.Version = keyVaultKey.Properties.Version;
+            model.Key = new ECDsaSecurityKey(ec) { KeyId = model.Version };
             if (keyVaultKey.Key.CurveName != null)
             {
                 model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
@@ -247,6 +318,18 @@ namespace Test.auth.Services
         //        _logger.LogError("GetRsaSigningKey Error GetRsaSigningKey", ex.Message);
         //    }
         //    return model;
+        //}
+
+        //private void KeyVersions1()
+        //{
+        //    var versions = await _keyVaultClient.GetKeyVersionsAsync(_vaultUrl, RsaKeyName);
+        //    while (versions != null)
+        //    {
+        //        versions = _keyVaultClient.GetKeysNextAsync(versions.NextPageLink).GetAwaiter().GetResult();
+
+        //        foreach (var v in versions)
+
+        //    }
         //}
     }
 }

@@ -23,7 +23,8 @@ namespace Test.auth.Models
     public class SigningKeyModel<T>
         where T : AsymmetricSecurityKey
     {
-        public string KeyId { get; set; }
+        public string Name { get; set; }
+        public string Version { get; set; }
         public string Raw { get; set; }
         public T Key { get; set; }
         public string KeyType { get; set; }

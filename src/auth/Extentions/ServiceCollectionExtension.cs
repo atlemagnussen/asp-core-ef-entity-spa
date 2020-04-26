@@ -62,15 +62,19 @@ namespace Test.auth.Extentions
             //{
             IAzureKeyService service = new AzureKeyService(environment, configuration, null);
             var keys = service.GetEcSigningKeys();
-            if (keys.Current != null && keys.Current.Key != null)
+            if (keys != null)
             {
-                builder.AddSigningCredential(keys.Current.Key, keys.Current.Algorithm);
-                builder.AddValidationKey(keys.Current.Key, keys.Current.Algorithm);
+                if (keys.Current != null && keys.Current.Key != null)
+                {
+                    builder.AddSigningCredential(keys.Current.Key, keys.Current.Algorithm);
+                    builder.AddValidationKey(keys.Current.Key, keys.Current.Algorithm);
+                }
+                if (keys.Previous != null && keys.Previous.Key != null)
+                {
+                    builder.AddValidationKey(keys.Previous.Key, keys.Previous.Algorithm);
+                }
             }
-            if (keys.Previous != null && keys.Previous.Key != null)
-            {
-                builder.AddValidationKey(keys.Previous.Key, keys.Previous.Algorithm);
-            }
+            
             //var rsaKeys = service.GetRsaSigningKeys();
             //builder.AddValidationKey(rsa.Key, rsa.Algorithm);
             //}

@@ -43,7 +43,7 @@ namespace Test.auth.Pages
         public RsaSigningKeyModel RsaKey { get; set; }
         public EcSigningKeyModel EcKey { get; set; }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             _logger.LogInformation("Index start");
             try
@@ -58,16 +58,18 @@ namespace Test.auth.Pages
                 Secret3 = _configuration.GetSection("Section")["SecretName"];
                 Secret4 = _configuration.GetValue<string>("SecretName");
                 IsDevelopment = _environment.IsDevelopment();
-                
-                RsaKey = _azureKeyService.GetRsaSigningKeys().Current;
-                EcKey = _azureKeyService.GetEcSigningKeys().Current;
+
+                var rsaKeys = await _azureKeyService.GetRsaSigningKeysAsync();
+                RsaKey = rsaKeys.Current;
+                var ecKeys = await _azureKeyService.GetEcSigningKeysAsync();
+                EcKey = ecKeys.Current;
             }
             catch (Exception ex)
             {
                 _logger.LogError("Terrible ERROR IN INDEX", ex);
             }
             
-            //return Page();
+            return Page();
         }
 
         private string GetConStrStripPw(string name) {
