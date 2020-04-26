@@ -23,6 +23,11 @@ namespace Test.auth.Models
     public class SigningKeyModel<T>
         where T : AsymmetricSecurityKey
     {
+        public SigningKeyModel(string name, string version)
+        {
+            Name = name;
+            Version = version;
+        }
         public string Name { get; set; }
         public string Version { get; set; }
         public string Raw { get; set; }
@@ -35,11 +40,15 @@ namespace Test.auth.Models
     }
     public class RsaSigningKeyModel : SigningKeyModel<RsaSecurityKey>
     {
+        public RsaSigningKeyModel(string name, string version) : base(name, version)
+        { }
         public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
     }
 
     public class EcSigningKeyModel : SigningKeyModel<ECDsaSecurityKey>
     {
+        public EcSigningKeyModel(string name, string version) : base(name, version)
+        { }
         public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get; set; }
     }
 }

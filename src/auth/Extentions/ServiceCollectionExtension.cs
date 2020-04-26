@@ -65,14 +65,10 @@ namespace Test.auth.Extentions
             if (keys != null)
             {
                 if (keys.Current != null && keys.Current.Key != null)
-                {
                     builder.AddSigningCredential(keys.Current.Key, keys.Current.Algorithm);
-                    builder.AddValidationKey(keys.Current.Key, keys.Current.Algorithm);
-                }
+                
                 if (keys.Previous != null && keys.Previous.Key != null)
-                {
                     builder.AddValidationKey(keys.Previous.Key, keys.Previous.Algorithm);
-                }
             }
             
             //var rsaKeys = service.GetRsaSigningKeys();
