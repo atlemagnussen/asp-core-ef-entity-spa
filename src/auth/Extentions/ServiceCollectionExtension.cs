@@ -56,18 +56,24 @@ namespace Test.auth.Extentions
                     CookieSlidingExpiration = true
                 };
             });
-            if (environment.IsDevelopment())
-                builder.AddDeveloperSigningCredential();
-            else
+            //if (environment.IsDevelopment())
+            //    builder.AddDeveloperSigningCredential();
+            //else
+            //{
+            IAzureKeyService service = new AzureKeyService(environment, configuration, null);
+            var keys = service.GetEcSigningKeys();
+            if (keys.Current != null && keys.Current.Key != null)
             {
-                IAzureKeyService service = new AzureKeyService(configuration, null);
-                var key = service.GetEcSigningKeyClient();
-                if (key != null && key.Key != null)
-                {
-                    builder.AddSigningCredential(key.Key, key.Algorithm);
-                    builder.AddValidationKey(key.Key, key.Algorithm);
-                }
+                builder.AddSigningCredential(keys.Current.Key, keys.Current.Algorithm);
+                builder.AddValidationKey(keys.Current.Key, keys.Current.Algorithm);
             }
+            if (keys.Previous != null && keys.Previous.Key != null)
+            {
+                builder.AddValidationKey(keys.Previous.Key, keys.Previous.Algorithm);
+            }
+            //var rsaKeys = service.GetRsaSigningKeys();
+            //builder.AddValidationKey(rsa.Key, rsa.Algorithm);
+            //}
             builder.AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));

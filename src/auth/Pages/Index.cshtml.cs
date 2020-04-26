@@ -59,8 +59,8 @@ namespace Test.auth.Pages
                 Secret4 = _configuration.GetValue<string>("SecretName");
                 IsDevelopment = _environment.IsDevelopment();
                 
-                RsaKey = _azureKeyService.GetRsaSigningKeyClient();
-                EcKey = _azureKeyService.GetEcSigningKeyClient();
+                RsaKey = _azureKeyService.GetRsaSigningKeys().Current;
+                EcKey = _azureKeyService.GetEcSigningKeys().Current;
             }
             catch (Exception ex)
             {

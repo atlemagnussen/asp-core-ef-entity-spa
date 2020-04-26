@@ -20,11 +20,11 @@ namespace Test.auth.Services
         public async Task<IEnumerable<SecurityKeyInfo>> GetValidationKeysAsync()
         {
             _logger.LogInformation("AzureValidationKeysStore");
-            var keyModel = await _azureKeyService.GetEcSigningKeyClientAsync();
+            var keys = await _azureKeyService.GetEcSigningKeysAsync();
             var securityKey = new SecurityKeyInfo
             {
-                Key = keyModel.Key,
-                SigningAlgorithm = keyModel.SignatureAlgorithm
+                Key = keys.Current.Key,
+                SigningAlgorithm = keys.Current.SignatureAlgorithm
             };
             return new SecurityKeyInfo[] { securityKey };
         }

@@ -2,7 +2,9 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
 using IdentityServer4;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -13,14 +15,20 @@ namespace Test.auth.Services
 {
     public interface IAzureKeyService
     {
+        RsaSigningKeys GetRsaSigningKeys();
+        Task<RsaSigningKeys> GetRsaSigningKeysAsync();
+        EcSigningKeys GetEcSigningKeys();
+        Task<EcSigningKeys> GetEcSigningKeysAsync();
+
         //Task<RsaSigningKeyModel> GetRsaSigningKeyVaultClient();
-        RsaSigningKeyModel GetRsaSigningKeyClient();
-        Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync();
-        EcSigningKeyModel GetEcSigningKeyClient();
-        Task<EcSigningKeyModel> GetEcSigningKeyClientAsync();
+        RsaSigningKeyModel GetRsaSigningKey(string name, string version = null);
+        Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null);
+        EcSigningKeyModel GetEcSigningKey(string name, string version = null);
+        Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null);
     }
     public class AzureKeyService : IAzureKeyService
     {
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
@@ -29,16 +37,30 @@ namespace Test.auth.Services
         public static string RsaKeyName = "rsa-2048-core-auth";
         public static string EcKeyName = "ec-2048-core-auth";
 
-        public AzureKeyService(IConfiguration configuration,
+        public AzureKeyService(IWebHostEnvironment environment,
+            IConfiguration configuration,
             ILogger<AzureKeyService> logger)
         {
+            _environment = environment;
             _logger = logger;
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
-            var tokenCredential = new DefaultAzureCredential();
-            //var tokenCredential = new ManagedIdentityCredential();
-            _keyClient = new KeyClient(vaultUri, tokenCredential);
+
+            if (_environment.IsDevelopment())
+            {
+                var clientCredential = new ClientSecretCredential(
+                tenantId: "38dd4d5d-cf60-48ff-9ebb-b16e94fa1c06",
+                clientId: "3b147a3a-5818-440d-a22b-0a46a56f7b76",
+                clientSecret: "73ceac53-8caa-49b1-9aae-de179be64715");
+                _keyClient = new KeyClient(vaultUri, clientCredential);
+            }
+            else
+            {
+                var tokenCredential = new DefaultAzureCredential();
+                //var tokenCredential = new ManagedIdentityCredential();
+                _keyClient = new KeyClient(vaultUri, tokenCredential);
+            }
 
             //var azureServiceTokenProvider = new AzureServiceTokenProvider();
             //_keyVaultClient = new KeyVaultClient(
@@ -46,39 +68,48 @@ namespace Test.auth.Services
             //        azureServiceTokenProvider.KeyVaultTokenCallback));
         }
 
-        public RsaSigningKeyModel GetRsaSigningKeyClient()
+        public RsaSigningKeys GetRsaSigningKeys()
         {
-            //_logger.LogInformation("Start GetEcSigningKey Sync");
-
+            return null;
+        }
+        public async Task<RsaSigningKeys> GetRsaSigningKeysAsync()
+        {
+            return null;
+        }
+        public EcSigningKeys GetEcSigningKeys()
+        {
+            return null;
+        }
+        public async Task<EcSigningKeys> GetEcSigningKeysAsync()
+        {
+            return null;
+        }
+        public RsaSigningKeyModel GetRsaSigningKey(string name, string version = null)
+        {
             try
             {
-                var response = _keyClient.GetKey(RsaKeyName);
+                var response = _keyClient.GetKey(name, version);
                 if (response != null && response.Value != null)
                 {
-                    var model = GetFromResponse(response.Value);
+                    var model = GetRsaFromKeyVaultKey(response.Value);
                     return model;
                 }
-                else
-                {
-                    //_logger.LogError("GetEcSigningKey keyFrom was null");
-                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //_logger.LogError("Error GetEcSigningKey", ex);
             }
             return new RsaSigningKeyModel { KeyId = "Failed" };
         }
 
-        public async Task<RsaSigningKeyModel> GetRsaSigningKeyClientAsync()
+        public async Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null)
         {
             _logger.LogInformation("Start GetEcSigningKey Async");
             try
             {
-                var response = await _keyClient.GetKeyAsync(RsaKeyName);
+                var response = await _keyClient.GetKeyAsync(name, version);
                 if (response != null)
                 {
-                    var model = GetFromResponse(response.Value);
+                    var model = GetRsaFromKeyVaultKey(response.Value);
                     return model;
                 }
                 else
@@ -93,11 +124,54 @@ namespace Test.auth.Services
             return new RsaSigningKeyModel { KeyId = "Failed" };
         }
 
-        private RsaSigningKeyModel GetFromResponse(KeyVaultKey keyVaultKey)
+        public EcSigningKeyModel GetEcSigningKey(string name, string version = null)
+        {
+            try
+            {
+                var response = _keyClient.GetKey(name, version);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetEcFromKeyVaultKey(response.Value);
+                    return model;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return new EcSigningKeyModel { KeyId = "Failed" };
+        }
+
+        public async Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null)
+        {
+            _logger.LogInformation("Start GetEcSigningKey Async");
+            try
+            {
+                var response = await _keyClient.GetKeyAsync(name, version);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetEcFromKeyVaultKey(response.Value);
+                    return model;
+                }
+                else
+                {
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error GetEcSigningKey", ex);
+            }
+            return new EcSigningKeyModel { KeyId = "Failed" };
+        }
+
+        /*
+         private
+             */
+        private RsaSigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
             var model = new RsaSigningKeyModel();
             var rsa = keyVaultKey.Key.ToRSA();
-            model.Raw = rsa.ToString();
+            model.Raw = rsa.ToXmlString(false);
             model.KeyId = keyVaultKey.Properties.Version;
             model.Key = new RsaSecurityKey(rsa) { KeyId = model.KeyId };
             model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
@@ -107,73 +181,23 @@ namespace Test.auth.Services
             return model;
         }
 
-        public EcSigningKeyModel GetEcSigningKeyClient()
-        {
-            //_logger.LogInformation("Start GetEcSigningKey Sync");
-
-            try
-            {
-                var response = _keyClient.GetKey(EcKeyName);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetFromKeyVaultKey(response.Value);
-                    return model;
-                }
-                else
-                {
-                    //_logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                //_logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return new EcSigningKeyModel { KeyId = "Failed" };
-        }
-
-        public async Task<EcSigningKeyModel> GetEcSigningKeyClientAsync()
-        {
-            _logger.LogInformation("Start GetEcSigningKey Async");
-            try
-            {
-                var response = await _keyClient.GetKeyAsync(EcKeyName);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetFromKeyVaultKey(response.Value);
-                    return model;
-                }
-                else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return new EcSigningKeyModel { KeyId = "Failed" };
-        }
-
-        private EcSigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
+        private EcSigningKeyModel GetEcFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
             var model = new EcSigningKeyModel();
             var ec = keyVaultKey.Key.ToECDsa();
-            model.Raw = ec.ToString();
+
+            model.Raw = keyVaultKey.Key.ToString();
 
             model.KeyId = keyVaultKey.Properties.Version;
             model.Key = new ECDsaSecurityKey(ec) { KeyId = model.KeyId };
             if (keyVaultKey.Key.CurveName != null)
             {
-                //_logger.LogInformation($"CurveName: {keyVaultKey.Key.CurveName}");
                 model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
             }
 
-            //_logger.LogInformation($"KeyType: {keyVaultKey.KeyType}");
             model.KeyType = keyVaultKey.KeyType.ToString();
-            
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
 
-            //_logger.LogInformation($"SignatureAlgorithm: {ec.SignatureAlgorithm}");
             model.SignatureAlgorithm = ec.SignatureAlgorithm;
             return model;
         }
