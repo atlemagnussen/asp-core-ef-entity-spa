@@ -20,7 +20,6 @@ namespace Test.auth.Services
         private readonly IConfiguration _configuration;
         private string _vaultUrl;
         private string _signingKeyName;
-        private string _keyUrl;
         private ILogger<AzureKeyVaultTokenCreationService> _logger;
         private readonly IAzureKeyService _azureKeyService;
 
@@ -48,7 +47,7 @@ namespace Test.auth.Services
             var keys = await _azureKeyService.GetSigningKeysAsync();
             var currentVersion = keys.Current.Version;
             var keyUrl = $"{_vaultUrl}keys/{_signingKeyName}/{currentVersion}";
-
+            _logger.LogInformation($"_keyUrl= {keyUrl}");
             CryptographyClient client;
             if (_environment.IsDevelopment())
             {
@@ -68,7 +67,7 @@ namespace Test.auth.Services
         protected override async Task<string> CreateJwtAsync(JwtSecurityToken jwt)
         {
             _logger.LogInformation("AzureKeyVaultTokenCreationService");
-            _logger.LogInformation($"_keyUrl= {_keyUrl}");
+            
             var plaintext = $"{jwt.EncodedHeader}.{jwt.EncodedPayload}";
 
             byte[] hash;
