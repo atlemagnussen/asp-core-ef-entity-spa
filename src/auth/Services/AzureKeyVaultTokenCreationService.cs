@@ -16,38 +16,53 @@ namespace Test.auth.Services
 {
     public class AzureKeyVaultTokenCreationService : DefaultTokenCreationService
     {
+        private readonly IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
         private string _vaultUrl;
         private string _signingKeyName;
         private string _keyUrl;
         private ILogger<AzureKeyVaultTokenCreationService> _logger;
-        private CryptographyClient _cryptoClient;
+        private readonly IAzureKeyService _azureKeyService;
+
         public AzureKeyVaultTokenCreationService(IConfiguration configuration,
             ISystemClock clock, 
             IKeyMaterialService keys, 
             IdentityServerOptions options, 
             ILogger<DefaultTokenCreationService> logger,
             ILogger<AzureKeyVaultTokenCreationService> loggerHere,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IAzureKeyService azureKeyService)
             : base(clock, keys, options, logger)
         {
+            _environment = environment;
+            _configuration = configuration;
             _logger = loggerHere;
+            _azureKeyService = azureKeyService;
+
             _signingKeyName = configuration.GetValue<string>("SigningKeyName");
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
-            _keyUrl = $"{_vaultUrl}keys/{_signingKeyName}";
+        }
 
-            if (environment.IsDevelopment())
+        private async Task<CryptographyClient> GetClient()
+        {
+            var keys = await _azureKeyService.GetSigningKeysAsync();
+            var currentVersion = keys.Current.Version;
+            var keyUrl = $"{_vaultUrl}keys/{_signingKeyName}/{currentVersion}";
+
+            CryptographyClient client;
+            if (_environment.IsDevelopment())
             {
-                var clientId = configuration.GetValue<string>("AzureKeyVault:clientId");
-                var tenantId = configuration.GetValue<string>("AzureKeyVault:tenantId");
-                var clientSecret = configuration.GetValue<string>("AzureKeyVault:clientSecret");
+                var clientId = _configuration.GetValue<string>("AzureKeyVault:clientId");
+                var tenantId = _configuration.GetValue<string>("AzureKeyVault:tenantId");
+                var clientSecret = _configuration.GetValue<string>("AzureKeyVault:clientSecret");
                 var clientCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
-                _cryptoClient = new CryptographyClient(new Uri(_keyUrl), clientCredential);
+                client = new CryptographyClient(new Uri(keyUrl), clientCredential);
             }
             else
             {
-                _cryptoClient = new CryptographyClient(new Uri(_keyUrl), new DefaultAzureCredential());
+                client = new CryptographyClient(new Uri(keyUrl), new DefaultAzureCredential());
             }
-            
+            return client;
         }
 
         protected override async Task<string> CreateJwtAsync(JwtSecurityToken jwt)
@@ -60,7 +75,8 @@ namespace Test.auth.Services
             using (var hasher = CryptoHelper.GetHashAlgorithmForSigningAlgorithm(jwt.SignatureAlgorithm))
                 hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(plaintext));
 
-            var signResult = await _cryptoClient.SignAsync(new SignatureAlgorithm(jwt.SignatureAlgorithm), hash);
+            var client = await GetClient();
+            var signResult = await client.SignAsync(new SignatureAlgorithm(jwt.SignatureAlgorithm), hash);
 
             return $"{plaintext}.{Base64UrlTextEncoder.Encode(signResult.Signature)}";
         }
