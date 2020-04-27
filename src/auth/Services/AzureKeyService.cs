@@ -24,7 +24,6 @@ namespace Test.auth.Services
     }
     public class AzureKeyService : IAzureKeyService
     {
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
@@ -34,7 +33,6 @@ namespace Test.auth.Services
             IConfiguration configuration,
             ILogger<AzureKeyService> logger)
         {
-            _environment = environment;
             _logger = logger;
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
@@ -42,7 +40,7 @@ namespace Test.auth.Services
 
             _signingKeyName = configuration.GetValue<string>("SigningKeyName");
 
-            if (_environment.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 var clientId = configuration.GetValue<string>("AzureKeyVault:clientId");
                 var tenantId = configuration.GetValue<string>("AzureKeyVault:tenantId");
@@ -53,10 +51,8 @@ namespace Test.auth.Services
             else
             {
                 var tokenCredential = new DefaultAzureCredential();
-                //var tokenCredential = new ManagedIdentityCredential();
                 _keyClient = new KeyClient(vaultUri, tokenCredential);
             }
-
         }
 
         /*
@@ -211,7 +207,7 @@ namespace Test.auth.Services
             model.Key = new ECDsaSecurityKey(ec) { KeyId = model.Version };
             if (keyVaultKey.Key.CurveName != null)
             {
-                model.Algorithm = GetEcAlgorithm(keyVaultKey.Key.CurveName);
+                model.Algorithm = KeyCryptoHelper.GetEcAlgorithm(keyVaultKey.Key.CurveName);
             }
 
             model.KeyType = keyVaultKey.KeyType.ToString();
@@ -219,26 +215,6 @@ namespace Test.auth.Services
 
             model.SignatureAlgorithm = ec.SignatureAlgorithm;
             return model;
-        }
-        private IdentityServerConstants.ECDsaSigningAlgorithm GetEcAlgorithm(KeyCurveName? keyCurveName)
-        {
-            if (!keyCurveName.HasValue)
-            {
-                _logger.LogError("Curve no value");
-                throw new NotSupportedException();
-            }
-
-            if (keyCurveName.Value == KeyCurveName.P256)
-                    return IdentityServerConstants.ECDsaSigningAlgorithm.ES256;
-            
-            if (keyCurveName.Value == KeyCurveName.P384)
-                return IdentityServerConstants.ECDsaSigningAlgorithm.ES384;
-
-            if (keyCurveName.Value == KeyCurveName.P521)
-                return IdentityServerConstants.ECDsaSigningAlgorithm.ES512;
-
-            _logger.LogError("Curve not supported");
-            throw new NotSupportedException();
         }
     }
 }

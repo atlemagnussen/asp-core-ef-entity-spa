@@ -1,6 +1,8 @@
 ﻿using IdentityServer4;
+using IdentityServer4.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using Test.auth.Services;
 
 namespace Test.auth.Models
 {
@@ -31,6 +33,7 @@ namespace Test.auth.Models
         }
         public string Name { get; set; }
         public string Version { get; set; }
+        public string AlgorithmString { get; set; }
         public string Raw { get; set; }
         public T Key { get; set; }
         public string KeyType { get; set; }
@@ -38,6 +41,15 @@ namespace Test.auth.Models
         public string SignatureAlgorithm { get; set; }
         public DateTime? Activation { get; set; }
         public DateTime? Expiration { get; set; }
+
+        public SecurityKeyInfo GetSecurityKeyInfo()
+        {
+            return new SecurityKeyInfo
+            {
+                Key = Key,
+                SigningAlgorithm = AlgorithmString
+            };
+        }
     }
     public class RsaSigningKeyModel : SigningKeyModel<RsaSecurityKey>
     {
@@ -50,6 +62,17 @@ namespace Test.auth.Models
     {
         public EcSigningKeyModel(string name, string version) : base(name, version)
         { }
-        public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get; set; }
+
+        private IdentityServerConstants.ECDsaSigningAlgorithm _algorithm;
+        public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get
+            {
+                return _algorithm;
+            }
+            set
+            {
+                _algorithm = value;
+                AlgorithmString = KeyCryptoHelper.GetECDsaSigningAlgorithmValue(value);
+            }
+        }
     }
 }

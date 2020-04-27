@@ -21,12 +21,14 @@ namespace Test.auth.Services
         {
             _logger.LogInformation("AzureValidationKeysStore");
             var keys = await _azureKeyService.GetSigningKeysAsync();
-            var securityKey = new SecurityKeyInfo
-            {
-                Key = keys.Current.Key,
-                SigningAlgorithm = keys.Current.SignatureAlgorithm
-            };
-            return new SecurityKeyInfo[] { securityKey };
+            var list = new List<SecurityKeyInfo>();
+            list.Add(keys.Current.GetSecurityKeyInfo());
+            if (keys.Previous != null)
+                list.Add(keys.Previous.GetSecurityKeyInfo());
+            if (keys.Future != null)
+                list.Add(keys.Future.GetSecurityKeyInfo());
+
+            return list;
         }
     }
 }

@@ -33,12 +33,9 @@ namespace Test.auth
             services.AddScoped<IExternalService, ExternalService>();
             services.AddScoped<IAzureKeyService, AzureKeyService>();
             
-            if (!Environment.IsDevelopment())
-            {
-                services.AddScoped<ITokenCreationService, AzureKeyVaultTokenCreationService>();
-            //    services.AddScoped<ISigningCredentialStore, AzureSigningCredentialsStore>();
-            //    services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
-            }
+            services.AddScoped<ITokenCreationService, AzureKeyVaultTokenCreationService>();
+            services.AddScoped<ISigningCredentialStore, AzureSigningCredentialsStore>();
+            services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
             services.AddIdentityServerConfig(Configuration, Environment);
             services.AddCommonIdentitySettings();
             //services.AddWebEncoders();
