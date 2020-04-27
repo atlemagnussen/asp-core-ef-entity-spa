@@ -45,7 +45,11 @@
     <span style="font-weight: bold">KeyId</span><br />
     <span>@Model.SigningKeys.Current.Version</span><br />
     <span style="font-weight: bold">Algorithm</span><br />
-    <span>@Model.SigningKeys.Current.Algorithm</span>
+    <span>@Model.SigningKeys.Current.Algorithm</span><br />
+    <span style="font-weight: bold">NotBefore</span><br />
+    <span>@Model.SigningKeys.Current.NotBefore</span><br />
+    <span style="font-weight: bold">ExpireDate</span><br />
+    <span>@Model.SigningKeys.Current.ExpiresOn</span>
 </p>
 <p>
     <h6>Previous</h6>
@@ -54,7 +58,11 @@
         <span style="font-weight: bold">KeyId</span><br />
         <span>@Model.SigningKeys.Previous.Version</span><br />
         <span style="font-weight: bold">Algorithm</span><br />
-        <span>@Model.SigningKeys.Previous.Algorithm</span>
+        <span>@Model.SigningKeys.Previous.Algorithm</span><br />
+        <span style="font-weight: bold">NotBefore</span><br />
+        <span>@Model.SigningKeys.Previous.NotBefore</span><br />
+        <span style="font-weight: bold">ExpireDate</span><br />
+        <span>@Model.SigningKeys.Previous.ExpiresOn</span>
     }
     else
     {
@@ -68,7 +76,11 @@
         <span style="font-weight: bold">KeyId</span><br />
         <span>@Model.SigningKeys.Future.Version</span><br />
         <span style="font-weight: bold">Algorithm</span><br />
-        <span>@Model.SigningKeys.Future.Algorithm</span>
+        <span>@Model.SigningKeys.Future.Algorithm</span><br />
+        <span style="font-weight: bold">NotBefore</span><br />
+        <span>@Model.SigningKeys.Future.NotBefore</span><br />
+        <span style="font-weight: bold">ExpireDate</span><br />
+        <span>@Model.SigningKeys.Future.ExpiresOn</span>
     }
     else
     {

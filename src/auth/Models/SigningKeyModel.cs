@@ -26,10 +26,12 @@ namespace Test.auth.Models
     public class SigningKeyModel<T>
         where T : AsymmetricSecurityKey
     {
-        public SigningKeyModel(string name, string version)
+        public SigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn)
         {
             Name = name;
             Version = version;
+            NotBefore = notBefore;
+            ExpiresOn = expiresOn;
         }
         public string Name { get; set; }
         public string Version { get; set; }
@@ -39,8 +41,36 @@ namespace Test.auth.Models
         public string KeyType { get; set; }
         public string CurveName { get; set; }
         public string SignatureAlgorithm { get; set; }
-        public DateTime? Activation { get; set; }
-        public DateTime? Expiration { get; set; }
+        public DateTimeOffset? NotBefore { get; set; }
+        public DateTimeOffset? ExpiresOn { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Version}-{Name}";
+        }
+
+        public bool Expired {
+            get
+            {
+                if (!ExpiresOn.HasValue)
+                    return false;
+                if (ExpiresOn.Value <= DateTimeOffset.Now)
+                    return true;
+                return false;
+            }
+        }
+
+        public bool Started
+        {
+            get
+            {
+                if (!NotBefore.HasValue)
+                    return true;
+                if (NotBefore.Value < DateTimeOffset.Now)
+                    return true;
+                return false;
+            }
+        }
 
         public SecurityKeyInfo GetSecurityKeyInfo()
         {
@@ -53,14 +83,14 @@ namespace Test.auth.Models
     }
     public class RsaSigningKeyModel : SigningKeyModel<RsaSecurityKey>
     {
-        public RsaSigningKeyModel(string name, string version) : base(name, version)
+        public RsaSigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn) : base(name, version, notBefore, expiresOn)
         { }
         public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
     }
 
     public class EcSigningKeyModel : SigningKeyModel<ECDsaSecurityKey>
     {
-        public EcSigningKeyModel(string name, string version) : base(name, version)
+        public EcSigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn) : base(name, version, notBefore, expiresOn)
         { }
 
         private IdentityServerConstants.ECDsaSigningAlgorithm _algorithm;

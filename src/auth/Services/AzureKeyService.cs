@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Test.auth.Models;
 
@@ -82,7 +84,9 @@ namespace Test.auth.Services
         public async Task<EcSigningKeys> GetSigningKeysAsync()
         {
             var model = new EcSigningKeys();
-            model.Current = await GetEcSigningKeyAsync(_signingKeyName);
+            var currentKeys = new List<EcSigningKeyModel>();
+            var expiredKeys = new List<EcSigningKeyModel>();
+            var futureKeys = new List<EcSigningKeyModel>();
 
             var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(_signingKeyName).AsPages();
             await foreach (var page in propertiesPages)
@@ -91,10 +95,38 @@ namespace Test.auth.Services
                 {
                     if (keyProperties.Enabled.HasValue && !keyProperties.Enabled.Value)
                         continue;
-                    if (model.Current.Version == keyProperties.Version)
+                    
+                    var key = await GetEcSigningKeyAsync(_signingKeyName, keyProperties.Version);
+                    
+                    if (key.Expired)
+                    {
+                        expiredKeys.Add(key);
                         continue;
-                    else
-                        model.Previous = await GetEcSigningKeyAsync(_signingKeyName, keyProperties.Version);
+                    }
+                    
+                    if (key.Started)
+                    {
+                        currentKeys.Add(key);
+                        continue;
+                    }
+
+                    futureKeys.Add(key);
+
+                }
+                if (futureKeys.Count > 0)
+                {
+                    if (futureKeys.Count == 1)
+                        model.Future = futureKeys.First();
+                }
+                if (currentKeys.Count > 0)
+                {
+                    if (currentKeys.Count == 1)
+                        model.Current = currentKeys.First();
+                }
+                if (expiredKeys.Count > 0)
+                {
+                    if (expiredKeys.Count == 1)
+                        model.Previous = expiredKeys.First();
                 }
             }
             return model;
@@ -116,7 +148,7 @@ namespace Test.auth.Services
             catch (Exception)
             {
             }
-            return new RsaSigningKeyModel(name, "Failed");
+            return new RsaSigningKeyModel(name, "Failed", null, null);
         }
 
         protected async Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null)
@@ -139,7 +171,7 @@ namespace Test.auth.Services
             {
                 _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return new RsaSigningKeyModel(name, "Failed");
+            return new RsaSigningKeyModel(name, "Failed", null, null);
         }
 
         protected EcSigningKeyModel GetEcSigningKey(string name, string version = null)
@@ -156,7 +188,7 @@ namespace Test.auth.Services
             catch (Exception)
             {
             }
-            return new EcSigningKeyModel(name, "Failed");
+            return new EcSigningKeyModel(name, "Failed", null, null);
         }
 
         protected async Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null)
@@ -179,7 +211,7 @@ namespace Test.auth.Services
             {
                 _logger.LogError("Error GetEcSigningKey", ex);
             }
-            return new EcSigningKeyModel(name, "Failed");
+            return new EcSigningKeyModel(name, "Failed", null, null);
         }
 
         /*
@@ -187,7 +219,7 @@ namespace Test.auth.Services
              */
         private RsaSigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
-            var model = new RsaSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version);
+            var model = new RsaSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version, keyVaultKey.Properties.NotBefore, keyVaultKey.Properties.ExpiresOn);
             var rsa = keyVaultKey.Key.ToRSA();
             model.Raw = rsa.ToXmlString(false);
             model.Key = new RsaSecurityKey(rsa) { KeyId = model.Version };
@@ -200,7 +232,7 @@ namespace Test.auth.Services
 
         private EcSigningKeyModel GetEcFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
-            var model = new EcSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version);
+            var model = new EcSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version, keyVaultKey.Properties.NotBefore, keyVaultKey.Properties.ExpiresOn);
             var ec = keyVaultKey.Key.ToECDsa();
 
             model.Raw = keyVaultKey.Key.ToString();
