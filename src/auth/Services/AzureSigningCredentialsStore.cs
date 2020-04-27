@@ -19,7 +19,7 @@ namespace Test.auth.Services
         public async Task<SigningCredentials> GetSigningCredentialsAsync()
         {
             _logger.LogInformation("AzureSigningCredentialsStore");
-            var keys = await _azureKeyService.GetEcSigningKeysAsync();
+            var keys = await _azureKeyService.GetSigningKeysAsync();
             return new SigningCredentials(keys.Current.Key, keys.Current.Algorithm.ToString());
         }
     }

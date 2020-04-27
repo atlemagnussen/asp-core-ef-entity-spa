@@ -14,10 +14,8 @@ namespace Test.auth.Services
 {
     public interface IAzureKeyService
     {
-        RsaSigningKeys GetRsaSigningKeys();
-        Task<RsaSigningKeys> GetRsaSigningKeysAsync();
-        EcSigningKeys GetEcSigningKeys();
-        Task<EcSigningKeys> GetEcSigningKeysAsync();
+        EcSigningKeys GetSigningKeys();
+        Task<EcSigningKeys> GetSigningKeysAsync();
 
         //RsaSigningKeyModel GetRsaSigningKey(string name, string version = null);
         //Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null);
@@ -30,8 +28,7 @@ namespace Test.auth.Services
         private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
-        public static string RsaKeyName = "rsa-2048-core-auth";
-        public static string EcKeyName = "ec-2048-core-auth";
+        private readonly string _signingKeyName;
 
         public AzureKeyService(IWebHostEnvironment environment,
             IConfiguration configuration,
@@ -42,6 +39,8 @@ namespace Test.auth.Services
 
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
+
+            _signingKeyName = configuration.GetValue<string>("SigningKeyName");
 
             if (_environment.IsDevelopment())
             {
@@ -63,49 +62,13 @@ namespace Test.auth.Services
         /*
          api
          */
-        public RsaSigningKeys GetRsaSigningKeys()
-        {
-            var model = new RsaSigningKeys();
-            model.Current = GetRsaSigningKey(RsaKeyName);
 
-            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(RsaKeyName).AsPages();
-            foreach (var page in propertiesPages)
-            {
-                foreach (var keyProperties in page.Values)
-                {
-                    if (model.Current.Version == keyProperties.Version)
-                        continue;
-                    else
-                        model.Previous = GetRsaSigningKey(RsaKeyName, keyProperties.Version);
-                }
-            }
-            return model;
-        }
-        public async Task<RsaSigningKeys> GetRsaSigningKeysAsync()
-        {
-            var model = new RsaSigningKeys();
-            model.Current = await GetRsaSigningKeyAsync(RsaKeyName);
-
-            var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(RsaKeyName).AsPages();
-            await foreach (var page in propertiesPages)
-            {
-                foreach(var keyProperties in page.Values)
-                {
-                    if (model.Current.Version == keyProperties.Version)
-                        continue;
-                    else
-                        model.Previous = await GetRsaSigningKeyAsync(RsaKeyName, keyProperties.Version);
-                }
-            }
-            return model;
-        }
-
-        public EcSigningKeys GetEcSigningKeys()
+        public EcSigningKeys GetSigningKeys()
         {
             var model = new EcSigningKeys();
-            model.Current = GetEcSigningKey(EcKeyName);
+            model.Current = GetEcSigningKey(_signingKeyName);
 
-            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(EcKeyName).AsPages();
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(_signingKeyName).AsPages();
             foreach (var page in propertiesPages)
             {
                 foreach (var keyProperties in page.Values)
@@ -115,17 +78,17 @@ namespace Test.auth.Services
                     if (model.Current.Version == keyProperties.Version)
                         continue;
                     else
-                        model.Previous = GetEcSigningKey(EcKeyName, keyProperties.Version);
+                        model.Previous = GetEcSigningKey(_signingKeyName, keyProperties.Version);
                 }
             }
             return model;
         }
-        public async Task<EcSigningKeys> GetEcSigningKeysAsync()
+        public async Task<EcSigningKeys> GetSigningKeysAsync()
         {
             var model = new EcSigningKeys();
-            model.Current = await GetEcSigningKeyAsync(EcKeyName);
+            model.Current = await GetEcSigningKeyAsync(_signingKeyName);
 
-            var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(EcKeyName).AsPages();
+            var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(_signingKeyName).AsPages();
             await foreach (var page in propertiesPages)
             {
                 foreach (var keyProperties in page.Values)
@@ -135,7 +98,7 @@ namespace Test.auth.Services
                     if (model.Current.Version == keyProperties.Version)
                         continue;
                     else
-                        model.Previous = await GetEcSigningKeyAsync(EcKeyName, keyProperties.Version);
+                        model.Previous = await GetEcSigningKeyAsync(_signingKeyName, keyProperties.Version);
                 }
             }
             return model;

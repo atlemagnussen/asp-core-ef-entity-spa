@@ -39,21 +39,42 @@
 </p>
 <h4>Azure Key Vault keys</h4>
 
+<h5>SigningKeys</h5>
 <p>
-    <h5>Rsa</h5>
+    <h6>Current</h6>
     <span style="font-weight: bold">KeyId</span><br />
-    <span>@Model.RsaKey.Version</span><br />
-    <span style="font-weight: bold">Raw</span><br />
-    <code>@Model.RsaKey.Raw</code>
-</p>
-<p>
-    <h5>Ec</h5>
-    <span style="font-weight: bold">KeyId</span><br />
-    <span>@Model.EcKey.Version</span><br />
+    <span>@Model.SigningKeys.Current.Version</span><br />
     <span style="font-weight: bold">Algorithm</span><br />
-    <span>@Model.EcKey.Algorithm</span>
+    <span>@Model.SigningKeys.Current.Algorithm</span>
 </p>
-
+<p>
+    <h6>Previous</h6>
+    @if(Model.SigningKeys.Previous != null)
+    {
+        <span style="font-weight: bold">KeyId</span><br />
+        <span>@Model.SigningKeys.Previous.Version</span><br />
+        <span style="font-weight: bold">Algorithm</span><br />
+        <span>@Model.SigningKeys.Previous.Algorithm</span>
+    }
+    else
+    {
+        <span style="font-weight: bold">Not existing</span>
+    }
+</p>
+<p>
+    <h6>Future</h6>
+    @if(Model.SigningKeys.Future != null)
+    {
+        <span style="font-weight: bold">KeyId</span><br />
+        <span>@Model.SigningKeys.Future.Version</span><br />
+        <span style="font-weight: bold">Algorithm</span><br />
+        <span>@Model.SigningKeys.Future.Algorithm</span>
+    }
+    else
+    {
+        <span style="font-weight: bold">Not existing</span>
+    }
+</p>
 
 <p><a href=".well-known/openid-configuration">Discovery document</a></p>
 <p><a href="Login">Go to login</a></p>

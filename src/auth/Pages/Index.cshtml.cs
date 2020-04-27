@@ -40,8 +40,7 @@ namespace Test.auth.Pages
         public string Secret4 { get; set; }
 
         public bool IsDevelopment { get; set; }
-        public RsaSigningKeyModel RsaKey { get; set; }
-        public EcSigningKeyModel EcKey { get; set; }
+        public EcSigningKeys SigningKeys { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -58,11 +57,7 @@ namespace Test.auth.Pages
                 Secret3 = _configuration.GetSection("Section")["SecretName"];
                 Secret4 = _configuration.GetValue<string>("SecretName");
                 IsDevelopment = _environment.IsDevelopment();
-
-                var rsaKeys = await _azureKeyService.GetRsaSigningKeysAsync();
-                RsaKey = rsaKeys.Current;
-                var ecKeys = await _azureKeyService.GetEcSigningKeysAsync();
-                EcKey = ecKeys.Current;
+                SigningKeys = await _azureKeyService.GetSigningKeysAsync();
             }
             catch (Exception ex)
             {

@@ -15,6 +15,7 @@ namespace Test.auth.Services
     public class AzureKeyVaultTokenCreationService : DefaultTokenCreationService
     {
         private string _vaultUrl;
+        private string _signingKeyName;
         private string _keyUrl;
         private ILogger<AzureKeyVaultTokenCreationService> _logger;
         public AzureKeyVaultTokenCreationService(IConfiguration configuration,
@@ -26,8 +27,9 @@ namespace Test.auth.Services
             : base(clock, keys, options, logger)
         {
             _logger = loggerHere;
+            _signingKeyName = configuration.GetValue<string>("SigningKeyName");
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
-            _keyUrl = $"{_vaultUrl}keys/{AzureKeyService.EcKeyName}";
+            _keyUrl = $"{_vaultUrl}keys/{_signingKeyName}";
         }
 
         protected override async Task<string> CreateJwtAsync(JwtSecurityToken jwt)
