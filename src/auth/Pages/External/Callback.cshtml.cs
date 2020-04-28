@@ -66,9 +66,8 @@ namespace Test.auth.Pages
             var (user, provider, providerUserId, claims) = await FindUserFromExternalProviderAsync(result);
             if (user == null)
             {
-                throw new Exception("User dont exists here");
-
-                // user = await _externalService.AutoProvisionUserAsync(provider, providerUserId, claims);
+                // throw new Exception("User dont exists here");
+                user = await _externalService.AutoProvisionUserAsync(provider, providerUserId, claims);
             }
 
             var additionalLocalClaims = new List<Claim>();
