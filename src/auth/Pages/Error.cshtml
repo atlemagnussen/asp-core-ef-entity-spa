@@ -1,5 +1,5 @@
-﻿@using Test.auth.Models
-@model ErrorViewModel
+﻿@page
+@model ErrorModel
 
 @{
     var error = Model?.Error?.Error;
@@ -16,7 +16,10 @@
         <div class="col-sm-6">
             <div class="alert alert-danger">
                 Sorry, there was an error
-
+                <p>
+                    Error id: <br>
+                    @Model.ErrorId
+                </p>
                 @if (error != null)
                 {
                     <strong>

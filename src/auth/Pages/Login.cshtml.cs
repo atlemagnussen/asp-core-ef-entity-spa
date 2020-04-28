@@ -50,7 +50,6 @@ namespace Test.auth.Pages
             {
                 return RedirectToAction("Challenge", "External", new { provider = Vm.ExternalLoginScheme, returnUrl });
             }
-
             return Page();
         }
 
