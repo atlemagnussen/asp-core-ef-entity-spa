@@ -60,7 +60,7 @@ namespace Test.auth.Services
 
         public async Task<EcSigningKeys> GetSigningKeysAsync()
         {
-            var keys = await _cache.GetOrCreateAsync("CachedKeys", async entry =>
+            var keys = await _cache.GetOrCreateAsync(_signingKeyName, async entry =>
             {
                 var expire = DateTimeOffset.Now.AddDays(1);
                 entry.AbsoluteExpiration = expire;
@@ -68,6 +68,7 @@ namespace Test.auth.Services
                 keysAzure.CacheExpiring = expire;
                 return keysAzure;
             });
+            _logger.LogDebug($"Got signingkeys '{_signingKeyName}', cached until {keys.CacheExpiring}");
             return keys;
         }
 
@@ -107,6 +108,8 @@ namespace Test.auth.Services
                 {
                     if (futureKeys.Count == 1)
                         model.Future = futureKeys.First();
+                    else
+                        model.Future = GetClosestFutureKey(futureKeys);
                 }
                 if (currentKeys.Count > 0)
                 {
@@ -117,6 +120,8 @@ namespace Test.auth.Services
                 {
                     if (expiredKeys.Count == 1)
                         model.Previous = expiredKeys.First();
+                    else
+                        model.Previous = GetClosestExpiredKey(expiredKeys);
                 }
             }
             return model;
@@ -206,7 +211,19 @@ namespace Test.auth.Services
 
         /*
          private
-             */
+        */
+
+        private EcSigningKeyModel GetClosestExpiredKey(List<EcSigningKeyModel> expiredKeys)
+        {
+            var expiredKeysOrdered = expiredKeys.OrderByDescending(k => k.ExpiresOn);
+            return expiredKeysOrdered.First();
+        }
+        private EcSigningKeyModel GetClosestFutureKey(List<EcSigningKeyModel> expiredKeys)
+        {
+            var expiredKeysOrdered = expiredKeys.OrderBy(k => k.NotBefore);
+            return expiredKeysOrdered.First();
+        }
+
         private RsaSigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
             var model = new RsaSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version, keyVaultKey.Properties.NotBefore, keyVaultKey.Properties.ExpiresOn);
