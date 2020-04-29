@@ -54,7 +54,7 @@ namespace Test.auth
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
                     UpdateAccessTokenClaimsOnRefresh = true,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
-                    //AccessTokenLifetime = 180,
+                    AccessTokenLifetime = 3600*24*2,
 
                     RedirectUris = redirects,
                     PostLogoutRedirectUris = allowedUrls,

@@ -49,57 +49,15 @@ else
 <h5>SigningKeys</h5>
 <div class="key previous">
     <h6>Previous</h6>
-    @if(Model.SigningKeys.Previous != null)
-    {
-        <span style="font-weight: bold">KeyId</span><br />
-        <span>@Model.SigningKeys.Previous.Version</span><br />
-        <span style="font-weight: bold">Algorithm</span><br />
-        <span>@Model.SigningKeys.Previous.Algorithm</span><br />
-        <span style="font-weight: bold">NotBefore</span><br />
-        <span>@Model.SigningKeys.Previous.NotBefore</span><br />
-        <span style="font-weight: bold">ExpireDate</span><br />
-        <span>@Model.SigningKeys.Previous.ExpiresOn</span>
-    }
-    else
-    {
-        <span style="font-weight: bold">Not existing</span>
-    }
+    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Previous })
 </div>
 <div class="key current">
     <h6>Current</h6>
-    @if(Model.SigningKeys.Current != null)
-    {
-        <span style="font-weight: bold">KeyId</span><br />
-        <span>@Model.SigningKeys.Current.Version</span><br />
-        <span style="font-weight: bold">Algorithm</span><br />
-        <span>@Model.SigningKeys.Current.Algorithm</span><br />
-        <span style="font-weight: bold">NotBefore</span><br />
-        <span>@Model.SigningKeys.Current.NotBefore</span><br />
-        <span style="font-weight: bold">ExpireDate</span><br />
-        <span>@Model.SigningKeys.Current.ExpiresOn</span>
-    }
-    else
-    {
-        <span style="font-weight: bold">Not existing</span>
-    }
+    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Current })
 </div>
 <div class="key future">
     <h6>Future</h6>
-    @if(Model.SigningKeys.Future != null)
-    {
-        <span style="font-weight: bold">KeyId</span><br />
-        <span>@Model.SigningKeys.Future.Version</span><br />
-        <span style="font-weight: bold">Algorithm</span><br />
-        <span>@Model.SigningKeys.Future.Algorithm</span><br />
-        <span style="font-weight: bold">NotBefore</span><br />
-        <span>@Model.SigningKeys.Future.NotBefore</span><br />
-        <span style="font-weight: bold">ExpireDate</span><br />
-        <span>@Model.SigningKeys.Future.ExpiresOn</span>
-    }
-    else
-    {
-        <span style="font-weight: bold">Not existing</span>
-    }
+    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Future })
 </div>
 
 <p><a href=".well-known/openid-configuration">Discovery document</a></p>
