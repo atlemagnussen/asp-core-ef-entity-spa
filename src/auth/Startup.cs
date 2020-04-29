@@ -26,6 +26,9 @@ namespace Test.auth
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
+
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
@@ -38,7 +41,6 @@ namespace Test.auth
             services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
             services.AddIdentityServerConfig(Configuration, Environment);
             services.AddCommonIdentitySettings();
-            //services.AddWebEncoders();
             services.AddCommonDataProtection();
 
             services.AddRazorPages();
