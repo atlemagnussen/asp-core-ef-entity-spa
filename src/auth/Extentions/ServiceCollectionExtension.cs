@@ -22,8 +22,10 @@ namespace Test.auth.Extentions
     {
         public static void AddIdentityServerConfig(this IServiceCollection services, 
             IConfiguration configuration, 
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IConfigurationSection configAzAd)
         {
+            var azAdSettings = configAzAd.Get<SettingsAzureAd>();
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             var connectionString = configuration.GetConnectionString("AuthDb");
 
@@ -92,9 +94,9 @@ namespace Test.auth.Extentions
             services.AddAuthentication()
                 .AddAzureAD(options =>
                 {
-                    options.Instance = configuration.GetValue<string>("AzureAd:Instance");
-                    options.ClientId = configuration.GetValue<string>("AzureAd:ClientId");
-                    options.TenantId = configuration.GetValue<string>("AzureAd:TenantId");
+                    options.Instance = azAdSettings.Instance;
+                    options.ClientId = azAdSettings.ClientId;
+                    options.TenantId = azAdSettings.TenantId;
                 })
                 .AddGoogle(options =>
                 {

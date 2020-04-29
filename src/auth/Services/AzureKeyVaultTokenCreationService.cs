@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Test.auth.Services
 {
     public class AzureKeyVaultTokenCreationService : DefaultTokenCreationService
     {
+        private readonly SettingsAzureKeyVault _settings;
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
         private string _vaultUrl;
@@ -23,7 +25,8 @@ namespace Test.auth.Services
         private ILogger<AzureKeyVaultTokenCreationService> _logger;
         private readonly IAzureKeyService _azureKeyService;
 
-        public AzureKeyVaultTokenCreationService(IConfiguration configuration,
+        public AzureKeyVaultTokenCreationService(IOptions<SettingsAzureKeyVault> optionsKeyVault,
+            IConfiguration configuration,
             ISystemClock clock, 
             IKeyMaterialService keys, 
             IdentityServerOptions options, 
@@ -33,12 +36,13 @@ namespace Test.auth.Services
             IAzureKeyService azureKeyService)
             : base(clock, keys, options, logger)
         {
+            _settings = optionsKeyVault.Value;
             _environment = environment;
             _configuration = configuration;
             _logger = loggerHere;
             _azureKeyService = azureKeyService;
 
-            _signingKeyName = configuration.GetValue<string>("SigningKeyName");
+            _signingKeyName = _settings.SigningKeyName;
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
         }
 
@@ -51,10 +55,7 @@ namespace Test.auth.Services
             CryptographyClient client;
             if (_environment.IsDevelopment())
             {
-                var clientId = _configuration.GetValue<string>("AzureKeyVault:clientId");
-                var tenantId = _configuration.GetValue<string>("AzureKeyVault:tenantId");
-                var clientSecret = _configuration.GetValue<string>("AzureKeyVault:clientSecret");
-                var clientCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                var clientCredential = new ClientSecretCredential(_settings.TenantId, _settings.ClientId, _settings.ClientSecret);
                 client = new CryptographyClient(new Uri(keyUrl), clientCredential);
             }
             else

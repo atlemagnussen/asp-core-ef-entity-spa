@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -21,30 +22,30 @@ namespace Test.auth.Services
     }
     public class AzureKeyService : IAzureKeyService
     {
+        private readonly SettingsAzureKeyVault _settings;
         private readonly ILogger<AzureKeyService> _logger;
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
         private readonly string _signingKeyName;
         private IMemoryCache _cache;
 
-        public AzureKeyService(IWebHostEnvironment environment,
+        public AzureKeyService(IOptions<SettingsAzureKeyVault> options,
+            IWebHostEnvironment environment,
             IConfiguration configuration,
             ILogger<AzureKeyService> logger,
             IMemoryCache memoryCache)
         {
+            _settings = options.Value;
             _logger = logger;
             _cache = memoryCache;
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
 
-            _signingKeyName = configuration.GetValue<string>("SigningKeyName");
+            _signingKeyName = _settings.SigningKeyName;
 
             if (environment.IsDevelopment())
             {
-                var clientId = configuration.GetValue<string>("AzureKeyVault:clientId");
-                var tenantId = configuration.GetValue<string>("AzureKeyVault:tenantId");
-                var clientSecret = configuration.GetValue<string>("AzureKeyVault:clientSecret");
-                var clientCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);
+                var clientCredential = new ClientSecretCredential(_settings.TenantId, _settings.ClientId, _settings.ClientSecret);
                 _keyClient = new KeyClient(vaultUri, clientCredential);
             }
             else

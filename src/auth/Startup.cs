@@ -29,6 +29,9 @@ namespace Test.auth
             // cookie policy to deal with temporary browser incompatibilities
             services.AddSameSiteCookiePolicy();
 
+            var configAzAd = Configuration.GetSection("AzureAd");
+            services.Configure<SettingsAzureAd>(configAzAd);
+            services.Configure<SettingsAzureKeyVault>(Configuration.GetSection("AzureKeyVault"));
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IRegisterService, RegisterService>();
@@ -39,7 +42,7 @@ namespace Test.auth
             services.AddScoped<ITokenCreationService, AzureKeyVaultTokenCreationService>();
             services.AddScoped<ISigningCredentialStore, AzureSigningCredentialsStore>();
             services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
-            services.AddIdentityServerConfig(Configuration, Environment);
+            services.AddIdentityServerConfig(Configuration, Environment, configAzAd);
             services.AddCommonIdentitySettings();
             services.AddCommonDataProtection();
 
