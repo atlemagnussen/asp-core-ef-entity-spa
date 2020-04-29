@@ -38,7 +38,14 @@
     <span>@Model.Secret4</span>
 </p>
 <h4>Azure Key Vault keys</h4>
-
+@if (Model.SigningKeys.CacheExpiring.HasValue)
+{
+    <p>Cache expiring @Model.SigningKeys.CacheExpiring.Value</p>
+}
+else
+{
+    <p>Not cached</p>
+}
 <h5>SigningKeys</h5>
 <div class="key previous">
     <h6>Previous</h6>
@@ -60,7 +67,7 @@
 </div>
 <div class="key current">
     <h6>Current</h6>
-    @if(Model.SigningKeys.Future != null)
+    @if(Model.SigningKeys.Current != null)
     {
         <span style="font-weight: bold">KeyId</span><br />
         <span>@Model.SigningKeys.Current.Version</span><br />

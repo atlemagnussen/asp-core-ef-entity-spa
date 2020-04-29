@@ -21,6 +21,7 @@ namespace Test.auth.Models
         public T Current { get; set; }
         public T Previous { get; set; }
         public T Future { get; set; }
+        public DateTimeOffset? CacheExpiring { get; set; }
     }
 
     public class SigningKeyModel<T>

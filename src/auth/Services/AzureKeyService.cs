@@ -2,6 +2,7 @@
 using Azure.Security.KeyVault.Keys;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,13 +17,7 @@ namespace Test.auth.Services
 {
     public interface IAzureKeyService
     {
-        EcSigningKeys GetSigningKeys();
         Task<EcSigningKeys> GetSigningKeysAsync();
-
-        //RsaSigningKeyModel GetRsaSigningKey(string name, string version = null);
-        //Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null);
-        //EcSigningKeyModel GetEcSigningKey(string name, string version = null);
-        //Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null);
     }
     public class AzureKeyService : IAzureKeyService
     {
@@ -30,13 +25,15 @@ namespace Test.auth.Services
         private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
         private readonly string _signingKeyName;
+        private IMemoryCache _cache;
 
         public AzureKeyService(IWebHostEnvironment environment,
             IConfiguration configuration,
-            ILogger<AzureKeyService> logger)
+            ILogger<AzureKeyService> logger,
+            IMemoryCache memoryCache)
         {
             _logger = logger;
-
+            _cache = memoryCache;
             _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
 
@@ -61,27 +58,20 @@ namespace Test.auth.Services
          api
          */
 
-        public EcSigningKeys GetSigningKeys()
-        {
-            var model = new EcSigningKeys();
-            model.Current = GetEcSigningKey(_signingKeyName);
-
-            var propertiesPages = _keyClient.GetPropertiesOfKeyVersions(_signingKeyName).AsPages();
-            foreach (var page in propertiesPages)
-            {
-                foreach (var keyProperties in page.Values)
-                {
-                    if (keyProperties.Enabled.HasValue && !keyProperties.Enabled.Value)
-                        continue;
-                    if (model.Current.Version == keyProperties.Version)
-                        continue;
-                    else
-                        model.Previous = GetEcSigningKey(_signingKeyName, keyProperties.Version);
-                }
-            }
-            return model;
-        }
         public async Task<EcSigningKeys> GetSigningKeysAsync()
+        {
+            var keys = await _cache.GetOrCreateAsync("CachedKeys", async entry =>
+            {
+                var expire = DateTimeOffset.Now.AddDays(1);
+                entry.AbsoluteExpiration = expire;
+                var keysAzure = await GetSigningKeysAzureAsync();
+                keysAzure.CacheExpiring = expire;
+                return keysAzure;
+            });
+            return keys;
+        }
+
+        protected async Task<EcSigningKeys> GetSigningKeysAzureAsync()
         {
             var model = new EcSigningKeys();
             var currentKeys = new List<EcSigningKeyModel>();
@@ -95,15 +85,15 @@ namespace Test.auth.Services
                 {
                     if (keyProperties.Enabled.HasValue && !keyProperties.Enabled.Value)
                         continue;
-                    
+
                     var key = await GetEcSigningKeyAsync(_signingKeyName, keyProperties.Version);
-                    
+
                     if (key.Expired)
                     {
                         expiredKeys.Add(key);
                         continue;
                     }
-                    
+
                     if (key.Started)
                     {
                         currentKeys.Add(key);
@@ -131,7 +121,7 @@ namespace Test.auth.Services
             }
             return model;
         }
-        
+
         /*
          */
         protected RsaSigningKeyModel GetRsaSigningKey(string name, string version = null)
