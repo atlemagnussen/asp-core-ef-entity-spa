@@ -3,8 +3,8 @@ import { writable } from 'svelte/store';
 const formatter = new Intl.DateTimeFormat('nb-NO', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
+    day: '2-digit',
+    hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
 });
