@@ -10,6 +10,7 @@ let oicdConfig = {
     scope:"openid profile api.read api.write email",
     post_logout_redirect_uri: `${rootPath}`,
     accessTokenExpiringNotificationTime: 60,
+    silentRequestTimeout: 20000,
     automaticSilentRenew: false,
     silent_redirect_uri: `${rootPath}/silent-renew.html`,
     validateSubOnSilentRenew: true,

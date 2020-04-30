@@ -77,7 +77,7 @@ namespace Test.auth
                         "api.read",
                         "api.write"
                     },
-                AllowOfflineAccess = true
+                AllowOfflineAccess = false
             };
         }
         public static IEnumerable<IdentityResource> GetIdentityResources()
