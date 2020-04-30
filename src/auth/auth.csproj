@@ -42,8 +42,4 @@
     <ProjectReference Include="..\core\core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\External\" />
-  </ItemGroup>
-
 </Project>

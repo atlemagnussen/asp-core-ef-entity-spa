@@ -19,7 +19,9 @@
         userIsLoggedIn.set(false);
         userProfile.set({ loggedIn: false, name: "Anon" });
     };
-
+    const silent = () => {
+        auth.silentRefresh();
+    };
     let usernameOrEmail = "user";
     const unsub = userProfile.subscribe(val => {
         usernameOrEmail = val.email;
@@ -43,7 +45,8 @@
                 <div>
                     {@html usernameOrEmail}
                 </div>
-                <Link page="{{ path: '/account', name: 'Konto' }}" />
+                <Link page="{{ path: '/account', name: 'Account' }}" />
+                <button on:click="{silent}">Silent renew</button>
                 <button on:click="{logOut}">Log out</button>
             </div>
         </PopDown>

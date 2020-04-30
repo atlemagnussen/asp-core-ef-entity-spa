@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import Link from "../components/Link.svelte";
     import { userProfile } from "../store";
+    import { expireClock } from "../store/timeExpire.js";
     import restService from "../services/restService.js";
 
     let claims = [];
@@ -39,31 +40,35 @@
     });
 </script>
 <style>
-    #digilean-logo {
-        animation: spin 3s linear infinite;
-        transform-origin: center;
-        /* transform-box: fill-box; */
+    .accesstoken {
+        display: inline-block;
+        padding: 1rem;
+        background-color: darkolivegreen;
     }
-    @keyframes spin {
-        from { transform:rotate(0deg); }
-        to { transform:rotate(360deg); }
+    .accesstoken h3 {
+        margin: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .accesstoken.expired {
+        background-color: indianred;
     }
 </style>
 <h1>Welcome to Test</h1>
-<!-- <figure class="digilean-logo loading">
-    <svg xmlns="http://www.w3.org/2000/svg">
-        <use xlink:href="#digilean-logo-def" id="digilean-logo" />
-    </svg>
-    <figcaption></figcaption>
-</figure> -->
 
+<div class:expired="{$userProfile.expired}" class="accesstoken">
+    <h3>Access token</h3>
+    <b>Time now:</b> {$expireClock.nowFormatted}<br>
+    <b>Expires at:</b> {$expireClock.expireFormatted}<br>
+    <b>Expire in:</b> {$expireClock.diff}s<br>
+    <b>expired:</b> {$userProfile.expired}
+</div>
 {#if $userProfile.loggedIn}
     <h3>Logged in as {$userProfile.email}</h3>
     <p>
         {#each Object.keys($userProfile) as field, i}
             <b>{field}:</b> {$userProfile[field]}<br>
         {/each}
-        <b>expires_at:</b> {new Date($userProfile.expires_at*1000)}<br>
     </p>
     <h3>All Claims</h3>
     <button on:click="{getCurrentClaims}">Get/Refresh</button>

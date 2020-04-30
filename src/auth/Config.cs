@@ -3,12 +3,12 @@ using IdentityServer4;
 using IdentityServer4.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 
 namespace Test.auth
 {
     public class Config
     {
+        public static string WebClientName = "webclient";
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
@@ -22,14 +22,6 @@ namespace Test.auth
 
         public static IEnumerable<Client> GetClients(string allowedClientUrl)
         {
-            var allowedUrls = allowedClientUrl.Split(';').ToList();
-            allowedUrls.Add("http://localhost:8080");
-            var redirects = new List<string>();
-            foreach (var url in allowedUrls) {
-                redirects.Add(url);
-                redirects.Add($"{url}/callback.html");
-            }
-
             return new List<Client>
             {
                 new Client
@@ -42,25 +34,40 @@ namespace Test.auth
                     },
                     AllowedScopes = { "bankApi" }
                 },
-                new Client
-                {
-                    ClientId = "webclient",
-                    ClientName = "SPA web client",
+                GetWebClient(allowedClientUrl)
+            };
+        }
 
-                    AllowedGrantTypes = GrantTypes.Code,
-                    RequireClientSecret = false,
-                    RequirePkce = true,
-                    RequireConsent = false,
-                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                    UpdateAccessTokenClaimsOnRefresh = true,
-                    RefreshTokenExpiration = TokenExpiration.Sliding,
-                    AccessTokenLifetime = 3600*24*2,
+        private static Client GetWebClient(string allowedClientUrl)
+        {
+            var allowedUrls = allowedClientUrl.Split(';').ToList();
+            allowedUrls.Add("http://localhost:8080");
+            var redirects = new List<string>();
+            foreach (var url in allowedUrls)
+            {
+                redirects.Add(url);
+                redirects.Add($"{url}/callback.html");
+                redirects.Add($"{url}/silent-renew.html");
+            }
+            return new Client
+            {
+                ClientId = WebClientName,
+                ClientName = "SPA web client",
 
-                    RedirectUris = redirects,
-                    PostLogoutRedirectUris = allowedUrls,
-                    AllowedCorsOrigins = allowedUrls,
+                AllowedGrantTypes = GrantTypes.Code,
+                RequireClientSecret = false,
+                RequirePkce = true,
+                RequireConsent = false,
+                RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                UpdateAccessTokenClaimsOnRefresh = true,
+                RefreshTokenExpiration = TokenExpiration.Sliding,
+                AccessTokenLifetime = 180,
 
-                    AllowedScopes = 
+                RedirectUris = redirects,
+                PostLogoutRedirectUris = allowedUrls,
+                AllowedCorsOrigins = allowedUrls,
+
+                AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
@@ -70,11 +77,9 @@ namespace Test.auth
                         "api.read",
                         "api.write"
                     },
-                    AllowOfflineAccess = true
-                }
+                AllowOfflineAccess = true
             };
         }
-
         public static IEnumerable<IdentityResource> GetIdentityResources()
         {
             return new List<IdentityResource>

@@ -7,11 +7,13 @@ let oicdConfig = {
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
-    scope:"openid profile api.read api.write email offline_access",
+    scope:"openid profile api.read api.write email",
     post_logout_redirect_uri: `${rootPath}`,
-    accessTokenExpiringNotificationTime: 40,
-    automaticSilentRenew: true,
-    silent_redirect_uri: `${rootPath}/silent-renew.html`
+    accessTokenExpiringNotificationTime: 60,
+    automaticSilentRenew: false,
+    silent_redirect_uri: `${rootPath}/silent-renew.html`,
+    validateSubOnSilentRenew: true,
+    revokeAccessTokenOnSignout : true
 };
 if (!rootPath.includes("localhost"))
     oicdConfig.authority = "https://asp-core-auth-server.azurewebsites.net";
@@ -52,8 +54,10 @@ class Authentication {
         console.log("sessionChanged");
         console.log(msg);
     }
-    expiring() {
+    async expiring() {
         console.log(`expiring in ${oicdConfig.accessTokenExpiringNotificationTime} seconds`);
+        if (!oicdConfig.automaticSilentRenew)
+            await this.silentRefresh();
     }
     expired() {
         console.log("expired");
@@ -82,6 +86,14 @@ class Authentication {
     }
     logout() {
         this.mgr.signoutRedirect();
+    }
+    silentRefresh() {
+        console.log("silentRefresh:: manual start");
+        return this.mgr.signinSilent().then(user => {
+            console.log("silentRefresh:: renewal successful");
+        }, err => {
+            Log.error("silentRefresh:: Error from signinSilent:", err.message);
+        });
     }
     async getUser() {
         const user = await this.mgr.getUser();

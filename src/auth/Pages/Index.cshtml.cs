@@ -1,3 +1,5 @@
+using IdentityServer4.Models;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,16 +19,19 @@ namespace Test.auth.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IConfiguration _configuration;
         private readonly IAzureKeyService _azureKeyService;
+        private readonly IClientStore _clientStore;
 
         public IndexModel(IWebHostEnvironment environment,
             ILogger<IndexModel> logger,
             IConfiguration configuration,
-            IAzureKeyService azureKeyService)
+            IAzureKeyService azureKeyService,
+            IClientStore clientStore)
         {
             _environment = environment;
             _logger = logger;
             _configuration = configuration;
             _azureKeyService = azureKeyService;
+            _clientStore = clientStore;
         }
         public string ConnectionString1 { get; set; }
         public string ConnectionString2 { get; set; }
@@ -40,6 +45,7 @@ namespace Test.auth.Pages
         public string Secret4 { get; set; }
 
         public bool IsDevelopment { get; set; }
+        public Client WebClient { get; set; }
         public EcSigningKeys SigningKeys { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
@@ -47,6 +53,7 @@ namespace Test.auth.Pages
             _logger.LogInformation("Index start");
             try
             {
+                WebClient = await _clientStore.FindClientByIdAsync(Config.WebClientName);
                 ConnectionString1 = GetConStrStripPw("AuthDb"); //_configuration.GetConnectionString("Test");
                 ConnectionString2 = GetConStrStripPw("BankDatabase"); //_configuration["ConnectionStrings:Test"];
                 AllowedClientUrl = _configuration.GetValue<string>("AllowedClientUrl");

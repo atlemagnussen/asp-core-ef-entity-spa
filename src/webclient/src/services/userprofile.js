@@ -1,4 +1,5 @@
 import { userIsLoggedIn, userProfile } from "../store";
+import { expireClock } from "../store/timeExpire.js";
 import auth from "./authentication.js";
 
 class UserProfile {
@@ -45,6 +46,7 @@ class UserProfile {
             refresh_token: user.refresh_token,
             token_type: user.token_type,
             expires_at: user.expires_at,
+            expired: user.expired,
             scope: user.scope,
             initials: "AA"
         }
@@ -52,7 +54,7 @@ class UserProfile {
         profileKeys.forEach((key, index) => {
             up[key] = user.profile[key];
         });
-        
+        expireClock.set(user.expires_at);
         userProfile.set(up);
     }
     setLoggedOutUserProfile() {
