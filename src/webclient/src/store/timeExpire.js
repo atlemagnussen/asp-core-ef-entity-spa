@@ -1,5 +1,13 @@
 import { writable } from 'svelte/store';
-import helper from "../services/helper.js";
+
+const formatter = new Intl.DateTimeFormat('nb-NO', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit'
+});
 
 const calcDiff = (e, n) => {
     let diff = e - n;
@@ -9,25 +17,26 @@ const calcDiff = (e, n) => {
 const createExpireClock = () => {
     let now = new Date();
     let expire = new Date();
-    let diff = calcDiff(expire, now)
-    let val = { now, expire, diff };
-    val.nowFormatted = helper.getYyyMmDdHhMmSs(val.now);
-    val.expireFormatted = helper.getYyyMmDdHhMmSs(val.expire);
+    let val = { now, expire };
     const { subscribe, set } = writable(val);
-    const get = () => val;
-    var newSet = (newExpireUnixTimestamp) => {
-        val.expire = new Date(newExpireUnixTimestamp*1000);
+    
+    const refresh = () => {
         val.diff = calcDiff(val.expire, val.now);
-        val.expireFormatted = helper.getYyyMmDdHhMmSs(val.expire);
+        val.nowFormatted = formatter.format(val.now);
+        val.expireFormatted = formatter.format(val.expire);
         return set(val);
+    }
+    
+    const newSet = (newExpireUnixTimestamp) => {
+        val.expire = new Date(newExpireUnixTimestamp*1000);
+        return refresh();
     };
+    
     setInterval(() => {
         val.now = new Date();
-        val.nowFormatted = helper.getYyyMmDdHhMmSs(val.now);
-        val.diff = calcDiff(val.expire, val.now);
-        set(val);
+        refresh()
 	}, 1000);
-    return { subscribe, set: newSet, get };
+    return { subscribe, set: newSet };
 };
 
 export const expireClock = createExpireClock();
