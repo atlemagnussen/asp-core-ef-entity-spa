@@ -1,3 +1,4 @@
+using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Test.auth.Models;
 using Test.auth.Services;
@@ -45,12 +48,19 @@ namespace Test.auth.Pages
         public string Secret4 { get; set; }
 
         public bool IsDevelopment { get; set; }
+
+        public string LoggedInUser { get; set; }
+        public string Role { get; set; }
         public Client WebClient { get; set; }
         public EcSigningKeys SigningKeys { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
             _logger.LogInformation("Index start");
+            var allClaims = User.Claims.ToList();
+            LoggedInUser = allClaims.FirstOrDefault(c => c.Type == JwtClaimTypes.PreferredUserName)?.Value;
+            Role = allClaims.FirstOrDefault(c => c.Type == JwtClaimTypes.Role)?.Value;
+            // var identities = User.Identities.ToList();
             try
             {
                 WebClient = await _clientStore.FindClientByIdAsync(Config.WebClientName);

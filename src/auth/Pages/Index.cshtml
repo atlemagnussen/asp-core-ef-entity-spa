@@ -7,7 +7,19 @@
 
 <h1 class="mt-5">Welcome to my AuthServer implementation!</h1>
 <p class="lead">Powered by IdentityServer4 <small>(version @version)</small></p>
-
+@if(!string.IsNullOrEmpty(Model.LoggedInUser))
+{
+    <p>Logged in as @Model.LoggedInUser
+    @if(!string.IsNullOrEmpty(Model.Role))
+    {
+        <br><b>Role </b><span>@Model.Role</span>
+    }
+    </p>
+}
+else 
+{
+    <p>Not logged in</p>
+}
 <h4>WebClient</h4>
 @if (Model.WebClient != null)
 {
