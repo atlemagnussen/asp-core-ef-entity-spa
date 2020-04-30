@@ -58,9 +58,10 @@ namespace Test.auth
                 RequireClientSecret = false,
                 RequirePkce = true,
                 RequireConsent = false,
-                RefreshTokenUsage = TokenUsage.OneTimeOnly,
-                UpdateAccessTokenClaimsOnRefresh = true,
-                RefreshTokenExpiration = TokenExpiration.Sliding,
+                //RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                //UpdateAccessTokenClaimsOnRefresh = true,
+                // RefreshTokenExpiration = TokenExpiration.Sliding,
+                
                 AccessTokenLifetime = 180,
 
                 RedirectUris = redirects,
@@ -72,7 +73,6 @@ namespace Test.auth
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         "roles",
                         "api.read",
                         "api.write"

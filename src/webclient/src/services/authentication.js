@@ -87,13 +87,16 @@ class Authentication {
     logout() {
         this.mgr.signoutRedirect();
     }
-    silentRefresh() {
+    async silentRefresh() {
         console.log("silentRefresh:: manual start");
-        return this.mgr.signinSilent().then(user => {
+        try {
+            const user = await this.mgr.signinSilent();
             console.log("silentRefresh:: renewal successful");
-        }, err => {
-            Log.error("silentRefresh:: Error from signinSilent:", err.message);
-        });
+            return user;
+        }
+        catch (err) {
+            console.log("silentRefresh:: Error from signinSilent:", err.message);
+        }
     }
     async getUser() {
         const user = await this.mgr.getUser();
