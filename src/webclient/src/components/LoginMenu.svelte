@@ -33,12 +33,16 @@
     div {
         color: white;
     }
+    .login-menu-button {
+        display: inline-block;
+        padding: 1rem;
+    }
 </style>
 
 <div>
     {#if $userIsLoggedIn}
         <PopDown>
-            <div slot="btnContent">
+            <div slot="btnContent" class="login-menu-button">
                 <Circle>{$userProfile.initials}</Circle>
             </div>
             <div slot="dlgContent" class="flex column">
@@ -51,7 +55,9 @@
             </div>
         </PopDown>
     {:else}
-        <button on:click="{logIn}">Log in</button>
+        <div class="login-menu-button">
+            <button on:click="{logIn}">Log in</button>
+        </div>
     {/if}
 
 </div>

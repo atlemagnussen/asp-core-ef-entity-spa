@@ -9,40 +9,49 @@
         windowWidth = window.innerWidth;
     }
     onMount(() => {
-        // if (auth.hasLoggedInUser()) {
-        //     userIsLoggedIn.set(true);
-        // }
+        windowResize();
         window.addEventListener('resize', windowResize);
     });
     const authServer = helper.getAuthServerUrl();
-    
+    $: smallDevice = windowWidth < 769;
 </script>
 
 <style>
     nav {
-        display: block;
         user-select: none;
     }
+    .main-menu-button {
+        padding: 1rem;
+    }
+    .main-menu-button:hover {
+        cursor: pointer;
+    }
+    .main-menu-button:hover svg g {
+        fill: var(--secondary-color);
+    }
 </style>
-<nav>
-    <Link page="{{ path: '/customers', name: 'Customers' }}" />
-    <Link page="{{ path: '/users', name: 'Users' }}" />
-    <a href="{authServer}">Auth</a>
-</nav>
-<!-- <div>
-    {#if $userIsLoggedIn}
-        <PopDown>
-            <div slot="btnContent">
-                <Circle>{$userProfile.initials}</Circle>
-            </div>
-            <div slot="dlgContent" class="flex column">
-                <Link page="{{ path: '/customers', name: 'Customers' }}" />
-                <Link page="{{ path: '/users', name: 'Users' }}" />
-                <a href="{authServer}">Auth</a>
-            </div>
-        </PopDown>
-    {:else}
-        <button on:click="{logIn}">Log in</button>
-    {/if}
 
-</div> -->
+{#if smallDevice}
+    <PopDown>
+        <div slot="btnContent" class="main-menu-button">
+            <svg viewBox="0 0 100 80" width="40" height="40">
+                <g class="hamburger-icon" fill="white">
+                    <rect width="100" height="15" rx="8"></rect>
+                    <rect y="30" width="100" height="15" rx="8"></rect>
+                    <rect y="60" width="100" height="15" rx="8"></rect>
+                </g>
+            </svg>
+        </div>
+        <nav slot="dlgContent" class="flex column">
+            <Link page="{{ path: '/customers', name: 'Customers' }}" />
+            <Link page="{{ path: '/users', name: 'Users' }}" />
+            <a href="{authServer}">Auth</a>
+        </nav>
+    </PopDown>
+{:else}
+    <nav class="flat">
+        <Link page="{{ path: '/customers', name: 'Customers' }}" />
+        <Link page="{{ path: '/users', name: 'Users' }}" />
+        <a href="{authServer}">Auth</a>
+    </nav>
+{/if}
