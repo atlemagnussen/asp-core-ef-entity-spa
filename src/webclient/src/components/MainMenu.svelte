@@ -29,6 +29,9 @@
     .main-menu-button:hover svg g {
         fill: var(--secondary-color);
     }
+    .flat {
+        padding: 1rem;
+    }
 </style>
 
 {#if smallDevice}
