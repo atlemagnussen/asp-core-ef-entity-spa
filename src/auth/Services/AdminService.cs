@@ -15,7 +15,7 @@ namespace Test.auth.Services
     public interface IAdminService
     {
         Task<AdminViewModel> GetAdminViewModel();
-        Task<TopMenuViewModel> GetTopMenuViewModel(ClaimsPrincipal user);
+        TopMenuViewModel GetTopMenuViewModel(ClaimsPrincipal user);
     }
     public class AdminService : IAdminService
     {
@@ -43,7 +43,8 @@ namespace Test.auth.Services
             try
             {
                 vm.WebClient = await _clientStore.FindClientByIdAsync(Config.WebClientName);
-                vm.ConnectionString1 = GetConStrStripPw("AuthDb");
+                vm.AuthConnectionString = GetConStrStripPw("AuthDb");
+                vm.BankConnectionString = GetConStrStripPw("BankDatabase");
                 vm.AzureAdClientId = _configuration.GetValue<string>("AzureAd:ClientId");
                 vm.IsDevelopment = _environment.IsDevelopment();
                 vm.SigningKeys = await _azureKeyService.GetSigningKeysAsync();
@@ -55,7 +56,7 @@ namespace Test.auth.Services
             return vm;
         }
 
-        public async Task<TopMenuViewModel> GetTopMenuViewModel(ClaimsPrincipal user)
+        public TopMenuViewModel GetTopMenuViewModel(ClaimsPrincipal user)
         {
             var vm = new TopMenuViewModel();
             vm.WebClientUrl = _configuration.GetValue<string>("WebClientUrl");

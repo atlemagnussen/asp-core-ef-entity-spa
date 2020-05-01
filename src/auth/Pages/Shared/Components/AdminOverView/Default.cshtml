@@ -34,10 +34,13 @@ else
 <p><a href=".well-known/openid-configuration">Discovery document</a></p>
 
 <h3>config</h3>
-<p>ClientId: @Model.AzureAdClientId<p>
-<p></p>
 <h4>Azure Key Vault values</h4>
+<p>ClientId: @Model.AzureAdClientId<p>
 <p>
-    <span style="font-weight: bold">Configuration.GetConnectionString("AuthDb")</span>
-    <span>@Model.ConnectionString1</span>
+    <span style="font-weight: bold">AuthDb</span>
+    <span>@Model.AuthConnectionString</span>
+</p>
+<p>
+    <span style="font-weight: bold">BankDatabase</span>
+    <span>@Model.BankConnectionString</span>
 </p>

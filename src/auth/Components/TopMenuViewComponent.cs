@@ -15,7 +15,7 @@ namespace Test.auth.Components
         }
         public async Task<IViewComponentResult> InvokeAsync(ClaimsPrincipal user)
         {
-            var vm = await _adminService.GetTopMenuViewModel(user);
+            var vm = await Task.FromResult(_adminService.GetTopMenuViewModel(user));
             return View(vm);
         }
     }

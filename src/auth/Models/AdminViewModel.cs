@@ -6,7 +6,8 @@ namespace Test.auth.Models
     {
         public Client WebClient { get; set; }
         public EcSigningKeys SigningKeys { get; set; }
-        public string ConnectionString1 { get; set; }
+        public string AuthConnectionString { get; set; }
+        public string BankConnectionString { get; set; }
         public string AzureAdClientId { get; set; }
         public bool IsDevelopment { get; set; }
     }
