@@ -63,7 +63,7 @@ namespace Test.auth.Services
         {
             var keys = await _cache.GetOrCreateAsync(_signingKeyName, async entry =>
             {
-                var expire = DateTimeOffset.Now.AddDays(1);
+                var expire = DateTimeOffset.Now.AddHours(1);
                 entry.AbsoluteExpiration = expire;
                 var keysAzure = await GetSigningKeysAzureAsync();
                 keysAzure.CacheExpiring = expire;
