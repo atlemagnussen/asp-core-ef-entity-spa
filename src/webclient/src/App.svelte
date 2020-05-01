@@ -21,10 +21,13 @@
 </script>
 
 <style>
+    header {
+        padding: 0.8rem;
+    }
     .logo {
         display: inline-block;
         height: 2.5rem;
-        width: 4rem;
+        width: 4.5rem;
         line-height: 2.5rem;
         vertical-align: middle;
         text-align: center;

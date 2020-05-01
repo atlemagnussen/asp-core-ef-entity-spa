@@ -21,7 +21,7 @@
         user-select: none;
     }
     .main-menu-button {
-        padding: 1rem;
+        
     }
     .main-menu-button:hover {
         cursor: pointer;
@@ -29,9 +29,7 @@
     .main-menu-button:hover svg g {
         fill: var(--secondary-color);
     }
-    .flat {
-        padding: 1rem;
-    }
+    
 </style>
 
 {#if smallDevice}

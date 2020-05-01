@@ -35,7 +35,6 @@
     }
     .login-menu-button {
         display: inline-block;
-        padding: 1rem;
     }
 </style>
 
