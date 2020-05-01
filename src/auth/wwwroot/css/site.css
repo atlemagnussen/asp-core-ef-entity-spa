@@ -66,6 +66,7 @@ body {
 }
 
 .key {
+    display: inline-block;
     margin-bottom: 1rem;
     padding: 1rem;
 }

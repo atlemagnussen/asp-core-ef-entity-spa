@@ -1,5 +1,5 @@
 ﻿@page
-@using Test.auth.Pages
+@using Test.model.Users
 @model IndexModel
 @{
     var version = typeof(IdentityServer4.Hosting.IdentityServerMiddleware).Assembly.GetName().Version.ToString();
@@ -15,72 +15,12 @@
         <br><b>Role </b><span>@Model.Role</span>
     }
     </p>
+    @if(!string.IsNullOrEmpty(Model.Role) && Model.Role == SystemRoles.Admin)
+    {
+        @await Component.InvokeAsync("AdminOverView")
+    }
 }
 else 
 {
     <p>Not logged in</p>
 }
-<h4>WebClient</h4>
-@if (Model.WebClient != null)
-{
-    <p>
-        <span style="font-weight: bold">AccessTokenLifetime</span>
-        @Model.WebClient.AccessTokenLifetime<span> seconds</span>
-    </p>
-}
-<h4>Azure Key Vault keys</h4>
-@if (Model.SigningKeys.CacheExpiring.HasValue)
-{
-    <p>Cache expiring @Model.SigningKeys.CacheExpiring.Value</p>
-}
-else
-{
-    <p>Not cached</p>
-}
-<h5>SigningKeys</h5>
-<div class="key previous">
-    <h6>Previous</h6>
-    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Previous })
-</div>
-<div class="key current">
-    <h6>Current</h6>
-    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Current })
-</div>
-<div class="key future">
-    <h6>Future</h6>
-    @await Component.InvokeAsync("SigningKey", new { vm = @Model.SigningKeys.Future })
-</div>
-
-<p><a href=".well-known/openid-configuration">Discovery document</a></p>
-<p><a href="Login">Go to login</a></p>
-<p><a href="@Model.ClientUrl">Go to client</a></p>
-
-<h3>config</h3>
-<p>AllowedClient: @Model.AllowedClientUrl</p>
-<p>ClientId: @Model.AzureAdClientId<p>
-<p></p>
-<h4>Azure Key Vault values</h4>
-<p>
-    <span style="font-weight: bold">Configuration.GetConnectionString("AuthDb")</span>
-    <span>@Model.ConnectionString1</span>
-</p>
-<p>
-    <span style="font-weight: bold">Configuration.GetConnectionString("BankDatabase")</span>
-    <span>@Model.ConnectionString2</span>
-</p>
-<p>
-    <span style="font-weight: bold">Configuration["SecretName"]</span><br />
-    <span>@Model.Secret1</span>
-</p>
-<p>
-    <span style="font-weight: bold">Configuration["Section:SecretName"]</span><br />
-    <span>@Model.Secret2</span>
-</p>
-<p>
-    <span style="font-weight: bold">Configuration.GetSection("Section")["SecretName"]</span><br />
-    <span>@Model.Secret3</span>
-</p>
-<p>
-    <span style="font-weight: bold">Configuration.GetValue&lt;string&gt;("SecretName")</span><br />
-    <span>@Model.Secret4</span>
-</p>

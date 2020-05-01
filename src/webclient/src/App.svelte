@@ -7,6 +7,8 @@
     import Login from "./components/LoginMenu.svelte";
     import Container from "./Container.svelte";
     import { onMount } from "svelte";
+    import helper from "./services/helper.js";
+    const authServer = helper.getAuthServerUrl();
     onMount(() => {
         curRoute.set(window.location.pathname);
         if (!history.state) {
@@ -45,7 +47,7 @@
             </Link>
             <Link page="{{ path: '/customers', name: 'Customers' }}" />
             <Link page="{{ path: '/users', name: 'Users' }}" />
-            <Link page="{{ path: '/about', name: 'About' }}" />
+            <a href="{authServer}">Auth</a>
         </nav>
         <Login />
     </header>

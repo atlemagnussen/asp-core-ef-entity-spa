@@ -85,7 +85,7 @@ namespace Test.auth.Extentions
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     options.EnableTokenCleanup = true;
                 });
-            builder.AddInMemoryClients(Config.GetClients(configuration.GetValue<string>("AllowedClientUrl")));
+            builder.AddInMemoryClients(Config.GetClients(configuration.GetValue<string>("WebClientUrl")));
             builder.AddInMemoryApiResources(Config.GetApiResources());
             builder.AddInMemoryIdentityResources(Config.GetIdentityResources());
             builder.AddAspNetIdentity<ApplicationUser>();

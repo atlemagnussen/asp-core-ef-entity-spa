@@ -1,9 +1,9 @@
 import Oidc from "oidc-client";
-
+import helper from "./helper.js";
 const rootPath = `${window.location.origin}`;
 // config
 let oicdConfig = {
-    authority: "https://localhost:6001",
+    authority: helper.getAuthServerUrl(),
     client_id: "webclient",
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
@@ -16,8 +16,7 @@ let oicdConfig = {
     validateSubOnSilentRenew: true,
     revokeAccessTokenOnSignout : true
 };
-if (!rootPath.includes("localhost"))
-    oicdConfig.authority = "https://asp-core-auth-server.azurewebsites.net";
+
 class Authentication {
     
     constructor() {
@@ -31,10 +30,15 @@ class Authentication {
         this.mgr.events.addAccessTokenExpired(() => this.expired());
         this.mgr.events.addSilentRenewError((m) => this.renewError(m));
     }
-    // expose add loaded
+    // public methods
     onUserLoaded(fn) {
         this.mgr.events.addUserLoaded((u) => fn(u));
     }
+
+    getAuthServer() {
+        return oicdConfig.authority;
+    }
+
     loaded(user) {
         console.log("loaded");
         console.log(user);

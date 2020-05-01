@@ -22,6 +22,9 @@ class UserProfile {
             }
         });
         auth.onUserLoaded((u) => this.onuserIsLoggedIn(u));
+        const isAuth = await auth.isLoggedIn();
+        // if (!isAuth)
+        //     auth.login();
     }
     
     onuserIsLoggedIn(loggedInUser) {

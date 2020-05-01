@@ -32,16 +32,19 @@ namespace Test.auth
             var configAzAd = Configuration.GetSection("AzureAd");
             services.Configure<SettingsAzureAd>(configAzAd);
             services.Configure<SettingsAzureKeyVault>(Configuration.GetSection("AzureKeyVault"));
-            services.AddScoped<ILoginService, LoginService>();
-            services.AddScoped<ILogoutService, LogoutService>();
-            services.AddScoped<IRegisterService, RegisterService>();
-            services.AddScoped<IClaimsHelper, ClaimsHelper>();
-            services.AddScoped<IExternalService, ExternalService>();
-            services.AddScoped<IAzureKeyService, AzureKeyService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<ILogoutService, LogoutService>();
+            services.AddTransient<IRegisterService, RegisterService>();
+            services.AddTransient<IClaimsHelper, ClaimsHelper>();
+            services.AddTransient<IExternalService, ExternalService>();
+            services.AddTransient<IAzureKeyService, AzureKeyService>();
+            services.AddTransient<IAdminService, AdminService>();
             
-            services.AddScoped<ITokenCreationService, AzureKeyVaultTokenCreationService>();
-            services.AddScoped<ISigningCredentialStore, AzureSigningCredentialsStore>();
-            services.AddScoped<IValidationKeysStore, AzureValidationKeysStore>();
+            // services that override default identityserver services
+            services.AddTransient<ITokenCreationService, AzureKeyVaultTokenCreationService>();
+            services.AddTransient<ISigningCredentialStore, AzureSigningCredentialsStore>();
+            services.AddTransient<IValidationKeysStore, AzureValidationKeysStore>();
+
             services.AddIdentityServerConfig(Configuration, Environment, configAzAd);
             services.AddCommonIdentitySettings();
             services.AddCommonDataProtection();

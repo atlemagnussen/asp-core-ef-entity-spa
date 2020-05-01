@@ -1,13 +1,6 @@
 import { writable } from 'svelte/store';
+import helper from "../services/helper.js";
 
-const formatter = new Intl.DateTimeFormat('nb-NO', {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-});
 
 const calcDiff = (e, n) => {
     let diff = e - n;
@@ -22,8 +15,8 @@ const createExpireClock = () => {
     
     const refresh = () => {
         val.diff = calcDiff(val.expire, val.now);
-        val.nowFormatted = formatter.format(val.now);
-        val.expireFormatted = formatter.format(val.expire);
+        val.nowFormatted = helper.getYyyMmDdHhMmSs(val.now);
+        val.expireFormatted = helper.getYyyMmDdHhMmSs(val.expire);
         return set(val);
     }
     

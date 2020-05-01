@@ -57,3 +57,8 @@ button:focus {
 .column {
 	flex-direction: column;
 }
+
+header nav a, header nav a:visited {
+	padding: 1rem;
+	color: var(--secondary-text);
+}
