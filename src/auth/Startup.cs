@@ -30,8 +30,9 @@ namespace Test.auth
             services.AddSameSiteCookiePolicy();
 
             var configAzAd = Configuration.GetSection("AzureAd");
+            var configAzKv = Configuration.GetSection("AzureKeyVault");
             services.Configure<SettingsAzureAd>(configAzAd);
-            services.Configure<SettingsAzureKeyVault>(Configuration.GetSection("AzureKeyVault"));
+            services.Configure<SettingsAzureKeyVault>(configAzKv);
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<ILogoutService, LogoutService>();
             services.AddTransient<IRegisterService, RegisterService>();
@@ -47,7 +48,7 @@ namespace Test.auth
 
             services.AddIdentityServerConfig(Configuration, Environment, configAzAd);
             services.AddCommonIdentitySettings();
-            services.AddCommonDataProtection();
+            services.AddCommonDataProtection(configAzKv);
 
             services.AddRazorPages();
         }

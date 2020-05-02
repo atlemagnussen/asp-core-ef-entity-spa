@@ -58,7 +58,7 @@ namespace Test.webapi
             });
 
             services.AddCommonIdentitySettings();
-            services.AddCommonDataProtection();
+            services.AddCommonDataProtection(Configuration.GetSection("AzureKeyVault"));
 
             services.AddDbContext<BankContext>(options =>
             {

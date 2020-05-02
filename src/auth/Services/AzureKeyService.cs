@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Test.auth.Models;
+using Test.dataaccess;
 
 namespace Test.auth.Services
 {
