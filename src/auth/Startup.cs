@@ -48,7 +48,7 @@ namespace Test.auth
 
             services.AddIdentityServerConfig(Configuration, Environment, configAzAd);
             services.AddCommonIdentitySettings();
-            services.AddCommonDataProtection(configAzKv);
+            services.AddCommonDataProtection(configAzKv, Environment.IsDevelopment());
 
             services.AddRazorPages();
         }

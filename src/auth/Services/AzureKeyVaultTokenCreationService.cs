@@ -16,6 +16,9 @@ using Test.dataaccess;
 
 namespace Test.auth.Services
 {
+    /// <summary>
+    /// Get Signing Keys
+    /// </summary>
     public class AzureKeyVaultTokenCreationService : DefaultTokenCreationService
     {
         private readonly SettingsAzureKeyVault _settings;

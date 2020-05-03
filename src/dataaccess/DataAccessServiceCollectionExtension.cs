@@ -1,28 +1,24 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Test.dataaccess.Services;
 
 namespace Test.dataaccess
 {
     public static class DataAccessServiceCollectionExtension
     {
-        public static void AddCommonDataProtection(this IServiceCollection services, IConfigurationSection configAzKv)
+        public static void AddCommonDataProtection(this IServiceCollection services,
+            IConfigurationSection configAzKv,
+            bool isDevelopment)
         {
-            var azKv = configAzKv.Get<SettingsAzureKeyVault>();
-
-            // fix here
-            var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var keyVaultClient = new KeyVaultClient(
-                new KeyVaultClient.AuthenticationCallback(
-                    azureServiceTokenProvider.KeyVaultTokenCallback));
-
-
+            var settings = configAzKv.Get<SettingsAzureKeyVault>();
+            var keyVaultClient = AzureClientsCreator.GetKeyVaultClient(settings, isDevelopment);
+            var keyUrl = "https://atle-dev-key-vault.vault.azure.net/keys/dataprotection-encryption-key";
             services.AddDataProtection()
                 .PersistKeysToDbContext<DataProtectionDbContext>()
-                .SetApplicationName("asp-core-ef-is4-spa")
-                .ProtectKeysWithAzureKeyVault(azKv.KeyVaultName, azKv.ClientId, azKv.ClientSecret);
+                .ProtectKeysWithAzureKeyVault(keyVaultClient, keyUrl)
+                .SetApplicationName("asp-core-ef-is4-spa");
         }
         public static void AddCommonIdentitySettings(this IServiceCollection services)
         {

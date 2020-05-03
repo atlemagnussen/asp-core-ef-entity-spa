@@ -22,7 +22,7 @@ namespace Test.auth
                     {
                         var builtConfig = config.Build();
                         var vaultUrl = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
-                        //var azureServiceTokenProvider = new AzureServiceTokenProvider();
+                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
                         //var keyVaultClient = new KeyVaultClient(
                         //    new KeyVaultClient.AuthenticationCallback(
                         //        azureServiceTokenProvider.KeyVaultTokenCallback));

@@ -17,6 +17,9 @@ using Test.dataaccess;
 
 namespace Test.auth.Services
 {
+    /// <summary>
+    /// interface for fetching signing keys
+    /// </summary>
     public interface IAzureKeyService
     {
         Task<EcSigningKeys> GetSigningKeysAsync();
