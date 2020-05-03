@@ -1,5 +1,11 @@
 @model Models.AdminViewModel
 
+<h4>Data Protection test</h4>
+<p>
+    <b>Input:</b> @Model.ProtectInput<br>
+    <b>Protected:</b> @Model.ProtectedInput<br>
+    <b>Unprotected:</b> @Model.UnprotectedInput
+</p>
 <h4>WebClient</h4>
 @if (Model.WebClient != null)
 {

@@ -1,5 +1,6 @@
 using IdentityModel;
 using IdentityServer4.Stores;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -24,24 +25,30 @@ namespace Test.auth.Services
         private readonly IConfiguration _configuration;
         private readonly IAzureKeyService _azureKeyService;
         private readonly IClientStore _clientStore;
+        private readonly IDataProtector _protector;
 
         public AdminService(IWebHostEnvironment environment,
             ILogger<AdminService> logger,
             IConfiguration configuration,
             IAzureKeyService azureKeyService,
-            IClientStore clientStore)
+            IClientStore clientStore,
+            IDataProtectionProvider provider)
         {
             _environment = environment;
             _logger = logger;
             _configuration = configuration;
             _azureKeyService = azureKeyService;
             _clientStore = clientStore;
+            _protector = provider.CreateProtector("test");
         }
         public async Task<AdminViewModel> GetAdminViewModel()
         {
             var vm = new AdminViewModel();
             try
             {
+                vm.ProtectInput = "hello world 57666";
+                vm.ProtectedInput = _protector.Protect(vm.ProtectInput);
+                vm.UnprotectedInput = _protector.Unprotect(vm.ProtectedInput);
                 vm.WebClient = await _clientStore.FindClientByIdAsync(Config.WebClientName);
                 vm.AuthConnectionString = GetConStrStripPw("AuthDb");
                 vm.BankConnectionString = GetConStrStripPw("BankDatabase");

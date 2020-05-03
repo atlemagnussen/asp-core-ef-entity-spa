@@ -10,5 +10,8 @@ namespace Test.auth.Models
         public string BankConnectionString { get; set; }
         public string AzureAdClientId { get; set; }
         public bool IsDevelopment { get; set; }
+        public string ProtectInput { get; set; }
+        public string ProtectedInput { get; set; }
+        public string UnprotectedInput { get; set; }
     }
 }
