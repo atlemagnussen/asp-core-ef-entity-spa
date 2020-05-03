@@ -23,14 +23,12 @@ namespace Test.auth.Services
     {
         private readonly SettingsAzureKeyVault _settings;
         private readonly IWebHostEnvironment _environment;
-        private readonly IConfiguration _configuration;
         private string _vaultUrl;
         private string _signingKeyName;
         private ILogger<AzureKeyVaultTokenCreationService> _logger;
         private readonly IAzureKeyService _azureKeyService;
 
         public AzureKeyVaultTokenCreationService(IOptions<SettingsAzureKeyVault> optionsKeyVault,
-            IConfiguration configuration,
             ISystemClock clock, 
             IKeyMaterialService keys, 
             IdentityServerOptions options, 
@@ -42,12 +40,11 @@ namespace Test.auth.Services
         {
             _settings = optionsKeyVault.Value;
             _environment = environment;
-            _configuration = configuration;
             _logger = loggerHere;
             _azureKeyService = azureKeyService;
 
             _signingKeyName = _settings.SigningKeyName;
-            _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
+            _vaultUrl = $"https://{_settings.VaultName}.vault.azure.net/";
         }
 
         private async Task<CryptographyClient> GetClient()

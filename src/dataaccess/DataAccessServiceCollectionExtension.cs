@@ -14,7 +14,8 @@ namespace Test.dataaccess
         {
             var settings = configAzKv.Get<SettingsAzureKeyVault>();
             var keyVaultClient = AzureClientsCreator.GetKeyVaultClient(settings, isDevelopment);
-            var keyUrl = "https://atle-dev-key-vault.vault.azure.net/keys/dataprotection-encryption-key";
+            var vaultUrl = $"https://{settings.VaultName}.vault.azure.net";
+            var keyUrl = $"{vaultUrl}/keys/{settings.DataProtectionKeyName}";
             services.AddDataProtection()
                 .PersistKeysToDbContext<DataProtectionDbContext>()
                 .ProtectKeysWithAzureKeyVault(keyVaultClient, keyUrl)

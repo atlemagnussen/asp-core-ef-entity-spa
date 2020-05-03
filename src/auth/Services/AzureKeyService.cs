@@ -35,14 +35,13 @@ namespace Test.auth.Services
 
         public AzureKeyService(IOptions<SettingsAzureKeyVault> options,
             IWebHostEnvironment environment,
-            IConfiguration configuration,
             ILogger<AzureKeyService> logger,
             IMemoryCache memoryCache)
         {
             _settings = options.Value;
             _logger = logger;
             _cache = memoryCache;
-            _vaultUrl = $"https://{configuration["KeyVaultName"]}.vault.azure.net/";
+            _vaultUrl = $"https://{_settings.VaultName}.vault.azure.net/";
             var vaultUri = new Uri(_vaultUrl);
 
             _signingKeyName = _settings.SigningKeyName;

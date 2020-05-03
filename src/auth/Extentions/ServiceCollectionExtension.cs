@@ -12,9 +12,6 @@ using Test.auth.Services;
 using Test.dataaccess;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Azure.Identity;
-using Azure.Security.KeyVault.Keys;
 
 namespace Test.auth.Extentions
 {
@@ -61,25 +58,7 @@ namespace Test.auth.Extentions
             });
             //if (environment.IsDevelopment())
             //    builder.AddDeveloperSigningCredential();
-            //else
-            //{
-            //IAzureKeyService service = new AzureKeyService(environment, configuration, null);
-            //var keys = service.GetSigningKeys();
-            //if (keys != null)
-            //{
-            //    if (keys.Current != null && keys.Current.Key != null)
-            //        builder.AddSigningCredential(keys.Current.Key, keys.Current.Algorithm);
-                
-            //    if (keys.Previous != null && keys.Previous.Key != null)
-            //        builder.AddValidationKey(keys.Previous.Key, keys.Previous.Algorithm);
 
-            //    if (keys.Future != null && keys.Future.Key != null)
-            //        builder.AddValidationKey(keys.Future.Key, keys.Future.Algorithm);
-            //}
-            
-            //var rsaKeys = service.GetRsaSigningKeys();
-            //builder.AddValidationKey(rsa.Key, rsa.Algorithm);
-            //}
             builder.AddOperationalStore(options =>
                 {
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));

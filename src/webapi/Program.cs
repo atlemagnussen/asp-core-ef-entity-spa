@@ -18,7 +18,8 @@ namespace Test.webapi
                     if (context.HostingEnvironment.IsProduction())
                     {
                         var builtConfig = config.Build();
-                        var vaultUrl = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
+                        var vaultName = builtConfig.GetValue<string>("AzureKeyVault:VaultName");
+                        var vaultUrl = $"https://{vaultName}.vault.azure.net/";
                         config.AddAzureKeyVault(vaultUrl);
                     }
                 })

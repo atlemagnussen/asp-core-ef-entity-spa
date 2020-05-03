@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.KeyVault;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.AzureKeyVault;
 using Microsoft.Extensions.Hosting;
 
 namespace Test.auth
@@ -21,15 +18,8 @@ namespace Test.auth
                     if (context.HostingEnvironment.IsProduction())
                     {
                         var builtConfig = config.Build();
-                        var vaultUrl = $"https://{builtConfig["KeyVaultName"]}.vault.azure.net/";
-                        var azureServiceTokenProvider = new AzureServiceTokenProvider();
-                        //var keyVaultClient = new KeyVaultClient(
-                        //    new KeyVaultClient.AuthenticationCallback(
-                        //        azureServiceTokenProvider.KeyVaultTokenCallback));
-
-                        //config.AddAzureKeyVault(vaultUrl,
-                        //    keyVaultClient,
-                        //    new DefaultKeyVaultSecretManager());
+                        var vaultName = builtConfig.GetValue<string>("AzureKeyVault:VaultName");
+                        var vaultUrl = $"https://{vaultName}.vault.azure.net/";
                         config.AddAzureKeyVault(vaultUrl);
                     }
                 })
