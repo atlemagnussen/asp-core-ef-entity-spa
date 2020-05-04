@@ -1,6 +1,6 @@
 import Oidc from "oidc-client";
 import helper from "./helper.js";
-const rootPath = `${window.location.origin}`;
+const rootPath = window.location.origin
 // config
 let oicdConfig = {
     authority: helper.getAuthServerUrl(),
@@ -8,7 +8,7 @@ let oicdConfig = {
     redirect_uri: `${rootPath}/callback.html`,
     response_type: "code",
     scope:"openid profile api.read api.write email",
-    post_logout_redirect_uri: `${rootPath}`,
+    post_logout_redirect_uri: rootPath,
     accessTokenExpiringNotificationTime: 60,
     silentRequestTimeout: 20000,
     automaticSilentRenew: false,
