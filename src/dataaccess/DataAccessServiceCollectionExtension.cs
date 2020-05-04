@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using Test.dataaccess.Services;
 
 namespace Test.dataaccess
@@ -19,7 +20,8 @@ namespace Test.dataaccess
             services.AddDataProtection()
                 .PersistKeysToDbContext<DataProtectionDbContext>()
                 .ProtectKeysWithAzureKeyVault(keyVaultClient, keyUrl)
-                .SetApplicationName("asp-core-ef-is4-spa");
+                .SetApplicationName("asp-core-ef-is4-spa")
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(7));
         }
         public static void AddCommonIdentitySettings(this IServiceCollection services)
         {
