@@ -1,9 +1,7 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Keys;
+﻿using Azure.Security.KeyVault.Keys;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -14,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Test.auth.Models;
 using Test.dataaccess;
+using Test.dataaccess.Services;
 
 namespace Test.auth.Services
 {
@@ -26,9 +25,7 @@ namespace Test.auth.Services
     }
     public class AzureKeyService : IAzureKeyService
     {
-        private readonly SettingsAzureKeyVault _settings;
         private readonly ILogger<AzureKeyService> _logger;
-        private readonly string _vaultUrl;
         private readonly KeyClient _keyClient;
         private readonly string _signingKeyName;
         private IMemoryCache _cache;
@@ -38,24 +35,12 @@ namespace Test.auth.Services
             ILogger<AzureKeyService> logger,
             IMemoryCache memoryCache)
         {
-            _settings = options.Value;
             _logger = logger;
             _cache = memoryCache;
-            _vaultUrl = $"https://{_settings.VaultName}.vault.azure.net/";
-            var vaultUri = new Uri(_vaultUrl);
 
-            _signingKeyName = _settings.SigningKeyName;
+            _signingKeyName = options.Value.SigningKeyName;
 
-            if (environment.IsDevelopment())
-            {
-                var clientCredential = new ClientSecretCredential(_settings.TenantId, _settings.ClientId, _settings.ClientSecret);
-                _keyClient = new KeyClient(vaultUri, clientCredential);
-            }
-            else
-            {
-                var tokenCredential = new DefaultAzureCredential();
-                _keyClient = new KeyClient(vaultUri, tokenCredential);
-            }
+            _keyClient = AzureClientsCreator.GetKeyClient(options.Value, environment.IsDevelopment());
         }
 
         /*

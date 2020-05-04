@@ -1,5 +1,8 @@
-﻿using Microsoft.Azure.KeyVault;
+﻿using Azure.Identity;
+using Azure.Security.KeyVault.Keys;
+using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
+using System;
 
 namespace Test.dataaccess.Services
 {
@@ -23,6 +26,22 @@ namespace Test.dataaccess.Services
                     new KeyVaultClient.AuthenticationCallback(
                         azureServiceTokenProvider.KeyVaultTokenCallback));
                 return client;
+            }
+        }
+
+        public static KeyClient GetKeyClient(SettingsAzureKeyVault settings, bool isDevelopment)
+        {
+            var vaultUrl = $"https://{settings.VaultName}.vault.azure.net/";
+            var vaultUri = new Uri(vaultUrl);
+            if (isDevelopment)
+            {
+                var clientCredential = new ClientSecretCredential(settings.TenantId, settings.ClientId, settings.ClientSecret);
+                return new KeyClient(vaultUri, clientCredential);
+            }
+            else
+            {
+                var tokenCredential = new DefaultAzureCredential();
+                return new KeyClient(vaultUri, tokenCredential);
             }
         }
     }
