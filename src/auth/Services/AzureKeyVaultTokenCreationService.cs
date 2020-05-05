@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
 using Test.dataaccess;
+using Test.dataaccess.Services;
 
 namespace Test.auth.Services
 {
@@ -53,16 +54,9 @@ namespace Test.auth.Services
             var currentVersion = keys.Current.Version;
             var keyUrl = $"{_vaultUrl}keys/{_signingKeyName}/{currentVersion}";
             _logger.LogInformation($"_keyUrl= {keyUrl}");
-            CryptographyClient client;
-            if (_environment.IsDevelopment())
-            {
-                var clientCredential = new ClientSecretCredential(_settings.TenantId, _settings.ClientId, _settings.ClientSecret);
-                client = new CryptographyClient(new Uri(keyUrl), clientCredential);
-            }
-            else
-            {
-                client = new CryptographyClient(new Uri(keyUrl), new DefaultAzureCredential());
-            }
+
+            var client = AzureClientsCreator.GetCryptographyClient(_settings, keyUrl, _environment.IsDevelopment());
+            
             return client;
         }
 

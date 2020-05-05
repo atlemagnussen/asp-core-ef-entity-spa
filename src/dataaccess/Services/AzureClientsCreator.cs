@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Keys;
+using Azure.Security.KeyVault.Keys.Cryptography;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Azure.Services.AppAuthentication;
 using System;
@@ -43,6 +44,17 @@ namespace Test.dataaccess.Services
                 var tokenCredential = new DefaultAzureCredential();
                 return new KeyClient(vaultUri, tokenCredential);
             }
+        }
+
+        public static CryptographyClient GetCryptographyClient(SettingsAzureKeyVault settings, string keyUrl, bool isDevelopment)
+        {
+            if (isDevelopment)
+            {
+                var clientCredential = new ClientSecretCredential(settings.TenantId, settings.ClientId, settings.ClientSecret);
+                return new CryptographyClient(new Uri(keyUrl), clientCredential);
+            }
+            else
+                return new CryptographyClient(new Uri(keyUrl), new DefaultAzureCredential());
         }
     }
 }
