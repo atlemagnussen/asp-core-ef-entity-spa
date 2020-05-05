@@ -7,6 +7,9 @@
 
 <h1 class="mt-5">Welcome to my AuthServer implementation!</h1>
 <p class="lead">Powered by IdentityServer4 <small>(version @version)</small></p>
+
+<p><a href=".well-known/openid-configuration">Discovery document</a></p>
+
 @if(!string.IsNullOrEmpty(Model.LoggedInUser))
 {
     <p>Logged in as @Model.LoggedInUser
@@ -24,3 +27,4 @@ else
 {
     <p>Not logged in</p>
 }
+

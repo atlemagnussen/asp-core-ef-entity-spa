@@ -6,7 +6,7 @@ namespace Test.auth.Components
 {
     public class SigningKeyViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(EcSigningKeyModel vm)
+        public async Task<IViewComponentResult> InvokeAsync(SigningKeyModel vm)
         {
             return View(vm);
         }

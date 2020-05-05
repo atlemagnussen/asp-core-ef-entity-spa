@@ -21,7 +21,7 @@ namespace Test.auth.Services
     /// </summary>
     public interface IAzureKeyService
     {
-        Task<EcSigningKeys> GetSigningKeysAsync();
+        Task<SigningKeys> GetSigningKeysAsync();
     }
     public class AzureKeyService : IAzureKeyService
     {
@@ -47,7 +47,7 @@ namespace Test.auth.Services
          api
          */
 
-        public async Task<EcSigningKeys> GetSigningKeysAsync()
+        public async Task<SigningKeys> GetSigningKeysAsync()
         {
             var keys = await _cache.GetOrCreateAsync(_signingKeyName, async entry =>
             {
@@ -61,12 +61,15 @@ namespace Test.auth.Services
             return keys;
         }
 
-        protected async Task<EcSigningKeys> GetSigningKeysAzureAsync()
+        /*
+         internal
+         */
+        protected async Task<SigningKeys> GetSigningKeysAzureAsync()
         {
-            var model = new EcSigningKeys();
-            var currentKeys = new List<EcSigningKeyModel>();
-            var expiredKeys = new List<EcSigningKeyModel>();
-            var futureKeys = new List<EcSigningKeyModel>();
+            var model = new SigningKeys();
+            var currentKeys = new List<SigningKeyModel>();
+            var expiredKeys = new List<SigningKeyModel>();
+            var futureKeys = new List<SigningKeyModel>();
 
             var propertiesPages = _keyClient.GetPropertiesOfKeyVersionsAsync(_signingKeyName).AsPages();
             await foreach (var page in propertiesPages)
@@ -76,7 +79,7 @@ namespace Test.auth.Services
                     if (keyProperties.Enabled.HasValue && !keyProperties.Enabled.Value)
                         continue;
 
-                    var key = await GetEcSigningKeyAsync(_signingKeyName, keyProperties.Version);
+                    var key = await GetSigningKeyAsync(_signingKeyName, keyProperties.Version);
 
                     if (key.Expired)
                     {
@@ -116,126 +119,89 @@ namespace Test.auth.Services
             return model;
         }
 
+
+        protected async Task<SigningKeyModel> GetSigningKeyAsync(string name, string version = null)
+        {
+            _logger.LogInformation("Start GetEcSigningKey Async");
+            try
+            {
+                var response = await _keyClient.GetKeyAsync(name, version);
+                if (response != null && response.Value != null)
+                {
+                    var model = GetFromKeyVaultKey(response.Value);
+                    return model;
+                }
+                else
+                {
+                    _logger.LogError("GetEcSigningKey keyFrom was null");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error GetEcSigningKey", ex);
+            }
+            return new SigningKeyModel(name, "Failed", null, null);
+        }
         /*
          */
-        protected RsaSigningKeyModel GetRsaSigningKey(string name, string version = null)
-        {
-            try
-            {
-                var response = _keyClient.GetKey(name, version);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetRsaFromKeyVaultKey(response.Value);
-                    return model;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return new RsaSigningKeyModel(name, "Failed", null, null);
-        }
-
-        protected async Task<RsaSigningKeyModel> GetRsaSigningKeyAsync(string name, string version = null)
-        {
-            _logger.LogInformation("Start GetEcSigningKey Async");
-            try
-            {
-                var response = await _keyClient.GetKeyAsync(name, version);
-                if (response != null)
-                {
-                    var model = GetRsaFromKeyVaultKey(response.Value);
-                    return model;
-                }
-                else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return new RsaSigningKeyModel(name, "Failed", null, null);
-        }
-
-        protected EcSigningKeyModel GetEcSigningKey(string name, string version = null)
-        {
-            try
-            {
-                var response = _keyClient.GetKey(name, version);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetEcFromKeyVaultKey(response.Value);
-                    return model;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            return new EcSigningKeyModel(name, "Failed", null, null);
-        }
-
-        protected async Task<EcSigningKeyModel> GetEcSigningKeyAsync(string name, string version = null)
-        {
-            _logger.LogInformation("Start GetEcSigningKey Async");
-            try
-            {
-                var response = await _keyClient.GetKeyAsync(name, version);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetEcFromKeyVaultKey(response.Value);
-                    return model;
-                }
-                else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return new EcSigningKeyModel(name, "Failed", null, null);
-        }
 
         /*
          private
         */
 
-        private EcSigningKeyModel GetClosestExpiredKey(List<EcSigningKeyModel> expiredKeys)
+        private SigningKeyModel GetClosestExpiredKey(List<SigningKeyModel> expiredKeys)
         {
             var expiredKeysOrdered = expiredKeys.OrderByDescending(k => k.ExpiresOn);
             return expiredKeysOrdered.First();
         }
-        private EcSigningKeyModel GetClosestFutureKey(List<EcSigningKeyModel> expiredKeys)
+        private SigningKeyModel GetClosestFutureKey(List<SigningKeyModel> expiredKeys)
         {
             var expiredKeysOrdered = expiredKeys.OrderBy(k => k.NotBefore);
             return expiredKeysOrdered.First();
         }
 
-        private RsaSigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
+        private SigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
-            var model = new RsaSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version, keyVaultKey.Properties.NotBefore, keyVaultKey.Properties.ExpiresOn);
+            if (keyVaultKey.KeyType == KeyType.Ec)
+                return GetEcFromKeyVaultKey(keyVaultKey);
+
+            else if (keyVaultKey.KeyType == KeyType.Rsa)
+                return GetRsaFromKeyVaultKey(keyVaultKey);
+
+            else
+                throw new NotSupportedException();
+        }
+
+        private SigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
+        {
+            var model = new SigningKeyModel(keyVaultKey.Name, 
+                keyVaultKey.Properties.Version, 
+                keyVaultKey.Properties.NotBefore, 
+                keyVaultKey.Properties.ExpiresOn);
+
             var rsa = keyVaultKey.Key.ToRSA();
-            model.Raw = rsa.ToXmlString(false);
             model.Key = new RsaSecurityKey(rsa) { KeyId = model.Version };
-            model.Algorithm = IdentityServerConstants.RsaSigningAlgorithm.PS256;
+            model.AlgorithmString = IdentityServerConstants.RsaSigningAlgorithm.PS256.ToString();
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
             model.SignatureAlgorithm = rsa.SignatureAlgorithm;
             return model;
         }
 
-        private EcSigningKeyModel GetEcFromKeyVaultKey(KeyVaultKey keyVaultKey)
+        private SigningKeyModel GetEcFromKeyVaultKey(KeyVaultKey keyVaultKey)
         {
-            var model = new EcSigningKeyModel(keyVaultKey.Name, keyVaultKey.Properties.Version, keyVaultKey.Properties.NotBefore, keyVaultKey.Properties.ExpiresOn);
+            var model = new SigningKeyModel(keyVaultKey.Name, 
+                keyVaultKey.Properties.Version, 
+                keyVaultKey.Properties.NotBefore, 
+                keyVaultKey.Properties.ExpiresOn);
+
             var ec = keyVaultKey.Key.ToECDsa();
 
-            model.Raw = keyVaultKey.Key.ToString();
             model.Key = new ECDsaSecurityKey(ec) { KeyId = model.Version };
             if (keyVaultKey.Key.CurveName != null)
             {
-                model.Algorithm = KeyCryptoHelper.GetEcAlgorithm(keyVaultKey.Key.CurveName);
+                var algorithm = KeyCryptoHelper.GetEcAlgorithm(keyVaultKey.Key.CurveName);
+                model.AlgorithmString = KeyCryptoHelper.GetECDsaSigningAlgorithmValue(algorithm);
             }
 
             model.KeyType = keyVaultKey.KeyType.ToString();

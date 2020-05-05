@@ -5,7 +5,7 @@ namespace Test.auth.Models
     public class AdminViewModel
     {
         public Client WebClient { get; set; }
-        public EcSigningKeys SigningKeys { get; set; }
+        public SigningKeys SigningKeys { get; set; }
         public string AuthConnectionString { get; set; }
         public string BankConnectionString { get; set; }
         public string AzureAdClientId { get; set; }

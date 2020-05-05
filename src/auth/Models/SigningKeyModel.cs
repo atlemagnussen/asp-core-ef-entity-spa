@@ -1,31 +1,18 @@
-﻿using IdentityServer4;
-using IdentityServer4.Models;
+﻿using IdentityServer4.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using Test.auth.Services;
 
 namespace Test.auth.Models
 {
-    public class RsaSigningKeys : SigningKeys<RsaSigningKeyModel, RsaSecurityKey>
+    public class SigningKeys
     {
-    }
-
-    public class EcSigningKeys : SigningKeys<EcSigningKeyModel, ECDsaSecurityKey>
-    {
-    }
-
-    public class SigningKeys<T, TKey>
-        where T : SigningKeyModel<TKey>
-        where TKey : AsymmetricSecurityKey
-    {
-        public T Current { get; set; }
-        public T Previous { get; set; }
-        public T Future { get; set; }
+        public SigningKeyModel Current { get; set; }
+        public SigningKeyModel Previous { get; set; }
+        public SigningKeyModel Future { get; set; }
         public DateTimeOffset? CacheExpiring { get; set; }
     }
 
-    public class SigningKeyModel<T>
-        where T : AsymmetricSecurityKey
+    public class SigningKeyModel
     {
         public SigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn)
         {
@@ -37,8 +24,7 @@ namespace Test.auth.Models
         public string Name { get; set; }
         public string Version { get; set; }
         public string AlgorithmString { get; set; }
-        public string Raw { get; set; }
-        public T Key { get; set; }
+        public AsymmetricSecurityKey Key { get; set; }
         public string KeyType { get; set; }
         public string CurveName { get; set; }
         public string SignatureAlgorithm { get; set; }
@@ -80,30 +66,6 @@ namespace Test.auth.Models
                 Key = Key,
                 SigningAlgorithm = AlgorithmString
             };
-        }
-    }
-    public class RsaSigningKeyModel : SigningKeyModel<RsaSecurityKey>
-    {
-        public RsaSigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn) : base(name, version, notBefore, expiresOn)
-        { }
-        public IdentityServerConstants.RsaSigningAlgorithm Algorithm { get; set; }
-    }
-
-    public class EcSigningKeyModel : SigningKeyModel<ECDsaSecurityKey>
-    {
-        public EcSigningKeyModel(string name, string version, DateTimeOffset? notBefore, DateTimeOffset? expiresOn) : base(name, version, notBefore, expiresOn)
-        { }
-
-        private IdentityServerConstants.ECDsaSigningAlgorithm _algorithm;
-        public IdentityServerConstants.ECDsaSigningAlgorithm Algorithm { get
-            {
-                return _algorithm;
-            }
-            set
-            {
-                _algorithm = value;
-                AlgorithmString = KeyCryptoHelper.GetECDsaSigningAlgorithmValue(value);
-            }
         }
     }
 }

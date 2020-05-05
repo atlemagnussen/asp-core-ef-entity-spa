@@ -20,7 +20,7 @@ namespace Test.auth.Services
         {
             _logger.LogInformation("AzureSigningCredentialsStore");
             var keys = await _azureKeyService.GetSigningKeysAsync();
-            return new SigningCredentials(keys.Current.Key, keys.Current.Algorithm.ToString());
+            return new SigningCredentials(keys.Current.Key, keys.Current.AlgorithmString);
         }
     }
 }

@@ -1,11 +1,13 @@
-@model Models.EcSigningKeyModel
+@model Models.SigningKeyModel
 
 @if(Model != null)
 {
+    <span style="font-weight: bold">KeyType</span><br />
+    <span>@Model.KeyType</span><br />
     <span style="font-weight: bold">KeyId</span><br />
     <span>@Model.Version</span><br />
     <span style="font-weight: bold">Algorithm</span><br />
-    <span>@Model.Algorithm</span><br />
+    <span>@Model.AlgorithmString</span><br />
     <span style="font-weight: bold">NotBefore</span><br />
     <span>@Model.NotBefore</span><br />
     <span style="font-weight: bold">ExpireDate</span><br />
