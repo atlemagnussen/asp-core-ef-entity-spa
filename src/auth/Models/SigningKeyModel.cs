@@ -33,7 +33,7 @@ namespace Test.auth.Models
 
         public override string ToString()
         {
-            return $"{Version}-{Name}";
+            return $"{KeyType}-{Version}-{Name}";
         }
 
         public bool Expired {

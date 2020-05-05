@@ -122,25 +122,23 @@ namespace Test.auth.Services
 
         protected async Task<SigningKeyModel> GetSigningKeyAsync(string name, string version = null)
         {
-            _logger.LogInformation("Start GetEcSigningKey Async");
-            try
+            _logger.LogInformation("Start GetSigningKey Async");
+            
+            var response = await _keyClient.GetKeyAsync(name, version);
+            if (response != null && response.Value != null)
             {
-                var response = await _keyClient.GetKeyAsync(name, version);
-                if (response != null && response.Value != null)
-                {
-                    var model = GetFromKeyVaultKey(response.Value);
-                    return model;
-                }
+                var keyVaultKey = response.Value;
+                if (keyVaultKey.KeyType == KeyType.Ec)
+                    return GetEcFromKeyVaultKey(keyVaultKey);
+
+                else if (keyVaultKey.KeyType == KeyType.Rsa)
+                    return GetRsaFromKeyVaultKey(keyVaultKey);
+
                 else
-                {
-                    _logger.LogError("GetEcSigningKey keyFrom was null");
-                }
+                    throw new NotSupportedException();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error GetEcSigningKey", ex);
-            }
-            return new SigningKeyModel(name, "Failed", null, null);
+            else
+                throw new Exception("GetSigningKey keyFrom was null");
         }
         /*
          */
@@ -158,18 +156,6 @@ namespace Test.auth.Services
         {
             var expiredKeysOrdered = expiredKeys.OrderBy(k => k.NotBefore);
             return expiredKeysOrdered.First();
-        }
-
-        private SigningKeyModel GetFromKeyVaultKey(KeyVaultKey keyVaultKey)
-        {
-            if (keyVaultKey.KeyType == KeyType.Ec)
-                return GetEcFromKeyVaultKey(keyVaultKey);
-
-            else if (keyVaultKey.KeyType == KeyType.Rsa)
-                return GetRsaFromKeyVaultKey(keyVaultKey);
-
-            else
-                throw new NotSupportedException();
         }
 
         private SigningKeyModel GetRsaFromKeyVaultKey(KeyVaultKey keyVaultKey)
