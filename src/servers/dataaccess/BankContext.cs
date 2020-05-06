@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Test.model;
 
-namespace Test.webapi.Data
+namespace Test.dataaccess
 {
     public class BankContext : DbContext
     {

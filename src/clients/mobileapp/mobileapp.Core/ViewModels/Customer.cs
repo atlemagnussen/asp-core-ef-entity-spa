@@ -1,4 +1,4 @@
-﻿namespace Test.webapi.Data
+﻿namespace mobileapp.Core.ViewModels
 {
     public class Customer
     {
