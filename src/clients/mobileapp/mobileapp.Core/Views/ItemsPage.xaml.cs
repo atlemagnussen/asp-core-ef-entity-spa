@@ -37,6 +37,11 @@ namespace mobileapp.Core.Views
             await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
         }
 
+        async void Auth_Clicked(object sender, EventArgs e)
+        {
+            await DisplayAlert("Alert", "You have pressed Auth", "OK");
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

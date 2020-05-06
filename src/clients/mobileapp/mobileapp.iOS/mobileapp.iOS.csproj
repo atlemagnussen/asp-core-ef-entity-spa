@@ -134,11 +134,11 @@
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\mobileapp.Core\mobileapp.Core.csproj">
-      <Project>{D9947308-7BC4-4C9D-8181-8141D635D249}</Project>
+      <Project>{64865790-591c-4186-b0b9-1370d07355b5}</Project>
       <Name>mobileapp.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
