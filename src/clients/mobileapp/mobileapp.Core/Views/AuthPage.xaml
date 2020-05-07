@@ -3,22 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:views="clr-namespace:mobileapp.Core.Views.Authentication"
              mc:Ignorable="d"
              x:Class="mobileapp.Core.Views.AuthPage">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Accent">#96d1ff</Color>
+            <Color x:Key="LightTextColor">#999999</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.Content>
         <StackLayout>
             <FlexLayout Direction="Row">
                 <Label Text="Auth Page"></Label>
                 <!--<Label Text="{Binding IsAuthenticatedText}"></Label>-->
             </FlexLayout>
-            <Grid IsVisible="{Binding IsLoggedIn}">
-                <views:Authenticated />
-            </Grid>
-            <Grid IsVisible="{Binding NotLoggedIn}">
-                <views:NotAuthenticated />
-            </Grid>
+
+            <StackLayout IsVisible="{Binding IsLoggedIn}">
+                <Label Text="Is Authenticated" />
+                <Button Text="Log out"
+                        Command="{Binding LogoutCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+                <Label Text="Username::" />
+                <Label Text="{Binding UserName}" />
+                <Label Text="Access token::" />
+                <Label Text="{Binding AccessToken}" />
+                <Label Text="Identity token::" />
+                <Label Text="{Binding IdToken}" />
+                <Label Text="Refresh token::" />
+                <Label Text="{Binding Refresh token}" />
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding NotLoggedIn}">
+                <Label Text="Not authenticated!" />
+                <Button Margin="0,10,0,0" Text="Log in"
+                        Command="{Binding AuthenticateCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
