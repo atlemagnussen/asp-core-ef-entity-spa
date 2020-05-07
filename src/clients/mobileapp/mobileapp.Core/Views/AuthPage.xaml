@@ -3,13 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:mobileapp.Core.ViewModels"
+             xmlns:views="clr-namespace:mobileapp.Core.Views.Authentication"
              mc:Ignorable="d"
              x:Class="mobileapp.Core.Views.AuthPage">
+    <ContentPage.BindingContext>
+        <vm:AuthViewModel />
+    </ContentPage.BindingContext>
+    
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <FlexLayout Direction="Row">
+                <Label Text="Is Logged in::"></Label>
+                <Label Text="{Binding IsAuthenticatedText}"></Label>
+            </FlexLayout>
+            <Grid IsVisible="{Binding IsAuthenticated}">
+                <views:Authenticated />
+            </Grid>
+            <Grid IsVisible="{Binding IsNotAuthenticated}">
+                <views:NotAuthenticated />
+            </Grid>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

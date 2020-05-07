@@ -15,9 +15,11 @@ namespace mobileapp.Core.Services
     public class AuthService
     {
         public OidcClient OidcClient { get; set; }
+        public AuthenticationResult State { get; internal set; }
 
         public AuthService()
         {
+            State = new AuthenticationResult();
             var browser = DependencyService.Get<IBrowser>();
 
             var options = new OidcClientOptions
@@ -26,8 +28,9 @@ namespace mobileapp.Core.Services
                 //Authority = "https://10.0.2.2:6001", //debug
                 ClientId = "mobileapp",
                 Scope = "openid profile email roles api.read offline_access",
-                RedirectUri = "tools.digilean.mobile://callback",
-                PostLogoutRedirectUri = "tools.digilean.mobile://callback",
+                RedirectUri = "com.companyname.mobileapp://callback",
+                PostLogoutRedirectUri = "com.companyname.mobileapp://callback",
+                
                 Browser = browser,
                 Policy = new Policy
                 {
@@ -39,6 +42,41 @@ namespace mobileapp.Core.Services
 
             OidcClient = new OidcClient(options);
         }
+
+        /// <summary>
+        /// Login first time or when logged out
+        /// </summary>
+        public async Task<AuthenticationResult> LoginAsync()
+        {
+            if (Application.Current.Properties.ContainsKey("token"))
+            {
+                Application.Current.Properties.Remove("token");
+                await Application.Current.SavePropertiesAsync();
+            }
+
+            var result = await OidcClient.LoginAsync();
+
+            // on successful login redirect you come here
+            if (result.IsError)
+            {
+                return new AuthenticationResult(result.Error);
+            }
+
+            var res = new AuthenticationResult(result);
+
+            //var allClaims = result.User.Claims.ToArray();
+            var userNameClaim = TryClaims(result.User.Claims, new string[] { JwtClaimTypes.PreferredUserName, JwtClaimTypes.Name, JwtClaimTypes.Email });
+
+            if (userNameClaim == null)
+            {
+                res.ErrorMessage = "Could not get username from claims";
+            }
+
+            res.UserName = userNameClaim.Value;
+            State = res;
+            return res;
+        }
+
         /// <summary>
         /// Check if current token is still valid
         /// </summary>
@@ -86,38 +124,8 @@ namespace mobileapp.Core.Services
                 //ErrorMessage = result.Error;
                 return false;
             }
-
+            State.Refresh(result);
             return true;
-        }
-
-        public async Task<AuthenticationResult> Login()
-        {
-            if (Application.Current.Properties.ContainsKey("token"))
-            {
-                Application.Current.Properties.Remove("token");
-                await Application.Current.SavePropertiesAsync();
-            }
-
-            var result = await OidcClient.LoginAsync();
-
-            // on successful login redirect you come here
-            if (result.IsError)
-            {
-                return new AuthenticationResult(result.Error);
-            }
-
-            var res = new AuthenticationResult(result);
-
-            //var allClaims = result.User.Claims.ToArray();
-            var userNameClaim = TryClaims(result.User.Claims, new string[] { JwtClaimTypes.PreferredUserName, JwtClaimTypes.Name, JwtClaimTypes.Email });
-
-            if (userNameClaim == null)
-            {
-                res.ErrorMessage = "Could not get username from claims";
-            }
-
-            res.UserName = userNameClaim.Value;
-            return res;
         }
 
         /// <summary>
@@ -126,6 +134,10 @@ namespace mobileapp.Core.Services
         public async Task<LogoutResult> LogoutAsync()
         {
             var result = await OidcClient.LogoutAsync();
+            if (!result.IsError)
+            {
+                State = new AuthenticationResult();
+            }
             return result;
         }
 

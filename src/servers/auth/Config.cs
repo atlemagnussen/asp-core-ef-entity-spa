@@ -35,7 +35,8 @@ namespace Test.auth
                     },
                     AllowedScopes = { "bankApi" }
                 },
-                GetWebClient(allowedClientUrl)
+                GetWebClient(allowedClientUrl),
+                GetMobileClient()
             };
         }
 

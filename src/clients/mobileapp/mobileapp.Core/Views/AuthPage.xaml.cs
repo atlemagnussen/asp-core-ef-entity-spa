@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using mobileapp.Core.Models;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace mobileapp.Core.Views

@@ -6,7 +6,8 @@ namespace mobileapp.Core
 {
     public partial class App : Application
     {
-        public AuthService AuthService { get; set; }
+        public static AuthService AuthService { get; set; }
+
         public App()
         {
             InitializeComponent();

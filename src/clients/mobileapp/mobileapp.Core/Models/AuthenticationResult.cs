@@ -6,9 +6,14 @@ namespace mobileapp.Core.Models
 {
     public class AuthenticationResult
     {
+        public AuthenticationResult()
+        {
+            LoggedIn = false;
+            ErrorMessage = "Not logged in";
+        }
         public AuthenticationResult(LoginResult result)
         {
-            Success = true;
+            LoggedIn = true;
             AccessToken = result.AccessToken;
             IdentityToken = result.IdentityToken;
             RefreshToken = result.RefreshToken;
@@ -17,20 +22,21 @@ namespace mobileapp.Core.Models
             //result.RefreshTokenHandler.InnerHandler.
         }
 
-        public AuthenticationResult(RefreshTokenResult refreshTokenResult)
+        public AuthenticationResult(string errorMessage)
         {
-            Success = true;
+            LoggedIn = false;
+            ErrorMessage = errorMessage;
+        }
+
+        public void Refresh(RefreshTokenResult refreshTokenResult)
+        {
+            LoggedIn = true;
             AccessToken = refreshTokenResult.AccessToken;
             AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration;
             RefreshToken = refreshTokenResult.RefreshToken;
         }
-        public AuthenticationResult(string errorMessage)
-        {
-            Success = false;
-            ErrorMessage = errorMessage;
-        }
 
-        public bool Success { get; set; }
+        public bool LoggedIn { get; set; }
         public string ErrorMessage { get; set; }
         public string AccessToken { get; internal set; }
         public string IdentityToken { get; internal set; }

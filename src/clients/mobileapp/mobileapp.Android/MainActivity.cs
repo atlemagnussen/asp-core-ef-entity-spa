@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 using mobileapp.Core;
+using Xamarin.Forms;
 
 namespace mobileapp.Droid
 {
@@ -11,6 +12,8 @@ namespace mobileapp.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            DependencyService.Register<ChromeCustomTabsBrowser>();
+
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
