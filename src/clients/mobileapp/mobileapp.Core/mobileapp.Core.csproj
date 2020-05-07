@@ -13,6 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Authentication\**" />
+    <EmbeddedResource Remove="Views\Authentication\**" />
+    <None Remove="Views\Authentication\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IdentityModel.OidcClient" Version="4.0.0-preview.3" />
     <PackageReference Include="IdentityModel.OidcClient.IdentityTokenValidator" Version="4.0.0-preview.3" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />  
@@ -23,9 +29,5 @@
     <EmbeddedResource Update="Views\AuthPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Authentication\" />
   </ItemGroup>
 </Project>

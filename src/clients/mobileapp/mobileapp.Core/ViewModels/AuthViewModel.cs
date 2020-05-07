@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Globalization;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace mobileapp.Core.ViewModels
@@ -21,14 +24,16 @@ namespace mobileapp.Core.ViewModels
             });
         }
 
-        public void Refresh()
+        public async Task Refresh()
         {
-            var currentState = App.AuthService.GetCurrentState();
+            var currentState = await App.AuthService.GetCurrentState();
             IsLoggedIn = currentState.LoggedIn;
             UserName = currentState.UserName;
             AccessToken = currentState.AccessToken;
             IdToken = currentState.IdentityToken;
             RefreshToken = currentState.RefreshToken;
+            AccessTokenExpiration = currentState.AccessTokenExpiration.ToString(CultureInfo.CurrentCulture.DateTimeFormat.UniversalSortableDateTimePattern);
+            TimeNow = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.UniversalSortableDateTimePattern);
         }
 
         private string userName;
@@ -58,7 +63,20 @@ namespace mobileapp.Core.ViewModels
             get { return refreshToken; }
             set { SetProperty(ref refreshToken, value); }
         }
-        
+
+        private string accessTokenExpiration;
+        public string AccessTokenExpiration
+        {
+            get { return accessTokenExpiration; }
+            set { SetProperty(ref accessTokenExpiration, value); }
+        }
+
+        private string timeNow;
+        public string TimeNow
+        {
+            get { return timeNow; }
+            set { SetProperty(ref timeNow, value); }
+        }
 
         public ICommand AuthenticateCommand { get; }
         public ICommand LogoutCommand { get; }

@@ -15,11 +15,11 @@ namespace mobileapp.Core.Views
 
             BindingContext = viewModel = new AuthViewModel();
         }
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            viewModel.Refresh();
+            await viewModel.Refresh();
         }
     }
 }

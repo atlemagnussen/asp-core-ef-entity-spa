@@ -13,25 +13,30 @@ namespace mobileapp.Core.Services
     {
         private readonly Lazy<HttpClient> _apiClient;
         private static string _baseApiUrl;
+        private string accessToken = string.Empty;
 
         public CustomerDataStore()
         {
             _baseApiUrl = "https://asp-core-webapi.azurewebsites.net";
             _apiClient= new Lazy<HttpClient>(() => new HttpClient());
             _apiClient.Value.BaseAddress = new Uri(_baseApiUrl);
-
-            var state = App.AuthService.GetCurrentState();
-            if (state.LoggedIn)
-                SetBearerToken(state.AccessToken);
         }
 
         public void SetBearerToken(string token)
         {
+            accessToken = token;
             _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
+        private async Task TrySetBearerToken()
+        {
+            var state = await App.AuthService.GetCurrentState();
+            if (state.LoggedIn && state.AccessToken != accessToken)
+                SetBearerToken(state.AccessToken);
+        }
         public async Task<bool> AddItemAsync(Customer item)
         {
+            await TrySetBearerToken();
             var customerInfo = new StringContent(
                 JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
 
@@ -41,6 +46,7 @@ namespace mobileapp.Core.Services
 
         public async Task<bool> UpdateItemAsync(Customer item)
         {
+            await TrySetBearerToken();
             var customerInfo = new StringContent(
                 JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
 
@@ -50,12 +56,14 @@ namespace mobileapp.Core.Services
 
         public async Task<bool> DeleteItemAsync(string id)
         {
+            await TrySetBearerToken();
             var result = await _apiClient.Value.DeleteAsync($"/api/customers/{id}");
             return result.IsSuccessStatusCode;
         }
 
         public async Task<Customer> GetItemAsync(string id)
         {
+            await TrySetBearerToken();
             var result = await _apiClient.Value.GetAsync($"/api/customers/{id}");
 
             if (result.IsSuccessStatusCode)
@@ -78,6 +86,7 @@ namespace mobileapp.Core.Services
 
         public async Task<IEnumerable<Customer>> GetItemsAsync(bool forceRefresh = false)
         {
+            await TrySetBearerToken();
             var result = await _apiClient.Value.GetAsync("/api/customers");
 
             if (result.IsSuccessStatusCode)

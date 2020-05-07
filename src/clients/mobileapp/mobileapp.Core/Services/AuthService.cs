@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using IdentityModel.OidcClient;
+﻿using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
 using IdentityModel.OidcClient.Results;
 using mobileapp.Core.Models;
@@ -16,10 +15,11 @@ namespace mobileapp.Core.Services
     {
         public OidcClient OidcClient { get; set; }
         public static AuthenticationResult State { get; internal set; }
+        public SecretsStorage SecretsStorage { get; set; }
 
         public AuthService()
         {
-            State = new AuthenticationResult();
+            SecretsStorage = new SecretsStorage();
             var browser = DependencyService.Get<IBrowser>();
 
             var options = new OidcClientOptions
@@ -42,8 +42,10 @@ namespace mobileapp.Core.Services
             OidcClient = new OidcClient(options);
         }
 
-        public AuthenticationResult GetCurrentState()
+        public async Task<AuthenticationResult> GetCurrentState()
         {
+            if (State == null)
+                State = await SecretsStorage.GetStoredState();
             return State;
         }
         /// <summary>
@@ -51,11 +53,7 @@ namespace mobileapp.Core.Services
         /// </summary>
         public async Task<AuthenticationResult> LoginAsync()
         {
-            if (Application.Current.Properties.ContainsKey("token"))
-            {
-                Application.Current.Properties.Remove("token");
-                await Application.Current.SavePropertiesAsync();
-            }
+            await SecretsStorage.ClearAll();
 
             var result = await OidcClient.LoginAsync();
 
@@ -67,15 +65,20 @@ namespace mobileapp.Core.Services
 
             var res = new AuthenticationResult(result);
 
-            //var allClaims = result.User.Claims.ToArray();
-            var userNameClaim = TryClaims(result.User.Claims, new string[] { JwtClaimTypes.PreferredUserName, JwtClaimTypes.Name, JwtClaimTypes.Email });
-
-            if (userNameClaim == null)
-            {
+            var userName = ClaimsHelper.GetUserName(result.User.Claims);
+            if (userName == null)
                 res.ErrorMessage = "Could not get username from claims";
-            }
+            res.UserName = userName;
 
-            res.UserName = userNameClaim.Value;
+            var fullName = ClaimsHelper.GetFullName(result.User.Claims);
+            res.FullName = fullName;
+
+            await SecretsStorage.StoreAccessToken(res.AccessToken);
+            await SecretsStorage.StoreIdToken(res.IdentityToken);
+            await SecretsStorage.StoreRefreshToken(res.RefreshToken);
+            await SecretsStorage.StoreUserName(res.UserName);
+            await SecretsStorage.StoreFullName(fullName);
+            await SecretsStorage.StoreAccessTokenExpiration(res.AccessTokenExpiration);
             State = res;
             return res;
         }
@@ -85,16 +88,14 @@ namespace mobileapp.Core.Services
         /// </summary>
         public async Task<bool> CheckLoggedIn()
         {
-            if (!App.Current.Properties.ContainsKey("token"))
-                return false;
-            var token = App.Current.Properties["token"].ToString();
-            if (string.IsNullOrEmpty(token))
+            var accessToken = await SecretsStorage.GetAccessToken();
+            if (string.IsNullOrEmpty(accessToken))
                 return false;
 
             UserInfoResult user;
             try
             {
-                user = await OidcClient.GetUserInfoAsync(token);
+                user = await OidcClient.GetUserInfoAsync(accessToken);
             }
             catch (Exception ex)
             {
@@ -114,20 +115,20 @@ namespace mobileapp.Core.Services
         /// <returns></returns>
         public async Task<bool> TryRefreshToken()
         {
-            string refresh_token = string.Empty;
-            if (App.Current.Properties.ContainsKey("refresh_token"))
-                refresh_token = App.Current.Properties["refresh_token"].ToString();
-
+            var refresh_token = await SecretsStorage.GetRefreshToken();
             if (string.IsNullOrEmpty(refresh_token))
                 return false;
 
-            var result = await OidcClient.RefreshTokenAsync(refresh_token);
-            if (result.IsError)
+            var res = await OidcClient.RefreshTokenAsync(refresh_token);
+            if (res.IsError)
             {
                 //ErrorMessage = result.Error;
                 return false;
             }
-            State.Refresh(result);
+            State.Refresh(res);
+            await SecretsStorage.StoreAccessToken(res.AccessToken);
+            await SecretsStorage.StoreIdToken(res.IdentityToken);
+            await SecretsStorage.StoreRefreshToken(res.RefreshToken);
             return true;
         }
 
@@ -140,6 +141,7 @@ namespace mobileapp.Core.Services
             if (!result.IsError)
             {
                 State = new AuthenticationResult();
+                await SecretsStorage.ClearAll();
             }
             return result;
         }
@@ -154,5 +156,7 @@ namespace mobileapp.Core.Services
             }
             return null;
         }
+
+        
     }
 }

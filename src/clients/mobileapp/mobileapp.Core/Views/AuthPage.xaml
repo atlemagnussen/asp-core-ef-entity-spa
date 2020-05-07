@@ -16,10 +16,7 @@
     
     <ContentPage.Content>
         <StackLayout>
-            <FlexLayout Direction="Row">
-                <Label Text="Auth Page"></Label>
-                <!--<Label Text="{Binding IsAuthenticatedText}"></Label>-->
-            </FlexLayout>
+            <Label Text="Auth Page"></Label>
 
             <StackLayout IsVisible="{Binding IsLoggedIn}">
                 <Label Text="Is Authenticated" />
@@ -30,6 +27,14 @@
                 <Label Text="Username::" />
                 <Label Text="{Binding UserName}" />
                 <Label Text="Access token::" />
+                <FlexLayout Direction="Row">
+                    <Label Text="Expires: " />
+                    <Label Text="{Binding AccessTokenExpiration}" />
+                </FlexLayout>
+                <FlexLayout Direction="Row">
+                    <Label Text="Time now:" />
+                    <Label Text="{Binding TimeNow}" />
+                </FlexLayout>
                 <Label Text="{Binding AccessToken}" />
                 <Label Text="Identity token::" />
                 <Label Text="{Binding IdToken}" />
