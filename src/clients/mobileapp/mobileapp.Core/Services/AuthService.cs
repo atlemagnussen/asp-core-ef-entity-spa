@@ -137,7 +137,10 @@ namespace mobileapp.Core.Services
         /// </summary>
         public async Task<LogoutResult> LogoutAsync()
         {
-            var result = await OidcClient.LogoutAsync();
+            var request = new LogoutRequest();
+            request.IdTokenHint = await SecretsStorage.GetIdToken();
+            var result = await OidcClient.LogoutAsync(request);
+
             if (!result.IsError)
             {
                 State = new AuthenticationResult();
