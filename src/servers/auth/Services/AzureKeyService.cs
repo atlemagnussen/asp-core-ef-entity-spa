@@ -167,7 +167,7 @@ namespace Test.auth.Services
 
             var rsa = keyVaultKey.Key.ToRSA();
             model.Key = new RsaSecurityKey(rsa) { KeyId = model.Version };
-            model.AlgorithmString = IdentityServerConstants.RsaSigningAlgorithm.PS256.ToString();
+            model.AlgorithmString = IdentityServerConstants.RsaSigningAlgorithm.PS512.ToString();
             model.KeyType = keyVaultKey.KeyType.ToString();
             model.CurveName = keyVaultKey.Key.CurveName.ToString();
             model.SignatureAlgorithm = rsa.SignatureAlgorithm;
