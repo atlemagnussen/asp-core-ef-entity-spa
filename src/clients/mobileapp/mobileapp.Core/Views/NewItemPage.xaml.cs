@@ -1,4 +1,4 @@
-﻿using mobileapp.Core.Models;
+﻿using mobileapp.Core.ViewModels;
 using System;
 using System.ComponentModel;
 using Xamarin.Forms;
@@ -10,16 +10,16 @@ namespace mobileapp.Core.Views
     [DesignTimeVisible(false)]
     public partial class NewItemPage : ContentPage
     {
-        public Item Item { get; set; }
+        public Customer Customer { get; set; }
 
         public NewItemPage()
         {
             InitializeComponent();
 
-            Item = new Item
+            Customer = new Customer
             {
-                Text = "Item name",
-                Description = "This is an item description."
+                FirstName = "First Name",
+                LastName = "Last Name"
             };
 
             BindingContext = this;
@@ -27,7 +27,7 @@ namespace mobileapp.Core.Views
 
         async void Save_Clicked(object sender, EventArgs e)
         {
-            MessagingCenter.Send(this, "AddItem", Item);
+            MessagingCenter.Send(this, "AddItem", Customer);
             await Navigation.PopModalAsync();
         }
 

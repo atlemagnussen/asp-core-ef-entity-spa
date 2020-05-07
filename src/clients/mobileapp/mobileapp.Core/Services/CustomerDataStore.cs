@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace mobileapp.Core.Services
@@ -29,29 +30,50 @@ namespace mobileapp.Core.Services
             _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public Task<bool> AddItemAsync(Customer item)
+        public async Task<bool> AddItemAsync(Customer item)
         {
-            return Task.FromResult(true);
+            var customerInfo = new StringContent(
+                JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
+
+            var result = await _apiClient.Value.PostAsync("/api/customers", customerInfo);
+            return result.IsSuccessStatusCode;
         }
 
-        public Task<bool> UpdateItemAsync(Customer item)
+        public async Task<bool> UpdateItemAsync(Customer item)
         {
-            return Task.FromResult(true);
+            var customerInfo = new StringContent(
+                JsonConvert.SerializeObject(item), Encoding.UTF8, "application/json");
+
+            var result = await _apiClient.Value.PutAsync("/api/customers", customerInfo);
+            return result.IsSuccessStatusCode;
         }
 
-        public Task<bool> DeleteItemAsync(string id)
+        public async Task<bool> DeleteItemAsync(string id)
         {
-            return Task.FromResult(true);
+            var result = await _apiClient.Value.DeleteAsync($"/api/customers/{id}");
+            return result.IsSuccessStatusCode;
         }
 
-        public Task<Customer> GetItemAsync(string id)
+        public async Task<Customer> GetItemAsync(string id)
         {
-            return Task.FromResult(new Customer
+            var result = await _apiClient.Value.GetAsync($"/api/customers/{id}");
+
+            if (result.IsSuccessStatusCode)
             {
-                Id = 1,
-                FirstName = "hello",
-                LastName = "world"
-            });
+                var res = await result.Content.ReadAsStringAsync();
+                var resJson = JsonConvert.DeserializeObject<Customer>(res);
+
+                return resJson;
+            }
+            else
+            {
+                return new Customer
+                {
+                    Id = 0,
+                    FirstName = "Un",
+                    LastName = "Authorized"
+                };
+            }
         }
 
         public async Task<IEnumerable<Customer>> GetItemsAsync(bool forceRefresh = false)

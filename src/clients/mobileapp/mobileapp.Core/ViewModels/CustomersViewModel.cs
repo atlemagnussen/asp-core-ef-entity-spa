@@ -24,6 +24,13 @@ namespace mobileapp.Core.ViewModels
                 Customers.Add(newCus);
                 await App.DataStore.AddItemAsync(newCus);
             });
+
+            MessagingCenter.Subscribe<CustomerDetailViewModel, Customer>(this, "DeleteItem", async (obj, cus) =>
+            {
+                var customer = cus as Customer;
+                Customers.Remove(customer);
+                await App.DataStore.DeleteItemAsync(customer.Id.ToString());
+            });
         }
 
         async Task ExecuteLoadItemsCommand()
