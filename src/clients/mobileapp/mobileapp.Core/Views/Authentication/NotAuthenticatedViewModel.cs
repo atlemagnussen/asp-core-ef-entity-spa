@@ -10,7 +10,8 @@ namespace mobileapp.Core.Views.Authentication
         {
             AuthenticateCommand = new Command(async () =>
             {
-                await App.AuthService.LoginAsync();
+                var result = await App.AuthService.LoginAsync();
+                IsLoggedIn = result.LoggedIn;
             });
         }
 

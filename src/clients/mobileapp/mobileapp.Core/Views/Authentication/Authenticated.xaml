@@ -21,13 +21,19 @@
     
     <ContentView.Content>
         <StackLayout>
-            <Label Text="Is Authenticated!" />
+            <Label Text="Is Authenticated" />
             <Button Margin="0,10,0,0" Text="Log out"
                         Command="{Binding LogoutCommand}"
                         BackgroundColor="{StaticResource Primary}"
                         TextColor="White" />
-            <Label Text="Username!:" />
+            <Label Text="Username::" />
             <Label Text="{Binding UserName}" />
+            <Label Text="Access token::" />
+            <Label Text="{Binding AccessToken}" />
+            <Label Text="Identity token::" />
+            <Label Text="{Binding IdToken}" />
+            <Label Text="Refresh token::" />
+            <Label Text="{Binding Refresh token}" />
         </StackLayout>
     </ContentView.Content>
 </ContentView>

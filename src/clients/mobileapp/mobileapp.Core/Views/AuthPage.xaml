@@ -14,13 +14,13 @@
     <ContentPage.Content>
         <StackLayout>
             <FlexLayout Direction="Row">
-                <Label Text="Is Logged in::"></Label>
-                <Label Text="{Binding IsAuthenticatedText}"></Label>
+                <Label Text="Auth Page"></Label>
+                <!--<Label Text="{Binding IsAuthenticatedText}"></Label>-->
             </FlexLayout>
-            <Grid IsVisible="{Binding IsAuthenticated}">
+            <Grid IsVisible="{Binding IsLoggedIn}">
                 <views:Authenticated />
             </Grid>
-            <Grid IsVisible="{Binding IsNotAuthenticated}">
+            <Grid IsVisible="{Binding NotLoggedIn}">
                 <views:NotAuthenticated />
             </Grid>
         </StackLayout>

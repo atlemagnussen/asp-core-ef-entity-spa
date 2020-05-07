@@ -15,7 +15,7 @@ namespace mobileapp.Core.Services
     public class AuthService
     {
         public OidcClient OidcClient { get; set; }
-        public AuthenticationResult State { get; internal set; }
+        public static AuthenticationResult State { get; internal set; }
 
         public AuthService()
         {
@@ -24,8 +24,9 @@ namespace mobileapp.Core.Services
 
             var options = new OidcClientOptions
             {
-                Authority = "https://asp-core-auth-server.azurewebsites.net",
-                //Authority = "https://10.0.2.2:6001", //debug
+                //Authority = "https://asp-core-auth-server.azurewebsites.net",
+                Authority = "https://10.0.2.2:6001", //debug
+                BackchannelHandler = DebugHttpHandler.GetInsecureHandler(), //debug
                 ClientId = "mobileapp",
                 Scope = "openid profile email roles api.read offline_access",
                 RedirectUri = "com.companyname.mobileapp://callback",
@@ -37,12 +38,16 @@ namespace mobileapp.Core.Services
                     RequireIdentityTokenSignature = false
                 },
                 //BackchannelHandler = DebugHandler.GetInsecureHandler(), //debug
-                ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+                //ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
             };
 
             OidcClient = new OidcClient(options);
         }
 
+        public AuthenticationResult GetCurrentState()
+        {
+            return State;
+        }
         /// <summary>
         /// Login first time or when logged out
         /// </summary>

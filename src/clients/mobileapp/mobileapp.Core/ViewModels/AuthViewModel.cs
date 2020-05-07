@@ -2,35 +2,23 @@
 {
     public class AuthViewModel : BaseViewModel
     {
-        private bool _isAuthenticated;
-
         public AuthViewModel()
         {
-            IsAuthenticated = false;
+            var currentState = App.AuthService.GetCurrentState();
+            IsLoggedIn = currentState.LoggedIn;
         }
-        public bool IsAuthenticated
+
+        public bool NotLoggedIn
         {
             get
             {
-                return _isAuthenticated;
-            }
-            set
-            {
-                _isAuthenticated = value;
-                OnPropertyChanged("IsAuthenticated");
-            }
-        }
-        public bool IsNotAuthenticated
-        {
-            get
-            {
-                return !_isAuthenticated;
+                return !IsLoggedIn;
             }
         }
 
         public string IsAuthenticatedText
         {
-            get { return _isAuthenticated.ToString(); }
+            get { return IsLoggedIn.ToString(); }
         }
     }
 }

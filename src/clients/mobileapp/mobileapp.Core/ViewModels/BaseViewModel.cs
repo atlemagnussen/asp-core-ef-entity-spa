@@ -10,6 +10,13 @@ namespace mobileapp.Core.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        private bool isLoggedIn;
+        public bool IsLoggedIn
+        {
+            get { return isLoggedIn; }
+            set { SetProperty(ref isLoggedIn, value); }
+        }
+
         public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
         bool isBusy = false;

@@ -12,10 +12,16 @@ namespace mobileapp.Core.Views.Authentication
             {
                 await App.AuthService.LogoutAsync();
             });
-            UserName = App.AuthService.State.UserName;
+            var state = App.AuthService.GetCurrentState();
+            UserName = state.UserName;
+            IdToken = state.IdentityToken;
+            RefreshToken = state.RefreshToken;
         }
 
         public string UserName { get; set; }
+        public string AccessToken { get; set; }
+        public string IdToken { get; set; }
+        public string RefreshToken { get; set; }
 
         public ICommand LogoutCommand { get; }
     }

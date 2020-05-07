@@ -1,5 +1,6 @@
 ﻿
 using Foundation;
+using mobileapp.Core;
 using UIKit;
 
 namespace mobileapp.iOS
