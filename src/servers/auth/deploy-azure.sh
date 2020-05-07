@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 git pull
+npm i
 npm run build
 dotnet publish -c release -o publish
 cd publish
