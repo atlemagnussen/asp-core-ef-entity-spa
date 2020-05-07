@@ -9,7 +9,7 @@ namespace mobileapp.Droid
     [Activity(Label = "OidcCallbackActivity")]
     [IntentFilter(new[] { Intent.ActionView },
             Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-            DataScheme = "xamarinformsclients")]
+            DataScheme = "com.companyname.mobileapp")]
     // DataHost = "callback")]
     public class OidcCallbackActivity : Activity
     {
