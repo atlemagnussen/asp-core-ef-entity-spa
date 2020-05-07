@@ -3,13 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:mobileapp.Core.Views.Authentication"
              mc:Ignorable="d"
              x:Class="mobileapp.Core.Views.Authentication.Authenticated">
-    
-    <ContentView.BindingContext>
-        <vm:AuthenticatedViewModel />
-    </ContentView.BindingContext>
 
     <ContentView.Resources>
         <ResourceDictionary>

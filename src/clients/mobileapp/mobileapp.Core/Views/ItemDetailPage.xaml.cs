@@ -10,9 +10,9 @@ namespace mobileapp.Core.Views
     [DesignTimeVisible(false)]
     public partial class ItemDetailPage : ContentPage
     {
-        ItemDetailViewModel viewModel;
+        CustomerDetailViewModel viewModel;
 
-        public ItemDetailPage(ItemDetailViewModel viewModel)
+        public ItemDetailPage(CustomerDetailViewModel viewModel)
         {
             InitializeComponent();
 
@@ -23,13 +23,14 @@ namespace mobileapp.Core.Views
         {
             InitializeComponent();
 
-            var item = new Item
+            var cus = new Customer
             {
-                Text = "Item 1",
-                Description = "This is an item description."
+                Id = 0,
+                FirstName = "Test",
+                LastName = "Testson"
             };
 
-            viewModel = new ItemDetailViewModel(item);
+            viewModel = new CustomerDetailViewModel(cus);
             BindingContext = viewModel;
         }
     }

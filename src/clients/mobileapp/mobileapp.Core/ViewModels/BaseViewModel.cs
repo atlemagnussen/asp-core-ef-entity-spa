@@ -1,5 +1,4 @@
-﻿using mobileapp.Core.Models;
-using mobileapp.Core.Services;
+﻿using mobileapp.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,8 +15,6 @@ namespace mobileapp.Core.ViewModels
             get { return isLoggedIn; }
             set { SetProperty(ref isLoggedIn, value); }
         }
-
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
         bool isBusy = false;
         public bool IsBusy

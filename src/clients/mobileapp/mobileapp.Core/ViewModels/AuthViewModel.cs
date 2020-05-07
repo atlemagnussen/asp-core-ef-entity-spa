@@ -4,6 +4,10 @@
     {
         public AuthViewModel()
         {
+        }
+
+        public void Refresh()
+        {
             var currentState = App.AuthService.GetCurrentState();
             IsLoggedIn = currentState.LoggedIn;
         }

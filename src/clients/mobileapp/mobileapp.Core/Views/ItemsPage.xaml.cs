@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Xamarin.Forms;
 using mobileapp.Core.ViewModels;
-using mobileapp.Core.Models;
+using System.Linq;
 
 namespace mobileapp.Core.Views
 {
@@ -11,22 +11,22 @@ namespace mobileapp.Core.Views
     [DesignTimeVisible(false)]
     public partial class ItemsPage : ContentPage
     {
-        ItemsViewModel viewModel;
+        CustomersViewModel viewModel;
 
         public ItemsPage()
         {
             InitializeComponent();
 
-            BindingContext = viewModel = new ItemsViewModel();
+            BindingContext = viewModel = new CustomersViewModel();
         }
 
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
-            var item = args.SelectedItem as Item;
-            if (item == null)
+            var customer = args.SelectedItem as Customer;
+            if (customer == null)
                 return;
 
-            await Navigation.PushAsync(new ItemDetailPage(new ItemDetailViewModel(item)));
+            await Navigation.PushAsync(new ItemDetailPage(new CustomerDetailViewModel(customer)));
 
             // Manually deselect item.
             ItemsListView.SelectedItem = null;
@@ -41,7 +41,8 @@ namespace mobileapp.Core.Views
         {
             base.OnAppearing();
 
-            if (viewModel.Items.Count == 0)
+            if (viewModel.Customers.Count == 0 ||
+                (viewModel.Customers.Count == 1 && viewModel.Customers.First().FirstName == "Un"))
                 viewModel.LoadItemsCommand.Execute(null);
         }
     }

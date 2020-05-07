@@ -18,7 +18,12 @@ namespace mobileapp.Core.Services
             _baseApiUrl = "https://asp-core-webapi.azurewebsites.net";
             _apiClient= new Lazy<HttpClient>(() => new HttpClient());
             _apiClient.Value.BaseAddress = new Uri(_baseApiUrl);
+
+            var state = App.AuthService.GetCurrentState();
+            if (state.LoggedIn)
+                SetBearerToken(state.AccessToken);
         }
+
         public void SetBearerToken(string token)
         {
             _apiClient.Value.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -26,22 +31,27 @@ namespace mobileapp.Core.Services
 
         public Task<bool> AddItemAsync(Customer item)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public Task<bool> UpdateItemAsync(Customer item)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public Task<bool> DeleteItemAsync(string id)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(true);
         }
 
         public Task<Customer> GetItemAsync(string id)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new Customer
+            {
+                Id = 1,
+                FirstName = "hello",
+                LastName = "world"
+            });
         }
 
         public async Task<IEnumerable<Customer>> GetItemsAsync(bool forceRefresh = false)
@@ -57,7 +67,16 @@ namespace mobileapp.Core.Services
             }
             else
             {
-                throw new ApplicationException(result.ReasonPhrase);
+                //throw new ApplicationException(result.ReasonPhrase);
+                return new List<Customer>()
+                {
+                    new Customer
+                    {
+                        Id = 0,
+                        FirstName = "Un",
+                        LastName = "Authorized"
+                    }
+                };
             }
         }
     }

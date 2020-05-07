@@ -12,6 +12,7 @@ namespace mobileapp.Core.Views.Authentication
             {
                 var result = await App.AuthService.LoginAsync();
                 IsLoggedIn = result.LoggedIn;
+                App.DataStore.SetBearerToken(result.AccessToken);
             });
         }
 

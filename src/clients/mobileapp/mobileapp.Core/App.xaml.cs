@@ -7,12 +7,14 @@ namespace mobileapp.Core
     public partial class App : Application
     {
         public static AuthService AuthService { get; set; }
+        public static CustomerDataStore DataStore { get; set; }
 
         public App()
         {
             InitializeComponent();
             AuthService = new AuthService();
-            DependencyService.Register<CustomerDataStore>();
+            // DependencyService.Register<CustomerDataStore>();
+            DataStore = new CustomerDataStore();
             MainPage = new MainPage();
         }
 

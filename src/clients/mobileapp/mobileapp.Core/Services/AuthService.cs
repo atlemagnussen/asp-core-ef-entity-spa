@@ -24,9 +24,9 @@ namespace mobileapp.Core.Services
 
             var options = new OidcClientOptions
             {
-                //Authority = "https://asp-core-auth-server.azurewebsites.net",
-                Authority = "https://10.0.2.2:6001", //debug
-                BackchannelHandler = DebugHttpHandler.GetInsecureHandler(), //debug
+                Authority = "https://asp-core-auth-server.azurewebsites.net",
+                //Authority = "https://10.0.2.2:6001", //debug
+                //BackchannelHandler = DebugHttpHandler.GetInsecureHandler(), //debug
                 ClientId = "mobileapp",
                 Scope = "openid profile email roles api.read offline_access",
                 RedirectUri = "com.companyname.mobileapp://callback",
@@ -36,9 +36,7 @@ namespace mobileapp.Core.Services
                 Policy = new Policy
                 {
                     RequireIdentityTokenSignature = false
-                },
-                //BackchannelHandler = DebugHandler.GetInsecureHandler(), //debug
-                //ResponseMode = OidcClientOptions.AuthorizeResponseMode.Redirect
+                }
             };
 
             OidcClient = new OidcClient(options);

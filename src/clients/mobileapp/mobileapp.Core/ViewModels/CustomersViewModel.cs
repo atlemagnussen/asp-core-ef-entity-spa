@@ -3,27 +3,26 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using mobileapp.Core.Models;
 using mobileapp.Core.Views;
 
 namespace mobileapp.Core.ViewModels
 {
-    public class ItemsViewModel : BaseViewModel
+    public class CustomersViewModel : BaseViewModel
     {
-        public ObservableCollection<Item> Items { get; set; }
+        public ObservableCollection<Customer> Customers { get; set; }
         public Command LoadItemsCommand { get; set; }
 
-        public ItemsViewModel()
+        public CustomersViewModel()
         {
-            Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Title = "Customers";
+            Customers = new ObservableCollection<Customer>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<NewItemPage, Customer>(this, "AddItem", async (obj, cus) =>
             {
-                var newItem = item as Item;
-                Items.Add(newItem);
-                await DataStore.AddItemAsync(newItem);
+                var newCus = cus as Customer;
+                Customers.Add(newCus);
+                await App.DataStore.AddItemAsync(newCus);
             });
         }
 
@@ -36,11 +35,11 @@ namespace mobileapp.Core.ViewModels
 
             try
             {
-                Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
+                Customers.Clear();
+                var items = await App.DataStore.GetItemsAsync(true);
                 foreach (var item in items)
                 {
-                    Items.Add(item);
+                    Customers.Add(item);
                 }
             }
             catch (Exception ex)
