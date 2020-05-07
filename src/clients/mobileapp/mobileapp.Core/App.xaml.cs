@@ -6,11 +6,11 @@ namespace mobileapp.Core
 {
     public partial class App : Application
     {
-
+        public AuthService AuthService { get; set; }
         public App()
         {
             InitializeComponent();
-
+            AuthService = new AuthService();
             DependencyService.Register<CustomerDataStore>();
             MainPage = new MainPage();
         }

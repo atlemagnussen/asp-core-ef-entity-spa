@@ -22,7 +22,7 @@ namespace mobileapp.Core.Services
 
             var options = new OidcClientOptions
             {
-                Authority = "https://authdev.digilean.tools",
+                Authority = "https://asp-core-auth-server.azurewebsites.net",
                 //Authority = "https://10.0.2.2:6001", //debug
                 ClientId = "mobileapp",
                 Scope = "openid profile email roles api.read offline_access",

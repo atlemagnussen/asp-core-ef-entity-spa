@@ -9,6 +9,7 @@ namespace Test.auth
     public class Config
     {
         public static string WebClientName = "webclient";
+        public static string MobileClientId = "mobileapp";
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
@@ -78,6 +79,32 @@ namespace Test.auth
                         "api.write"
                     },
                 AllowOfflineAccess = false
+            };
+        }
+        public static Client GetMobileClient()
+        {
+            return new Client
+            {
+                ClientId = MobileClientId,
+                ClientName = "DigiLEAN mobile app",
+
+                RedirectUris = { "com.companyname.mobileapp://callback" },
+                PostLogoutRedirectUris = { "com.companyname.mobileapp://callback" },
+                BackChannelLogoutUri = "com.companyname.mobileapp://callback",
+                BackChannelLogoutSessionRequired = true,
+
+                RequireClientSecret = false,
+                RequireConsent = false,
+
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = true,
+                AllowedScopes = { "openid", "profile", "email", "roles", "api.read" },
+                
+                AllowOfflineAccess = true,
+                RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                UpdateAccessTokenClaimsOnRefresh = true,
+                RefreshTokenExpiration = TokenExpiration.Sliding,
+                SlidingRefreshTokenLifetime = 14 * 24 * 60 * 60
             };
         }
         public static IEnumerable<IdentityResource> GetIdentityResources()
