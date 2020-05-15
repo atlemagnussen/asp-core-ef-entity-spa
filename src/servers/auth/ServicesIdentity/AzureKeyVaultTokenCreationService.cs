@@ -1,21 +1,19 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Keys.Cryptography;
+﻿using Azure.Security.KeyVault.Keys.Cryptography;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
+using Test.auth.Services;
 using Test.dataaccess;
 using Test.dataaccess.Services;
 
-namespace Test.auth.Services
+namespace Test.auth.ServicesIdentity
 {
     /// <summary>
     /// Get Signing Keys

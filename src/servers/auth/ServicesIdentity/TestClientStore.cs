@@ -1,11 +1,9 @@
 ﻿using IdentityServer4.Models;
 using IdentityServer4.Stores;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Test.auth.Services;
 
-namespace Test.auth.Services
+namespace Test.auth.ServicesIdentity
 {
     public class TestClientStore : IClientStore
     {

@@ -2,8 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
+using Test.auth.Services;
 
-namespace Test.auth.Services
+namespace Test.auth.ServicesIdentity
 {
     public class AzureSigningCredentialsStore : ISigningCredentialStore
     {

@@ -3,7 +3,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace Test.auth.Services
+namespace Test.auth.ServicesIdentity
 {
     public class TestCorsPolicyService : ICorsPolicyService
     {

@@ -3,8 +3,9 @@ using IdentityServer4.Stores;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Test.auth.Services;
 
-namespace Test.auth.Services
+namespace Test.auth.ServicesIdentity
 {
     public class AzureValidationKeysStore : IValidationKeysStore
     {

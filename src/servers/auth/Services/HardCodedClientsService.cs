@@ -29,24 +29,39 @@ namespace Test.auth.Services
                 case Config.MobileClientId:
                     return GetMobileClient();
                 default:
-                    return null;
+                    return GetDynamic(clientId);
             }
         }
 
+        private Client GetDynamic(string clientId)
+        {
+            var client = new Client
+            {
+                ClientId = clientId,
+                ClientName = "generic client",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                ClientSecrets = new List<Secret>
+                    {
+                        new Secret
+                        {
+                            Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                            Description = "shared secret",
+                            Value = "secret".Sha512()
+                        },
+                        new Secret
+                        {
+                            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
+                            Description = "json web key"
+                        }
+                    },
+                AllowedScopes = { "bankApi" }
+            };
+            return client;
+        }
         public IEnumerable<Client> GetAll()
         {
             return new List<Client>
             {
-                new Client
-                {
-                    ClientId = "client",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    ClientSecrets = new List<Secret>
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = { "bankApi" }
-                },
                 GetWebClient(),
                 GetMobileClient()
             };

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Test.model;
 using Test.model.Users;
 
 namespace Test.dataaccess
@@ -10,5 +11,7 @@ namespace Test.dataaccess
             DbContextOptions<AuthDbContext> options) : base(options)
         {
         }
+
+        public DbSet<ApiClient> ApiClients { get; set; }
     }
 }

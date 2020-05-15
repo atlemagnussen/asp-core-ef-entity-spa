@@ -10,11 +10,11 @@ namespace Test.consoleapp
 {
     public static class TestAuthClients
     {
-        //private static string AuthServerUrl = "https://localhost:6001";
-        //private static readonly string ApiBaseUrl = "https://localhost:7001/api/";
+        private static string AuthServerUrl = "https://localhost:6001";
+        private static readonly string ApiBaseUrl = "https://localhost:7001/api/";
 
-        private static readonly string AuthServerUrl = "https://asp-core-auth-server.azurewebsites.net";
-        private static readonly string ApiBaseUrl = "https://asp-core-webapi.azurewebsites.net/api/";
+        //private static readonly string AuthServerUrl = "https://asp-core-auth-server.azurewebsites.net";
+        //private static readonly string ApiBaseUrl = "https://asp-core-webapi.azurewebsites.net/api/";
         public static async Task Do()
         {
             // discover all the endpoints using metadata of identity server
@@ -103,6 +103,7 @@ namespace Test.consoleapp
             // Grab a bearer token
             var tokenOptions = new TokenClientOptions
             {
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
                 Address = disco.TokenEndpoint,
                 ClientId = "client",
                 ClientSecret = "secret"

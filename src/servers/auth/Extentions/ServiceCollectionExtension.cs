@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using IdentityServer4.Stores;
 using IdentityServer4.Services;
 using Test.core.Services;
+using Test.auth.ServicesIdentity;
 
 namespace Test.auth.Extentions
 {
