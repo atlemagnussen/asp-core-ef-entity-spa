@@ -10,14 +10,19 @@ namespace Test.consoleapp
 {
     public static class TestAuthClients
     {
+        //private static string AuthServerUrl = "https://localhost:6001";
+        //private static readonly string ApiBaseUrl = "https://localhost:7001/api/";
+
+        private static readonly string AuthServerUrl = "https://asp-core-auth-server.azurewebsites.net";
+        private static readonly string ApiBaseUrl = "https://asp-core-webapi.azurewebsites.net/api/";
         public static async Task Do()
         {
             // discover all the endpoints using metadata of identity server
             var client = new HttpClient
             {
-                BaseAddress = new Uri("https://localhost:7001/api/")
+                BaseAddress = new Uri(ApiBaseUrl)
             };
-            var disco = await client.GetDiscoveryDocumentAsync("https://localhost:6001");
+            var disco = await client.GetDiscoveryDocumentAsync(AuthServerUrl);
             if (disco.IsError)
             {
                 Console.WriteLine(disco.Error);

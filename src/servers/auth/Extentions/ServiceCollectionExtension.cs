@@ -12,11 +12,35 @@ using Test.auth.Services;
 using Test.dataaccess;
 using IdentityServer4;
 using Microsoft.AspNetCore.Hosting;
+using IdentityServer4.Stores;
+using IdentityServer4.Services;
+using Test.core.Services;
 
 namespace Test.auth.Extentions
 {
     public static class ServiceCollectionExtension
     {
+        public static void AddServices(this IServiceCollection services, IConfigurationSection configAzAd, IConfigurationSection configAzKv)
+        {
+            services.Configure<SettingsAzureAd>(configAzAd);
+            services.Configure<SettingsAzureKeyVault>(configAzKv);
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<ILogoutService, LogoutService>();
+            services.AddTransient<IRegisterService, RegisterService>();
+            services.AddTransient<IClaimsHelper, ClaimsHelper>();
+            services.AddTransient<IExternalService, ExternalService>();
+            services.AddTransient<IAzureKeyService, AzureKeyService>();
+            services.AddTransient<IAdminService, AdminService>();
+            services.AddTransient<IHardCodedClientsService, HardCodedClientsService>();
+
+            // services that override default identityserver services
+            services.AddTransient<ITokenCreationService, AzureKeyVaultTokenCreationService>();
+            services.AddTransient<ISigningCredentialStore, AzureSigningCredentialsStore>();
+            services.AddTransient<IValidationKeysStore, AzureValidationKeysStore>();
+            services.AddTransient<IClientStore, TestClientStore>();
+            services.AddTransient<ICorsPolicyService, TestCorsPolicyService>();
+        }
+
         public static void AddIdentityServerConfig(this IServiceCollection services, 
             IConfiguration configuration, 
             IWebHostEnvironment environment,
@@ -64,7 +88,7 @@ namespace Test.auth.Extentions
                     options.ConfigureDbContext = b => b.UseSqlServer(connectionString, sql => sql.MigrationsAssembly(migrationsAssembly));
                     options.EnableTokenCleanup = true;
                 });
-            builder.AddInMemoryClients(Config.GetClients(configuration.GetValue<string>("WebClientUrl")));
+            
             builder.AddInMemoryApiResources(Config.GetApiResources());
             builder.AddInMemoryIdentityResources(Config.GetIdentityResources());
             builder.AddAspNetIdentity<ApplicationUser>();

@@ -147,19 +147,6 @@ namespace mobileapp.Core.Services
                 await SecretsStorage.ClearAll();
             }
             return result;
-        }
-
-        private Claim TryClaims(IEnumerable<Claim> claims, IEnumerable<string> tryClaimNames)
-        {
-            foreach (var claimName in tryClaimNames)
-            {
-                var claim = claims.FirstOrDefault(x => x.Type == claimName);
-                if (claim != null)
-                    return claim;
-            }
-            return null;
-        }
-
-        
+        }        
     }
 }

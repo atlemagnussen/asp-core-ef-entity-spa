@@ -32,8 +32,8 @@ namespace mobileapp.Core.ViewModels
             AccessToken = currentState.AccessToken;
             IdToken = currentState.IdentityToken;
             RefreshToken = currentState.RefreshToken;
-            AccessTokenExpiration = currentState.AccessTokenExpiration.ToString(CultureInfo.CurrentCulture.DateTimeFormat.UniversalSortableDateTimePattern);
-            TimeNow = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.UniversalSortableDateTimePattern);
+            AccessTokenExpiration = currentState.AccessTokenExpiration.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern);
+            TimeNow = DateTime.Now.ToString(CultureInfo.CurrentCulture.DateTimeFormat.SortableDateTimePattern);
         }
 
         private string userName;

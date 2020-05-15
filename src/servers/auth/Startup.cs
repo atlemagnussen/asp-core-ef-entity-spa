@@ -31,20 +31,7 @@ namespace Test.auth
 
             var configAzAd = Configuration.GetSection("AzureAd");
             var configAzKv = Configuration.GetSection("AzureKeyVault");
-            services.Configure<SettingsAzureAd>(configAzAd);
-            services.Configure<SettingsAzureKeyVault>(configAzKv);
-            services.AddTransient<ILoginService, LoginService>();
-            services.AddTransient<ILogoutService, LogoutService>();
-            services.AddTransient<IRegisterService, RegisterService>();
-            services.AddTransient<IClaimsHelper, ClaimsHelper>();
-            services.AddTransient<IExternalService, ExternalService>();
-            services.AddTransient<IAzureKeyService, AzureKeyService>();
-            services.AddTransient<IAdminService, AdminService>();
-            
-            // services that override default identityserver services
-            services.AddTransient<ITokenCreationService, AzureKeyVaultTokenCreationService>();
-            services.AddTransient<ISigningCredentialStore, AzureSigningCredentialsStore>();
-            services.AddTransient<IValidationKeysStore, AzureValidationKeysStore>();
+            services.AddServices(configAzAd, configAzKv);
 
             services.AddIdentityServerConfig(Configuration, Environment, configAzAd);
             services.AddCommonIdentitySettings();

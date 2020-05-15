@@ -32,14 +32,14 @@
                     <Label Text="{Binding AccessTokenExpiration}" />
                 </FlexLayout>
                 <FlexLayout Direction="Row">
-                    <Label Text="Time now:" />
+                    <Label Text="Time now: " />
                     <Label Text="{Binding TimeNow}" />
                 </FlexLayout>
                 <Label Text="{Binding AccessToken}" />
                 <Label Text="Identity token::" />
                 <Label Text="{Binding IdToken}" />
                 <Label Text="Refresh token::" />
-                <Label Text="{Binding Refresh token}" />
+                <Label Text="{Binding RefreshToken}" />
             </StackLayout>
 
             <StackLayout IsVisible="{Binding NotLoggedIn}">

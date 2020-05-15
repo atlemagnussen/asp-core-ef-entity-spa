@@ -31,10 +31,10 @@ namespace Test.webapi.Controllers
         public async IAsyncEnumerable<Customer> GetCustomers()
         {
             var user = _httpContextAccessor.HttpContext.User;
-            var isAdmin = user.IsInRole(SystemRoles.Admin);
-            var userInfo = User.Identity;
-            var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-            var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
+            //var isAdmin = user.IsInRole(SystemRoles.Admin);
+            //var userInfo = User.Identity;
+            //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            //var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
             var customers = await _context.Customers.ToArrayAsync();
             foreach(var customer in customers)
             {
