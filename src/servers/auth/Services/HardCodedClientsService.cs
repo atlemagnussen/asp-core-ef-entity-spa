@@ -1,8 +1,10 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Test.auth.Services
 {
@@ -46,7 +48,7 @@ namespace Test.auth.Services
                         {
                             Type = IdentityServerConstants.SecretTypes.SharedSecret,
                             Description = "shared secret",
-                            Value = "secret".Sha512()
+                            Value = "sA+iS2dBLR5brbAaO2+oM5cER8XaBQrW3rh6E+ISVmE=".Sha512()
                         },
                         new Secret
                         {
@@ -58,6 +60,16 @@ namespace Test.auth.Services
             };
             return client;
         }
+
+        private string GenerateNewSecret(int length)
+        {
+            var crypto = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[length];
+            crypto.GetBytes(buffer);
+            string uniq = Convert.ToBase64String(buffer);
+            return uniq;
+        }
+
         public IEnumerable<Client> GetAll()
         {
             return new List<Client>

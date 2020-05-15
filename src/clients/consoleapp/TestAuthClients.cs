@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityModel.Client;
@@ -106,7 +107,7 @@ namespace Test.consoleapp
                 ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
                 Address = disco.TokenEndpoint,
                 ClientId = "client",
-                ClientSecret = "secret"
+                ClientSecret = "sA+iS2dBLR5brbAaO2+oM5cER8XaBQrW3rh6E+ISVmE=" //GenerateNewSecret(32)
             };
             var tokenClient = new TokenClient(client, tokenOptions);
             var tokenResponse = await tokenClient.RequestClientCredentialsTokenAsync("bankApi");
@@ -119,6 +120,15 @@ namespace Test.consoleapp
             Console.WriteLine("Got token:");
             Console.WriteLine(tokenResponse.Json);
             return tokenResponse;
+        }
+
+        private static string GenerateNewSecret(int length)
+        {
+            var crypto = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[length];
+            crypto.GetBytes(buffer);
+            string uniq = Convert.ToBase64String(buffer);
+            return uniq;
         }
     }
 }
