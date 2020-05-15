@@ -8,12 +8,15 @@ using Newtonsoft.Json.Linq;
 
 namespace Test.consoleapp
 {
-    class TestAuthClients
+    public static class TestAuthClients
     {
         public static async Task Do()
         {
             // discover all the endpoints using metadata of identity server
-            var client = new HttpClient();
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri("https://localhost:7001/api/")
+            };
             var disco = await client.GetDiscoveryDocumentAsync("https://localhost:6001");
             if (disco.IsError)
             {
@@ -21,8 +24,8 @@ namespace Test.consoleapp
                 return;
             }
 
-            //var tokenResponse = await GetTokenClientCred(client, disco);
-            var tokenResponse = await GetTokenResourceOwner(client, disco, "atlemagnussen@gmail.com", "Einherjer57!");
+            var tokenResponse = await GetTokenClientCred(client, disco);
+            //var tokenResponse = await GetTokenResourceOwner(client, disco, "atlemagnussen@gmail.com", "Einherjer57!");
 
             client.SetBearerToken(tokenResponse.AccessToken);
 
@@ -53,7 +56,7 @@ namespace Test.consoleapp
                 JsonConvert.SerializeObject(
                     new { FirstName = first, LastName = last }), Encoding.UTF8, "application/json");
 
-            var createCustomerResponse = await client.PostAsync("https://localhost:5001/api/customers", customerInfo);
+            var createCustomerResponse = await client.PostAsync("customers", customerInfo);
 
             if (!createCustomerResponse.IsSuccessStatusCode)
             {

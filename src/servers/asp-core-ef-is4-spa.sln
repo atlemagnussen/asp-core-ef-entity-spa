@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataaccess", "dataaccess\da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{CA561C16-5DA1-4B16-AF3F-5B7CDEEAD3E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "consoleapp", "consoleapp\consoleapp.csproj", "{85206905-D7FD-49F2-9914-F521E6696AB0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auth", "auth\auth.csproj", "{0ABAC44D-E03E-451F-863D-89F6E1FA1E92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webapi", "webapi\webapi.csproj", "{829DE58C-E7DE-45D4-9D1A-CBCBC607D8EE}"
