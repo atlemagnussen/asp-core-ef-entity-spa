@@ -11,11 +11,11 @@ namespace Test.consoleapp
 {
     public static class TestAuthClients
     {
-        private static string AuthServerUrl = "https://localhost:6001";
-        private static readonly string ApiBaseUrl = "https://localhost:7001/api/";
+        //private static string AuthServerUrl = "https://localhost:6001";
+        //private static readonly string ApiBaseUrl = "https://localhost:7001/api/";
 
-        //private static readonly string AuthServerUrl = "https://asp-core-auth-server.azurewebsites.net";
-        //private static readonly string ApiBaseUrl = "https://asp-core-webapi.azurewebsites.net/api/";
+        private static readonly string AuthServerUrl = "https://asp-core-auth-server.azurewebsites.net";
+        private static readonly string ApiBaseUrl = "https://asp-core-webapi.azurewebsites.net/api/";
         public static async Task Do()
         {
             // discover all the endpoints using metadata of identity server
@@ -107,7 +107,7 @@ namespace Test.consoleapp
                 ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
                 Address = disco.TokenEndpoint,
                 ClientId = "MyBeastClient",
-                ClientSecret = "y59VugLnd02AP1vNXj6P+9gSpL9vhnY0uUVQ7uSWD5s="
+                ClientSecret = "xaUgjy9Qsps+WVRV0JjnX0mmIANPAInlqZT8v1QRDa8=" // "y59VugLnd02AP1vNXj6P +9gSpL9vhnY0uUVQ7uSWD5s="
             };
             var tokenClient = new TokenClient(client, tokenOptions);
             var tokenResponse = await tokenClient.RequestClientCredentialsTokenAsync("bankApi");

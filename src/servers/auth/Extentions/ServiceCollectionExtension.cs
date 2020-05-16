@@ -95,6 +95,10 @@ namespace Test.auth.Extentions
             builder.AddAspNetIdentity<ApplicationUser>();
             builder.AddProfileService<TestProfileService>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Login";
+            });
             services.AddAuthentication()
                 .AddAzureAD(options =>
                 {
