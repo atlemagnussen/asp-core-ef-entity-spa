@@ -1,0 +1,36 @@
+﻿@page
+@model Test.auth.Pages.Clients.CreateModel
+
+<h4>ApiClient</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (Model.Secret == null)
+        {
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ClientId" class="control-label"></label>
+                    <input asp-for="ClientId" class="form-control" />
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+
+        } else {
+            <p>
+                Client <span>@Model.ClientId</span> created
+            </p>
+            <p>
+                Secret: <span>@Model.Secret</span>
+            </p>
+        }
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+

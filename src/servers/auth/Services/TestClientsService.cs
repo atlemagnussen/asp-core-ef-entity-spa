@@ -1,28 +1,36 @@
 ﻿using IdentityServer4;
 using IdentityServer4.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
+using Test.dataaccess;
+using Test.model;
 
 namespace Test.auth.Services
 {
-    public interface IHardCodedClientsService
+    public interface ITestClientsService
     {
         IEnumerable<Client> GetAll();
-        Client Get(string clientId);
+        Task<string> Create(string clientId);
+        Task<Client> Get(string clientId);
     }
 
-    public class HardCodedClientsService : IHardCodedClientsService
+    public class TestClientsService : ITestClientsService
     {
         private readonly IConfiguration _configuration;
-        public HardCodedClientsService(IConfiguration configuration)
+        private readonly AuthDbContext _authContext;
+        public TestClientsService(IConfiguration configuration,
+            AuthDbContext authContext)
         {
             _configuration = configuration;
+            _authContext = authContext;
         }
 
-        public Client Get(string clientId)
+        public async Task<Client> Get(string clientId)
         {
             switch (clientId)
             {
@@ -31,33 +39,64 @@ namespace Test.auth.Services
                 case Config.MobileClientId:
                     return GetMobileClient();
                 default:
-                    return GetDynamic(clientId);
+                    return await GetDynamic(clientId);
             }
         }
 
-        private Client GetDynamic(string clientId)
+        public async Task<string> Create(string clientId)
         {
-            var client = new Client
+            clientId = clientId.Trim();
+            if (clientId == Config.WebClientName || clientId == Config.WebClientName)
+                throw new ApplicationException("Client name is taken");
+
+            if (await _authContext.ApiClients.AnyAsync(a => a.ClientId == clientId))
+                throw new ApplicationException("Client name is taken");
+
+            var secret = GenerateNewSecret(32);
+            var client = new ApiClient
             {
                 ClientId = clientId,
-                ClientName = "generic client",
+                Name = "Something",
+                SecretType = ClientSecretType.SharedSecret,
+                Secret = secret.Sha512()
+            };
+            await _authContext.ApiClients.AddAsync(client);
+            await _authContext.SaveChangesAsync();
+            return secret;
+        }
+
+        private async Task<Client> GetDynamic(string clientId)
+        {
+            var db = await _authContext.ApiClients.FirstOrDefaultAsync(a => a.ClientId == clientId);
+            if (db == null)
+                return null;
+
+            var client = new Client
+            {
+                ClientId = db.ClientId,
+                ClientName = db.Name,
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
-                ClientSecrets = new List<Secret>
-                    {
-                        new Secret
-                        {
-                            Type = IdentityServerConstants.SecretTypes.SharedSecret,
-                            Description = "shared secret",
-                            Value = "sA+iS2dBLR5brbAaO2+oM5cER8XaBQrW3rh6E+ISVmE=".Sha512()
-                        },
-                        new Secret
-                        {
-                            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
-                            Description = "json web key"
-                        }
-                    },
+                ClientSecrets = new List<Secret>(),
                 AllowedScopes = { "bankApi" }
             };
+            if (db.SecretType == ClientSecretType.SharedSecret)
+            {
+                client.ClientSecrets.Add(new Secret
+                {
+                    Type = IdentityServerConstants.SecretTypes.SharedSecret,
+                    Description = "shared secret",
+                    Value = db.Secret
+                });
+            }
+            else if (db.SecretType == ClientSecretType.JsonWebKey)
+            {
+                client.ClientSecrets.Add(new Secret
+                {
+                    Type = IdentityServerConstants.SecretTypes.JsonWebKey,
+                    Description = "json web key",
+                    Value = db.Secret
+                });
+            }
             return client;
         }
 
@@ -104,7 +143,7 @@ namespace Test.auth.Services
                 //UpdateAccessTokenClaimsOnRefresh = true,
                 // RefreshTokenExpiration = TokenExpiration.Sliding,
 
-                AccessTokenLifetime = 20 * 60, //24 * 3600,
+                AccessTokenLifetime = 24 * 3600,
 
                 RedirectUris = redirects,
                 PostLogoutRedirectUris = allowedUrls,

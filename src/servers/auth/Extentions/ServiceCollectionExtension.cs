@@ -32,7 +32,7 @@ namespace Test.auth.Extentions
             services.AddTransient<IExternalService, ExternalService>();
             services.AddTransient<IAzureKeyService, AzureKeyService>();
             services.AddTransient<IAdminService, AdminService>();
-            services.AddTransient<IHardCodedClientsService, HardCodedClientsService>();
+            services.AddTransient<ITestClientsService, TestClientsService>();
 
             // services that override default identityserver services
             services.AddTransient<ITokenCreationService, AzureKeyVaultTokenCreationService>();

@@ -7,16 +7,16 @@ namespace Test.auth.ServicesIdentity
 {
     public class TestClientStore : IClientStore
     {
-        private readonly IHardCodedClientsService _hardCodedClients;
+        private readonly ITestClientsService _hardCodedClients;
 
-        public TestClientStore(IHardCodedClientsService hardCodedClients)
+        public TestClientStore(ITestClientsService hardCodedClients)
         {
             _hardCodedClients = hardCodedClients;
         }
 
         public async Task<Client> FindClientByIdAsync(string clientId)
         {
-            var hardCodedClient = await Task.FromResult(_hardCodedClients.Get(clientId));
+            var hardCodedClient = await _hardCodedClients.Get(clientId);
             return hardCodedClient;
         }
     }

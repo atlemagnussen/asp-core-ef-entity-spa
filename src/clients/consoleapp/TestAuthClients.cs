@@ -106,8 +106,8 @@ namespace Test.consoleapp
             {
                 ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
                 Address = disco.TokenEndpoint,
-                ClientId = "client",
-                ClientSecret = "sA+iS2dBLR5brbAaO2+oM5cER8XaBQrW3rh6E+ISVmE=" //GenerateNewSecret(32)
+                ClientId = "MyBeastClient",
+                ClientSecret = "y59VugLnd02AP1vNXj6P+9gSpL9vhnY0uUVQ7uSWD5s="
             };
             var tokenClient = new TokenClient(client, tokenOptions);
             var tokenResponse = await tokenClient.RequestClientCredentialsTokenAsync("bankApi");
@@ -120,15 +120,6 @@ namespace Test.consoleapp
             Console.WriteLine("Got token:");
             Console.WriteLine(tokenResponse.Json);
             return tokenResponse;
-        }
-
-        private static string GenerateNewSecret(int length)
-        {
-            var crypto = new RNGCryptoServiceProvider();
-            byte[] buffer = new byte[length];
-            crypto.GetBytes(buffer);
-            string uniq = Convert.ToBase64String(buffer);
-            return uniq;
         }
     }
 }
