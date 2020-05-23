@@ -48,12 +48,12 @@ class Authentication {
         console.log(msg);
     }
     signedIn(msg) {
-        console.log("signedOut");
+        console.log("signedIn");
         console.log(msg);
     }
-    signedOut(msg) {
-        console.log("signedOut");
-        console.log(msg);
+    signedOut() {
+        console.log("signedOut, might be from another browser tab");
+        logout();
     }
     sessionChanged(msg) {
         console.log("sessionChanged");
