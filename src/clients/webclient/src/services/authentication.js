@@ -87,7 +87,7 @@ class Authentication {
         }
     }
     login() {
-        this.mgr.signinRedirect( { state: window.location.href });
+        this.mgr.signinRedirect({ state: window.location.href });
     }
     logout() {
         this.mgr.signoutRedirect();
