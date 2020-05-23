@@ -14,7 +14,8 @@ let oicdConfig = {
     automaticSilentRenew: false,
     silent_redirect_uri: `${rootPath}/silent-renew.html`,
     validateSubOnSilentRenew: true,
-    revokeAccessTokenOnSignout : true
+    revokeAccessTokenOnSignout : true,
+    userStore: new WebStorageStateStore({ store: window.localStorage })
 };
 
 class Authentication {
