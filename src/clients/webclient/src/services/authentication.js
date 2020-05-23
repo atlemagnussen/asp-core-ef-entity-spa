@@ -78,7 +78,7 @@ class Authentication {
     async isLoggedIn() {
         const user = await this.mgr.getUser();
         if (user) {
-            console.log(`User logged in, ${user.profile}`);
+            console.log(`User logged in, ${user.profile.preferred_username}`);
             return true;
         }
         else {
@@ -87,7 +87,7 @@ class Authentication {
         }
     }
     login() {
-        this.mgr.signinRedirect();
+        this.mgr.signinRedirect( { state: window.location.href });
     }
     logout() {
         this.mgr.signoutRedirect();

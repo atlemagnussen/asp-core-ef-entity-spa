@@ -6,12 +6,6 @@
 </head>
 <body>
     <script src="oidc-client.js"></script>
-    <script>
-        new Oidc.UserManager({response_mode:"query"}).signinRedirectCallback().then(function() {
-            window.location = "/";
-        }).catch(function(e) {
-            console.error(e);
-        });
-    </script>
+    <script src="callback-oidc.js"></script>
 </body>
 </html>
