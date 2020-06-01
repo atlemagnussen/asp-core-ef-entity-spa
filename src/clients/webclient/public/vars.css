@@ -61,15 +61,14 @@
     --a-underline-color: var(--cyan-dark);
     --a-hover-color: var(--cyan);
 
-    --digilean-blue-sky: #76c3ed;
-    --digilean-blue-moon: #9dc4e7;
-    --digilean-blue-sky-light: #acd3ef;
-    --digilean-blue-sky-lighter: #d1e9f8;
-    --digilean-blue: #1c93d3;
-    --digilean-blue-alt: #2095d5;
-    --digilean-blue-light: #58b2e3;
-    --digilean-blue-sharp: #0099de;
-
-    --digilean-dark-light: rgb(56, 32, 32);
-    --digilean-dark: rgb(73, 11, 11);
+    --blue-sky: #76c3ed;
+    --blue-moon: #9dc4e7;
+    --blue-sky-light: #acd3ef;
+    --blue-sky-lighter: #d1e9f8;
+    --blue: #1c93d3;
+    --blue-alt: #2095d5;
+    --blue-light: #58b2e3;
+    --blue-sharp: #0099de;
+    --dark-light: rgb(56, 32, 32);
+    --dark: rgb(73, 11, 11);
 }

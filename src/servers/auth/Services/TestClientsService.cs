@@ -166,7 +166,7 @@ namespace Test.auth.Services
             return new Client
             {
                 ClientId = Config.MobileClientId,
-                ClientName = "DigiLEAN mobile app",
+                ClientName = "mobile app",
 
                 RedirectUris = { "com.companyname.mobileapp://callback" },
                 PostLogoutRedirectUris = { "com.companyname.mobileapp://callback" },

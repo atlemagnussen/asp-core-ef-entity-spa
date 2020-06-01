@@ -19,24 +19,13 @@
             start();
     }
     let start = () => {
-        //logoSvg.unpauseAnimations();
-        //toggleAnim = true;
-        // logoFig.classList.add("enabled");
+
     }
     let stop = () => {
-        //toggleAnim = false;
-        //logoSvg.pauseAnimations();
-        //animateEl.beginElement();
-        // logoFig.classList.remove("enabled");
+
     }
     onMount(() => {
-        // logoSvg = document.querySelector("svg#digilean-logo-login");
-        // logoFig = document.querySelector("figure.digilean-logo-login");
-        // animateEl = document.querySelector("animateTransform");
-        // setTimeout(() => {
-        //     stop();
-        //     logoFig.classList.remove("enabled");
-        // }, 1000);
+
     });
 </script>
 <style>
