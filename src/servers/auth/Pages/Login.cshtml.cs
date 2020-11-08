@@ -61,9 +61,9 @@ namespace Test.auth.Pages
             {
                 if (context != null)
                 {
-                    await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                    await _interaction.GrantConsentAsync(context, new ConsentResponse());
 
-                    if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                    if (await _clientStore.IsPkceClientAsync(context.Client.ClientId))
                     {
                         return this.GoToRedirectPage(Vm.ReturnUrl);
                     }
@@ -82,11 +82,11 @@ namespace Test.auth.Pages
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(Vm.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
 
                     if (context != null)
                     {
-                        if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                        if (await _clientStore.IsPkceClientAsync(context.Client.ClientId))
                         {
                             return this.GoToRedirectPage(Vm.ReturnUrl);
                         }
@@ -109,7 +109,7 @@ namespace Test.auth.Pages
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(Vm.Username, "invalid credentials", clientId: context?.ClientId));
+                await _events.RaiseAsync(new UserLoginFailureEvent(Vm.Username, "invalid credentials", clientId: context?.Client.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
