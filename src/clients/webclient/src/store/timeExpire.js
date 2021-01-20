@@ -1,11 +1,10 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 import helper from "../services/helper.js";
-
 
 const calcDiff = (e, n) => {
     let diff = e - n;
     return Math.floor(diff / 1000);
-}
+};
 
 const createExpireClock = () => {
     let now = new Date();
@@ -18,7 +17,7 @@ const createExpireClock = () => {
         val.nowFormatted = helper.getYyyMmDdHhMmSs(val.now);
         val.expireFormatted = helper.getYyyMmDdHhMmSs(val.expire);
         return set(val);
-    }
+    };
     
     const newSet = (newExpireUnixTimestamp) => {
         val.expire = new Date(newExpireUnixTimestamp*1000);
@@ -27,8 +26,8 @@ const createExpireClock = () => {
     
     setInterval(() => {
         val.now = new Date();
-        refresh()
-	}, 1000);
+        refresh();
+    },1000);
     return { subscribe, set: newSet };
 };
 

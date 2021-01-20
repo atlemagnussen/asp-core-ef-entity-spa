@@ -35,7 +35,7 @@ namespace Test.webapi.Controllers
             //var userInfo = User.Identity;
             //var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
             //var all = _httpContextAccessor.HttpContext.User.Claims.ToList();
-            var customers = await _context.Customers.ToArrayAsync();
+            var customers = await _context.Customers.
             foreach(var customer in customers)
             {
                 yield return customer;

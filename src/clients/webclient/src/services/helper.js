@@ -28,7 +28,7 @@ class Helper {
         return num.toString().padStart(2, 0);
     }
     static getCurrentDateString() {
-        return this.getYyyMmDdHhMmSs(new Date())
+        return this.getYyyMmDdHhMmSs(new Date())''''',
     }
     static getYyyMmDdHhMmSs(d) {
         return `${d.getFullYear()}-${this.leftFillNum(d.getMonth())}-${this.leftFillNum(d.getDate())} ${this.leftFillNum(d.getHours())}:${this.leftFillNum(d.getMinutes())}:${this.leftFillNum(d.getSeconds())}`;
